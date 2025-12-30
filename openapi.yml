@@ -1,0 +1,376 @@
+openapi: 3.1.0
+info:
+  title: µEd API - Educational Microservices
+  version: 1.0.0
+  description: >
+    The µEd API ("microservices for education") is a specification for
+    interoperable educational services. It currently defines endpoints for:
+    
+    - Task feedback: generating human-readable feedback (and optional grading
+      signals) for student submissions.
+    - Chat: conversational interactions around tasks, submissions, or general
+      learning questions.
+    - Task/content generation: generating educational content such as questions,
+      explanations, examples, or hints.
+
+tags:
+  - name: feedback
+    description: Endpoints for generating feedback on student submissions.
+  - name: chat
+    description: Conversational endpoints (LLM-style chat) for educational use cases.
+  - name: contentGeneration
+    description: Endpoints for generating educational content (tasks, hints, explanations).
+
+
+paths:
+  /feedback:
+    post:
+      summary: Generate feedback for a submission
+      operationId: generateFeedback
+      description: >
+        Generates a list of feedback items for a given student submission.
+        Learner profiles and grading criteria are optional inputs.
+      tags:
+        - feedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateFeedbackRequest'
+            examples:
+              simpleTextSubmission:
+                summary: Simple text submission without learner profile or criteria
+                value:
+                  submission:
+                    submissionId: "sub-123"
+                    exerciseId: "ex-42"
+                    content:
+                      type: "TEXT"
+                      text: "Explain what polymorphism is in object-oriented programming."
+                    submittedAt: "2025-12-16T09:30:00Z"
+                    version: 1
+              withProfileAndCriteria:
+                summary: Submission with learner profile and grading criteria
+                value:
+                  submission:
+                    submissionId: "sub-456"
+                    exerciseId: "ex-99"
+                    content:
+                      type: "CODE"
+                      files:
+                        - path: "Main.java"
+                          content: "public class Main { ... }"
+                    submittedAt: "2025-12-16T10:00:00Z"
+                    version: 2
+                    totalScore: null
+                  learnerProfile:
+                    detailPreference: DETAILED
+                    tonePreference: FRIENDLY
+                    languagePreference: "en"
+                  gradingCriteria:
+                    - criterionId: "crit-1"
+                      name: "Correctness"
+                      description: "The solution produces correct results for the specified problem."
+                      maxPoints: 10
+                    - criterionId: "crit-2"
+                      name: "Code Quality"
+                      description: "The code is readable, well-structured, and follows style guidelines."
+                      maxPoints: 5
+      responses:
+        '200':
+          description: Successfully generated feedback
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Feedback'
+              examples:
+                exampleResponse:
+                  summary: Example feedback response
+                  value:
+                    - feedbackId: "fb-1"
+                      title: "Clarify your definition"
+                      message: "Your explanation of polymorphism is generally correct, but it would help to distinguish between subtype polymorphism and parametric polymorphism."
+                      suggestedAction: "Add one or two concrete examples of polymorphism in Java, e.g., method overriding."
+                      awardedPoints: 2.5
+                      gradingCriterion:
+                        criterionId: "crit-1"
+                        name: "Correctness"
+                        description: "The solution produces correct results for the specified problem."
+                        maxPoints: 10
+                      target:
+                        artefactType: "TEXT"
+                        locator:
+                          type: "SPAN"
+                          startIndex: 0
+                          endIndex: 120
+                    - feedbackId: "fb-2"
+                      title: "Overall structure"
+                      message: "The overall structure of your answer is clear and easy to follow."
+                      suggestedAction: null
+                      awardedPoints: null
+                      gradingCriterion: null
+                      target: null
+        '400':
+          description: Invalid request (e.g. missing submission content or invalid schema)
+        '500':
+          description: Internal server error
+
+  /chat:
+    post:
+      summary: Chat about tasks, submissions, or learning topics
+      operationId: chat
+      description: >
+        Conversational endpoint for educational chat use cases. A conversation
+        can be grounded in a specific exercise or submission, and may optionally
+        use a learner profile to adapt tone and detail. Typical use cases
+        include: asking follow-up questions on feedback, requesting hints,
+        or clarifying concepts.
+      tags:
+        - chat
+  
+  /content:
+    post:
+      summary: Generate educational content
+      operationId: contentGeneration
+      description: >
+        Generates educational content such as questions, explanations, examples,
+        or hints. Content generation can be guided by learning objectives,
+        difficulty, and other constraints.
+      tags:
+        - contentGeneration
+
+
+components:
+  schemas:
+
+    # ====== Request wrapper ======
+    GenerateFeedbackRequest:
+      type: object
+      description: >
+        Input for feedback generation. The submission is mandatory; the learner
+        profile and grading criteria are optional.
+      required:
+        - submission
+      properties:
+        submission:
+          $ref: '#/components/schemas/Submission'
+        learnerProfile:
+          description: >
+            Optional learner preferences that can influence the style and
+            detail of the generated feedback.
+          anyOf:
+            - $ref: '#/components/schemas/LearnerProfile'
+            - type: "null"
+        gradingCriteria:
+          description: >
+            Optional list of grading criteria that structure the assessment.
+            If omitted or null, feedback may still be generated in a purely
+            qualitative manner.
+          anyOf:
+            - type: array
+              items:
+                $ref: '#/components/schemas/GradingCriterion'
+            - type: "null"
+
+    # ====== Core domain types ======
+
+    Submission:
+      type: object
+      description: >
+        A student's submission for an exercise. The structure of 'content' is
+        intentionally generic and exercise/tool-specific.
+      required:
+        - submissionId
+        - content
+      properties:
+        submissionId:
+          type: string
+          description: Unique identifier of the submission.
+        exerciseId:
+          type:
+            - string
+            - "null"
+          description: >
+            Optional identifier of the exercise this submission belongs to.
+        content:
+          type: object
+          additionalProperties: true
+          description: >
+            Logical representation of the submission content. Its structure is
+            defined by the exercise type (e.g., text answer, code files, model
+            representation).
+        submittedAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+          description: Timestamp when the submission was created.
+        version:
+          type:
+            - integer
+            - "null"
+          format: int32
+          description: Version number of the submission (e.g., for resubmissions).
+        totalScore:
+          type:
+            - number
+            - "null"
+          format: double
+          description: >
+            Overall score already assigned to this submission, if any. May be
+            omitted or null for formative feedback only.
+
+    LearnerProfile:
+      type: object
+      description: >
+        Optional learner preferences that can be used to adapt the style and
+        level of detail of the generated feedback.
+      required:
+        - detailPreference
+        - tonePreference
+      properties:
+        detailPreference:
+          $ref: '#/components/schemas/FeedbackDetailPreference'
+        tonePreference:
+          $ref: '#/components/schemas/FeedbackTonePreference'
+        languagePreference:
+          type:
+            - string
+            - "null"
+          description: >
+            Preferred language code (e.g. 'en', 'de'). If null, the system may
+            choose a default language.
+
+    GradingCriterion:
+      type: object
+      description: >
+        A grading criterion describing one dimension along which the submission
+        is assessed (e.g., correctness, style, argumentation).
+      required:
+        - criterionId
+        - name
+      properties:
+        criterionId:
+          type: string
+          description: Unique identifier of the grading criterion.
+        name:
+          type: string
+          description: Human-readable name of the criterion.
+        description:
+          type:
+            - string
+            - "null"
+          description: Detailed description of the criterion.
+        maxPoints:
+          type:
+            - number
+            - "null"
+          format: double
+          description: >
+            Maximum number of points that can be awarded for this criterion.
+            May be omitted if the feedback is purely qualitative.
+
+    Feedback:
+      type: object
+      description: >
+        A single feedback item produced for the submission. May contain a
+        textual message, an optional suggested action, and optionally points
+        awarded under a given grading criterion, and/or a target within the
+        submission.
+      required:
+        - feedbackId
+        - message
+      properties:
+        feedbackId:
+          type: string
+          description: Unique identifier of the feedback item.
+        title:
+          type:
+            - string
+            - "null"
+          description: Short summary or label for this feedback item.
+        message:
+          type: string
+          description: Main feedback text shown to the student.
+        suggestedAction:
+          type:
+            - string
+            - "null"
+          description: >
+            Optional suggestion for how the learner can act on this feedback
+            (e.g., "Split this method into smaller functions.").
+        awardedPoints:
+          type:
+            - number
+            - "null"
+          format: double
+          description: >
+            Points awarded for the part of the submission referenced by this
+            feedback item. Null for purely formative feedback.
+        gradingCriterion:
+          description: >
+            The grading criterion under which this feedback item is evaluated,
+            if any.
+          anyOf:
+            - $ref: '#/components/schemas/GradingCriterion'
+            - type: "null"
+        target:
+          description: >
+            Optional reference to a specific part of the submission that this
+            feedback item refers to (e.g., a text span, a code region, a model
+            element).
+          anyOf:
+            - $ref: '#/components/schemas/FeedbackTarget'
+            - type: "null"
+
+    FeedbackTarget:
+      type: object
+      description: >
+        Optional reference to a specific part of the submission that this
+        feedback item refers to. The interpretation of 'locator' depends on
+        'artefactType' and the structure of the submission content.
+      required:
+        - artefactType
+      properties:
+        artefactType:
+          $ref: '#/components/schemas/ArtefactType'
+        locator:
+          description: >
+            Opaque locator structure used to identify the relevant fragment
+            within the submission content. Examples: character offsets for
+            text, file + line range for code, element id for models.
+          anyOf:
+            - type: object
+              additionalProperties: true
+            - type: "null"
+
+    # ====== Enums ======
+
+    ArtefactType:
+      type: string
+      description: Type of artefact within the submission that the feedback refers to.
+      enum:
+        - TEXT
+        - CODE
+        - MODEL
+        - MATH
+        - OTHER
+
+    FeedbackDetailPreference:
+      type: string
+      description: Level of detail preferred by the learner.
+      enum:
+        - BRIEF
+        - MEDIUM
+        - DETAILED
+
+    FeedbackTonePreference:
+      type: string
+      description: Preferred tone for feedback messages.
+      enum:
+        - FORMAL
+        - NEUTRAL
+        - FRIENDLY
