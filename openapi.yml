@@ -51,6 +51,17 @@ paths:
                     submittedAt: "2025-12-16T09:30:00Z"
                     version: 1
                   customConfig: null
+              previewExample:
+                summary: Perform preview evaluation (non-final)
+                value:
+                  submission:
+                    submissionId: "sub-777"
+                    exerciseId: "ex-42"
+                    content:
+                      type: "TEXT"
+                      text: "My short answer..."
+                  preview: true
+                  customConfig: null
               withExtras:
                 summary: With learner profile, criteria and custom kwargs
                 value:
@@ -127,6 +138,68 @@ paths:
             The server does not support the evaluation method. This allows
             service providers to implement only subsets of the µEd API.
 
+  /evaluation/health:
+    get:
+      summary: Health and capabilities of the evaluation service
+      operationId: getEvaluationHealth
+      description: >
+        Returns health information and capabilities of this evaluation service.
+        Clients can use this endpoint to discover whether the service supports
+        optional features such as preview evaluation, formative feedback, and
+        summative feedback.
+      tags:
+        - evaluation
+      responses:
+        '200':
+          description: Evaluation service is reachable and reporting capabilities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluationHealthResponse'
+              examples:
+                exampleHealth:
+                  summary: Example healthy service with capabilities
+                  value:
+                    status: "ok"
+                    message: "Service healthy"
+                    version: "1.0.0"
+                    capabilities:
+                      supportsEvaluation: true
+                      supportsPreviewEvaluation: false
+                      supportsFormativeFeedback: true
+                      supportsSummativeFeedback: true
+                      supportedArtefactTypes:
+                        - "TEXT"
+                        - "CODE"
+                        - "MODEL"
+                      supportedLanguages:
+                        - "en"
+                        - "de"
+        '503':
+          description: Evaluation service is currently unavailable or unhealthy.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluationHealthResponse'
+              examples:
+                exampleUnhealthy:
+                  summary: Example degraded / unavailable service
+                  value:
+                    status: "unavailable"
+                    message: "Database connection failed"
+                    version: "1.0.0"
+                    capabilities:
+                      supportsEvaluation: false
+                      supportsPreviewEvaluation: false
+                      supportsFormativeFeedback: false
+                      supportsSummativeFeedback: false
+                      supportedArtefactTypes: []
+                      supportedLanguages: []
+        '501':
+          description: >
+            The server does not implement the health endpoint for evaluation.
+            This allows providers to implement only parts of the µEd API.
+
 
   /chat:
     post:
@@ -149,8 +222,8 @@ components:
     EvaluationRequest:
       type: object
       description: >
-        Input for task evaluation. The submission is mandatory; the learner
-        profile, grading criteria, and customConfig are optional.
+        Input for task evaluation. The submission is mandatory; learner
+        profile, grading criteria, preview mode, and customConfig are optional.
       required:
         - submission
       properties:
@@ -173,6 +246,13 @@ components:
               items:
                 $ref: '#/components/schemas/GradingCriterion'
             - type: "null"
+        preview:
+          type: boolean
+          description: >
+            If true, the evaluation is performed in preview mode. A preview
+            evaluation provides feedback without committing or finalizing any
+            awarded points. If false or omitted, a normal evaluation is performed.
+          default: false
         customConfig:
           description: >
             Optional key-value configuration dictionary that allows clients to
@@ -181,6 +261,87 @@ components:
             - type: object
               additionalProperties: true
             - type: "null"
+
+    EvaluationHealthResponse:
+      type: object
+      description: >
+        Health status and capabilities of the evaluation service. This allows
+        clients to discover which optional features are supported and whether
+        the service is currently healthy.
+      required:
+        - status
+        - capabilities
+      properties:
+        status:
+          type: string
+          description: Overall health status of the evaluation service.
+          enum:
+            - ok
+            - degraded
+            - unavailable
+        message:
+          type:
+            - string
+            - "null"
+          description: Optional human-readable status message.
+        version:
+          type:
+            - string
+            - "null"
+          description: Version of the evaluation service implementation.
+        capabilities:
+          $ref: '#/components/schemas/EvaluationCapabilities'
+
+    EvaluationCapabilities:
+      type: object
+      description: >
+        Capabilities of the evaluation service. Each flag indicates whether
+        a given feature is supported. Lists may be empty if not applicable.
+      required:
+        - supportsEvaluation
+        - supportsPreviewEvaluation
+        - supportsFormativeFeedback
+        - supportsSummativeFeedback
+      properties:
+        supportsEvaluation:
+          type: boolean
+          description: >
+            Indicates whether the /evaluation endpoint is implemented and usable.
+        supportsPreviewEvaluation:
+          type: boolean
+          description: >
+            Indicates whether the service supports a "preview" mode for evaluation
+            (e.g., a future endpoint or parameter to get feedback without committing
+            grades). This spec does not yet standardize the preview API itself.
+        supportsFormativeFeedback:
+          type: boolean
+          description: >
+            Indicates whether the service supports purely formative feedback
+            (qualitative comments without awarded points).
+        supportsSummativeFeedback:
+          type: boolean
+          description: >
+            Indicates whether the service supports summative feedback with
+            awarded points / grading signals.
+        supportedArtefactTypes:
+          type:
+            - array
+            - "null"
+          description: >
+            List of artefact types that this evaluation service can handle.
+            If null or empty, the supported types are unspecified.
+          items:
+            $ref: '#/components/schemas/ArtefactType'
+        supportedLanguages:
+          type:
+            - array
+            - "null"
+          description: >
+            List of language codes (e.g., 'en', 'de') that this service
+            explicitly supports for feedback messages. If null or empty,
+            language support is unspecified.
+          items:
+            type: string
 
     # ====== Core domain types ======
 
