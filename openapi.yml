@@ -24,7 +24,6 @@ tags:
   - name: chat
     description: Conversational endpoints for educational dialogue.
 
-
 paths:
   /evaluation:
     post:
@@ -32,7 +31,8 @@ paths:
       operationId: evaluateSubmission
       description: >
         Generates a list of feedback items for a given student submission.
-        Learner profiles and grading criteria are optional inputs.
+        The request can optionally include the task/problem description,
+        learner profile, and grading criteria.
       tags:
         - evaluation
       requestBody:
@@ -65,17 +65,25 @@ paths:
                       text: "My short answer..."
                   preview: true
                   customConfig: null
-              withExtras:
-                summary: With learner profile, criteria and custom kwargs
+              withTaskAndExtras:
+                summary: With task description, learner profile, criteria and custom config
                 value:
+                  task:
+                    taskId: "t-12"
+                    title: "Explain polymorphism"
+                    description: "Define polymorphism and give at least one example in Java."
+                    learningObjectives:
+                      - "Explain the concept of polymorphism."
+                      - "Provide an example of subtype polymorphism in Java."
+                    referenceSolution:
+                      type: "TEXT"
+                      text: "Polymorphism allows the same method call to result in different behavior depending on the object's runtime type. For example, a variable of type Shape can reference a Circle or Rectangle, and calling draw() will invoke the appropriate implementation."
                   submission:
                     submissionId: "sub-456"
                     exerciseId: "ex-99"
                     content:
-                      type: "CODE"
-                      files:
-                        - path: "Main.java"
-                          content: "public class Main { ... }"
+                      type: "TEXT"
+                      text: "Polymorphism means that an object can take many forms, for example subclasses implementing methods differently."
                     submittedAt: "2025-12-16T10:00:00Z"
                     version: 2
                     totalScore: null
@@ -86,12 +94,13 @@ paths:
                   gradingCriteria:
                     - criterionId: "crit-1"
                       name: "Correctness"
-                      description: "The solution produces correct results for the specified problem."
+                      description: "The explanation of polymorphism is conceptually correct."
                       maxPoints: 10
                     - criterionId: "crit-2"
-                      name: "Code Quality"
-                      description: "The code is readable, well-structured, and follows style guidelines."
+                      name: "Clarity"
+                      description: "The explanation is clear, well-structured, and easy to understand."
                       maxPoints: 5
+                  preview: false
                   customConfig:
                     model: "gpt-5-edu"
                     temperature: 0.2
@@ -148,8 +157,8 @@ paths:
       description: >
         Returns health information and capabilities of this evaluation service.
         Clients can use this endpoint to discover whether the service supports
-        optional features such as preview evaluation, formative feedback, and
-        summative feedback.
+        optional features such as preview evaluation, formative feedback,
+        and summative feedback.
       tags:
         - evaluation
       responses:
@@ -203,7 +212,6 @@ paths:
             The server does not implement the health endpoint for evaluation.
             This allows providers to implement only parts of the µEd API.
 
-
   /chat:
     post:
       summary: Chat about tasks, submissions, or learning topics
@@ -217,7 +225,6 @@ paths:
       tags:
         - chat
 
-
 components:
   schemas:
 
@@ -225,11 +232,20 @@ components:
     EvaluationRequest:
       type: object
       description: >
-        Input for task evaluation. The submission is mandatory; learner
-        profile, grading criteria, preview mode, and customConfig are optional.
+        Input for task evaluation. The submission is mandatory; task/problem
+        description, learner profile, grading criteria, preview mode, and
+        customConfig are optional.
       required:
         - submission
       properties:
+        task:
+          description: >
+            Optional task or problem description that provides context for the
+            evaluation. This may include the prompt, instructions, constraints,
+            or learning objectives relevant for assessing the submission.
+          anyOf:
+            - $ref: '#/components/schemas/Task'
+            - type: "null"
         submission:
           $ref: '#/components/schemas/Submission'
         learnerProfile:
@@ -314,8 +330,7 @@ components:
           type: boolean
           description: >
             Indicates whether the service supports a "preview" mode for evaluation
-            (e.g., a future endpoint or parameter to get feedback without committing
-            grades). This spec does not yet standardize the preview API itself.
+            (e.g., via the preview flag in EvaluationRequest).
         supportsFormativeFeedback:
           type: boolean
           description: >
@@ -347,6 +362,61 @@ components:
             type: string
 
     # ====== Core domain types ======
+
+    Task:
+      type: object
+      description: >
+        Description of the task or problem that the learner was asked to solve.
+        This may include the prompt, instructions, learning objectives, a
+        reference solution, or other contextual information needed for
+        evaluation.
+      required:
+        - taskId
+        - title
+      properties:
+        taskId:
+          type: string
+          description: Unique identifier for the task or problem.
+        title:
+          type: string
+          description: Short title or label for the task.
+        description:
+          type:
+            - string
+            - "null"
+          description: >
+            Full problem statement or assignment text shown to the student.
+        instructions:
+          type:
+            - string
+            - "null"
+          description: >
+            Optional instructions or constraints for solving the task.
+        learningObjectives:
+          type:
+            - array
+            - "null"
+          description: >
+            Optional list of learning objectives addressed by this task.
+          items:
+            type: string
+        referenceSolution:
+          description: >
+            Optional reference or example solution for this task. The structure
+            is intentionally generic and should mirror the exercise's content
+            model (e.g., text answer, code files, model representation).
+          anyOf:
+            - type: object
+              additionalProperties: true
+            - type: "null"
+        metadata:
+          type:
+            - object
+            - "null"
+          description: >
+            Optional metadata specific to the task, such as difficulty, topic,
+            or tags.
+          additionalProperties: true
 
     Submission:
       type: object
