@@ -40,7 +40,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EvaluationRequest'
+              $ref: "#/components/schemas/EvaluationRequest"
             examples:
               simpleTextSubmission:
                 summary: Simple text submission without learner profile or criteria
@@ -106,14 +106,14 @@ paths:
                     temperature: 0.2
                     enforceRubricStrictness: true
       responses:
-        '200':
+        "200":
           description: Successfully generated feedback
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Feedback'
+                  $ref: "#/components/schemas/Feedback"
               examples:
                 exampleResponse:
                   summary: Example feedback response
@@ -141,11 +141,11 @@ paths:
                       awardedPoints: null
                       gradingCriterion: null
                       target: null
-        '400':
+        "400":
           description: Invalid request (e.g. missing submission content or invalid schema)
-        '500':
+        "500":
           description: Internal server error
-        '501':
+        "501":
           description: >
             The server does not support the evaluation method. This allows
             service providers to implement only subsets of the µEd API.
@@ -162,12 +162,12 @@ paths:
       tags:
         - evaluation
       responses:
-        '200':
+        "200":
           description: Evaluation service is reachable and reporting capabilities.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EvaluationHealthResponse'
+                $ref: "#/components/schemas/EvaluationHealthResponse"
               examples:
                 exampleHealth:
                   summary: Example healthy service with capabilities
@@ -187,12 +187,12 @@ paths:
                       supportedLanguages:
                         - "en"
                         - "de"
-        '503':
+        "503":
           description: Evaluation service is currently unavailable or unhealthy.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EvaluationHealthResponse'
+                $ref: "#/components/schemas/EvaluationHealthResponse"
               examples:
                 exampleUnhealthy:
                   summary: Example degraded / unavailable service
@@ -207,7 +207,7 @@ paths:
                       supportsSummativeFeedback: false
                       supportedArtefactTypes: []
                       supportedLanguages: []
-        '501':
+        "501":
           description: >
             The server does not implement the health endpoint for evaluation.
             This allows providers to implement only parts of the µEd API.
@@ -227,7 +227,6 @@ paths:
 
 components:
   schemas:
-
     # ====== Request wrapper ======
     EvaluationRequest:
       type: object
@@ -244,16 +243,16 @@ components:
             evaluation. This may include the prompt, instructions, constraints,
             or learning objectives relevant for assessing the submission.
           anyOf:
-            - $ref: '#/components/schemas/Task'
+            - $ref: "#/components/schemas/Task"
             - type: "null"
         submission:
-          $ref: '#/components/schemas/Submission'
+          $ref: "#/components/schemas/Submission"
         learnerProfile:
           description: >
             Optional learner preferences that can influence the style and
             detail of the generated feedback.
           anyOf:
-            - $ref: '#/components/schemas/LearnerProfile'
+            - $ref: "#/components/schemas/LearnerProfile"
             - type: "null"
         gradingCriteria:
           description: >
@@ -263,7 +262,7 @@ components:
           anyOf:
             - type: array
               items:
-                $ref: '#/components/schemas/GradingCriterion'
+                $ref: "#/components/schemas/GradingCriterion"
             - type: "null"
         preview:
           type: boolean
@@ -309,7 +308,7 @@ components:
             - "null"
           description: Version of the evaluation service implementation.
         capabilities:
-          $ref: '#/components/schemas/EvaluationCapabilities'
+          $ref: "#/components/schemas/EvaluationCapabilities"
 
     EvaluationCapabilities:
       type: object
@@ -349,7 +348,7 @@ components:
             List of artefact types that this evaluation service can handle.
             If null or empty, the supported types are unspecified.
           items:
-            $ref: '#/components/schemas/ArtefactType'
+            $ref: "#/components/schemas/ArtefactType"
         supportedLanguages:
           type:
             - array
@@ -474,9 +473,9 @@ components:
         - tonePreference
       properties:
         detailPreference:
-          $ref: '#/components/schemas/FeedbackDetailPreference'
+          $ref: "#/components/schemas/FeedbackDetailPreference"
         tonePreference:
-          $ref: '#/components/schemas/FeedbackTonePreference'
+          $ref: "#/components/schemas/FeedbackTonePreference"
         languagePreference:
           type:
             - string
@@ -556,7 +555,7 @@ components:
             The grading criterion under which this feedback item is evaluated,
             if any.
           anyOf:
-            - $ref: '#/components/schemas/GradingCriterion'
+            - $ref: "#/components/schemas/GradingCriterion"
             - type: "null"
         target:
           description: >
@@ -564,7 +563,7 @@ components:
             feedback item refers to (e.g., a text span, a code region, a model
             element).
           anyOf:
-            - $ref: '#/components/schemas/FeedbackTarget'
+            - $ref: "#/components/schemas/FeedbackTarget"
             - type: "null"
 
     FeedbackTarget:
@@ -577,7 +576,7 @@ components:
         - artefactType
       properties:
         artefactType:
-          $ref: '#/components/schemas/ArtefactType'
+          $ref: "#/components/schemas/ArtefactType"
         locator:
           description: >
             Opaque locator structure used to identify the relevant fragment
