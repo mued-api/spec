@@ -217,13 +217,88 @@ paths:
       summary: Chat about tasks, submissions, or learning topics
       operationId: chat
       description: >
-        Conversational endpoint for educational chat use cases. A conversation
-        can be grounded in a specific exercise or submission, and may optionally
-        use a learner profile to adapt tone and detail. Typical use cases
-        include: asking follow-up questions on feedback, requesting hints,
-        or clarifying concepts.
+        Conversational endpoint for educational chat use cases. A conversation can be 
+        grounded in a specific course, exercise or submission and may use a learner profile to adapt tone and detail.
+        Typical use cases include: asking follow-up questions on feedback, requesting hints, or clarifying concepts.
       tags:
         - chat
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: false
+          description: Optional authorization header
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatRequest"
+      responses:
+        "200":
+          description: Successful chat response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatResponse"
+        "400":
+          description: Invalid request (e.g. missing messages list or conversation id, or invalid schema)
+        "500":
+          description: Internal server error- possible issues with LLM service
+
+  /chat/health:
+    get:
+      summary: Health and capabilities of the chat service
+      operationId: getChatHealth
+      description: >
+        Returns health information and capabilities of this chat service.
+        Clients can use this endpoint to discover whether the service supports
+        optional features such as learner profiles or streaming responses.
+      tags:
+        - chat
+      responses:
+        "200":
+          description: Chat service is reachable and reporting capabilities.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatHealthResponse"
+              examples:
+                exampleHealth:
+                  summary: Example healthy service with capabilities
+                  value:
+                    status: "ok"
+                    message: "Service healthy"
+                    version: "1.0.0"
+                    capabilities:
+                      supportsChat: true
+                      supportsLearnerProfiles: true
+                      supportsStreaming: true
+                      supportedModels:
+                        - "gpt-4o"
+                        - "llama-3"
+        "503":
+          description: Chat service is currently unavailable or unhealthy.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatHealthResponse"
+              examples:
+                exampleUnhealthy:
+                  summary: Example degraded / unavailable service
+                  value:
+                    status: "unavailable"
+                    message: "LLM provider connection failed"
+                    version: "1.0.0"
+                    capabilities:
+                      supportsChat: false
+                      supportsLearnerProfiles: false
+                      supportsStreaming: false
+                      supportedModels: []
+        "501":
+          description: >
+            The server does not implement the health endpoint for chat.
 
 components:
   schemas:
@@ -279,6 +354,102 @@ components:
             - type: object
               additionalProperties: true
             - type: "null"
+
+    ChatRequest:
+      type: object
+      description: Request body for the chat endpoint.
+      required:
+        - messages
+        - conversationId
+      properties:
+        messages:
+          type: array
+          description: List of messages in the conversation (including history).
+          items:
+            $ref: "#/components/schemas/Message"
+        conversationId:
+          type: string
+          description: Unique identifier for the conversation session.
+        learnerProfile:
+          $ref: "#/components/schemas/LearnerProfile"
+          description: (optional) Profile to adapt the chat style and level.
+        context:
+          type: object
+          description: (optional) Educational context (e.g., course content, student progress on specific topic).
+          properties:
+            courseContent:
+              type: object
+            questionContent:
+              type: object
+            studentProgress:
+              type: object
+          additionalProperties: true
+        configuration:
+          type: object
+          description: (optional) Technical configuration for the model.
+          properties:
+            model:
+              type: string
+              description: The specific model to use (e.g., 'gpt-4o', 'llama-3').
+            temperature:
+              type: number
+              description: Sampling temperature.
+            maxTokens:
+              type: integer
+              description: Max tokens to generate.
+            stream:
+              type: boolean
+              description: Whether to stream the response.
+
+    ChatResponse:
+      type: object
+      description: Response body for the chat endpoint.
+      required:
+        - response
+      properties:
+        response:
+          $ref: "#/components/schemas/Message"
+          description: The generated response message.
+        reasoning:
+          type: string
+          description: (optional) Reasoning trace / chain-of-thought.
+        usage:
+          type: object
+          description: (optional) Token usage statistics.
+          properties:
+            inputTokens:
+              type: integer
+            outputTokens:
+              type: integer
+            totalTokens:
+              type: integer
+        metadata:
+          type: object
+          description: (optional) Metadata about the response generation.
+          properties:
+            processingTime:
+              type: number
+              description: Time taken to generate the response (in seconds).
+            finishReason:
+              type: string
+              description: >
+                The reason why the model stopped generating tokens. 
+                Values: 'stop' (natural completion), 'length' (hit max token limit), 
+                'content_filter' (flagged by safety filters), 'tool_calls' (model invoked a tool).
+              enum: [stop, length, content_filter, tool_calls]
+          additionalProperties: true
+
+    Message:
+      type: object
+      required:
+        - role
+        - content
+      properties:
+        role:
+          type: string
+          enum: [user, assistant, system, tool]
+        content:
+          type: string
 
     EvaluationHealthResponse:
       type: object
@@ -359,6 +530,56 @@ components:
             language support is unspecified.
           items:
             type: string
+
+    ChatHealthResponse:
+      type: object
+      description: >
+        Health status and capabilities of the chat service.
+      required:
+        - status
+        - capabilities
+      properties:
+        status:
+          type: string
+          description: Overall health status of the chat service.
+          enum:
+            - ok
+            - degraded
+            - unavailable
+        message:
+          type:
+            - string
+            - "null"
+          description: Optional human-readable status message.
+        version:
+          type:
+            - string
+            - "null"
+          description: Version of the chat service implementation.
+        capabilities:
+          $ref: "#/components/schemas/ChatCapabilities"
+
+    ChatCapabilities:
+      type: object
+      description: >
+        Capabilities of the chat service.
+      required:
+        - supportsChat
+      properties:
+        supportsChat:
+          type: boolean
+          description: Indicates whether the /chat endpoint is implemented and usable.
+        supportsLearnerProfiles:
+          type: boolean
+          description: Indicates whether the service supports adapting to learner profiles.
+        supportsStreaming:
+          type: boolean
+          description: Indicates whether the service supports streaming responses.
+        supportedModels:
+          type: array
+          items:
+            type: string
+          description: List of supported models.
 
     # ====== Core domain types ======
 
