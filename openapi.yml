@@ -380,7 +380,7 @@ components:
           properties:
             courseContent:
               type: object
-            questionContent:
+            taskContent:
               type: object
           additionalProperties: true
         configuration:
