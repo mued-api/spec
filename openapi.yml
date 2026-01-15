@@ -386,11 +386,20 @@ components:
           additionalProperties: true
         configuration:
           type: object
-          description: Technical configuration for the model.
+          description: Configuration for the model(s).
           properties:
             model:
               type: string
-              description: The specific model to use (e.g., 'gpt-4o', 'llama-3').
+              description: The specific model to use (e.g., 'gpt-4o', 'llama-3') or name.
+            credentials:
+              type:
+                - object
+                - string
+                - "null"
+              description: >
+                Credentials or API keys required to access the
+                specified model/chat service.
+              additionalProperties: true
             temperature:
               type: number
               description: Sampling temperature.
@@ -400,14 +409,7 @@ components:
             stream:
               type: boolean
               description: Whether to stream the response.
-        customConfig:
-          description: >
-            Key-value configuration dictionary that allows clients to
-            provide provider-specific or experimental parameters. Not standardized.
-          type:
-            - object
-            - "null"
-          additionalProperties: true
+            additionalProperties: true
 
     ChatResponse:
       type: object
@@ -810,13 +812,12 @@ components:
             Optional reference to a specific part of the submission that this
             feedback item refers to (e.g., a text span, a code region, a model
             element).
-          type:
-            - object
-            - "null"
           $ref: "#/components/schemas/FeedbackTarget"
 
     FeedbackTarget:
-      type: object
+      type:
+        - object
+        - "null"
       description: >
         Optional reference to a specific part of the submission that this
         feedback item refers to. The interpretation of 'locator' depends on
