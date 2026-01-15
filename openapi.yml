@@ -245,7 +245,7 @@ paths:
         "400":
           description: Invalid request (e.g. missing messages list or conversation id, or invalid schema)
         "500":
-          description: Internal server error- possible issues with LLM service
+          description: Internal server error - possible issues with LLM service
 
   /chat/health:
     get:
@@ -384,6 +384,7 @@ components:
           properties:
             courseContent:
               type: object
+              additionalProperties: true
             taskContent:
               type: object
               additionalProperties: true
