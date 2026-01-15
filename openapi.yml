@@ -730,7 +730,9 @@ components:
           additionalProperties: true
 
     GradingCriterion:
-      type: object
+      type:
+        - object
+        - "null"
       description: >
         A grading criterion describing one dimension along which the submission
         is assessed (e.g., correctness, style, argumentation).
