@@ -321,9 +321,10 @@ components:
             Optional task or problem description that provides context for the
             evaluation. This may include the prompt, instructions, constraints,
             or learning objectives relevant for assessing the submission.
-          anyOf:
-            - $ref: "#/components/schemas/Task"
-            - type: "null"
+          type:
+            - object
+            - "null"
+          $ref: "#/components/schemas/Task"
         submission:
           $ref: "#/components/schemas/Submission"
         learnerProfile:
@@ -336,11 +337,11 @@ components:
             Optional list of grading criteria that structure the assessment.
             If omitted or null, feedback may still be generated in a purely
             qualitative manner.
-          anyOf:
-            - type: array
-              items:
-                $ref: "#/components/schemas/GradingCriterion"
-            - type: "null"
+          type:
+            - array
+            - "null"
+          items:
+            $ref: "#/components/schemas/GradingCriterion"
         preview:
           type: boolean
           description: >
@@ -352,10 +353,10 @@ components:
           description: >
             Optional key-value configuration dictionary that allows clients to
             provide provider-specific or experimental parameters. Not standardized.
-          anyOf:
-            - type: object
-              additionalProperties: true
-            - type: "null"
+          type:
+            - object
+            - "null"
+          additionalProperties: true
 
     ChatRequest:
       type: object
@@ -638,10 +639,10 @@ components:
             Optional reference or example solution for this task. The structure
             is intentionally generic and should mirror the exercise's content
             model (e.g., text answer, code files, model representation).
-          anyOf:
-            - type: object
-              additionalProperties: true
-            - type: "null"
+          type:
+            - object
+            - "null"
+          additionalProperties: true
         metadata:
           type:
             - object
@@ -798,17 +799,19 @@ components:
           description: >
             The grading criterion under which this feedback item is evaluated,
             if any.
-          anyOf:
-            - $ref: "#/components/schemas/GradingCriterion"
-            - type: "null"
+          type:
+            - object
+            - "null"
+          $ref: "#/components/schemas/GradingCriterion"
         target:
           description: >
             Optional reference to a specific part of the submission that this
             feedback item refers to (e.g., a text span, a code region, a model
             element).
-          anyOf:
-            - $ref: "#/components/schemas/FeedbackTarget"
-            - type: "null"
+          type:
+            - object
+            - "null"
+          $ref: "#/components/schemas/FeedbackTarget"
 
     FeedbackTarget:
       type: object
@@ -826,10 +829,10 @@ components:
             Opaque locator structure used to identify the relevant fragment
             within the submission content. Examples: character offsets for
             text, file + line range for code, element id for models.
-          anyOf:
-            - type: object
-              additionalProperties: true
-            - type: "null"
+          type:
+            - object
+            - "null"
+          additionalProperties: true
 
     # ====== Enums ======
 
