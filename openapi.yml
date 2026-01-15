@@ -321,17 +321,18 @@ components:
             Optional task or problem description that provides context for the
             evaluation. This may include the prompt, instructions, constraints,
             or learning objectives relevant for assessing the submission.
-          type:
-            - object
-            - "null"
-          $ref: "#/components/schemas/Task"
+          anyOf:
+            - $ref: "#/components/schemas/Task"
+            - type: "null"
         submission:
           $ref: "#/components/schemas/Submission"
         learnerProfile:
           description: >
             Optional learner preferences that can influence the style and
             detail of the generated feedback.
-          $ref: "#/components/schemas/LearnerProfile"
+          anyOf:
+            - $ref: "#/components/schemas/LearnerProfile"
+            - type: "null"
         gradingCriteria:
           description: >
             Optional list of grading criteria that structure the assessment.
@@ -374,7 +375,9 @@ components:
           description: Unique identifier for the conversation session to allow for history of the chatbot's instance.
         learnerProfile:
           description: Profile to adapt the chat style and level.
-          $ref: "#/components/schemas/LearnerProfile"
+          anyOf:
+            - $ref: "#/components/schemas/LearnerProfile"
+            - type: "null"
         context:
           type: object
           description: Educational context (e.g., course content, student progress on specific topic).
@@ -383,6 +386,8 @@ components:
               type: object
             taskContent:
               type: object
+              additionalProperties: true
+            additionalProperties: true
           additionalProperties: true
         configuration:
           type: object
@@ -701,9 +706,7 @@ components:
             omitted or null for formative feedback only.
 
     LearnerProfile:
-      type:
-        - object
-        - "null"
+      type: object
       description: >
         Optional learner preferences that can be used to adapt the style and
         level of detail of the generated feedback.
@@ -732,9 +735,7 @@ components:
           additionalProperties: true
 
     GradingCriterion:
-      type:
-        - object
-        - "null"
+      type: object
       description: >
         A grading criterion describing one dimension along which the submission
         is assessed (e.g., correctness, style, argumentation).
@@ -803,21 +804,20 @@ components:
           description: >
             The grading criterion under which this feedback item is evaluated,
             if any.
-          type:
-            - object
-            - "null"
-          $ref: "#/components/schemas/GradingCriterion"
+          anyOf:
+            - $ref: "#/components/schemas/GradingCriterion"
+            - type: "null"
         target:
           description: >
             Optional reference to a specific part of the submission that this
             feedback item refers to (e.g., a text span, a code region, a model
             element).
-          $ref: "#/components/schemas/FeedbackTarget"
+          anyOf:
+            - $ref: "#/components/schemas/FeedbackTarget"
+            - type: "null"
 
     FeedbackTarget:
-      type:
-        - object
-        - "null"
+      type: object
       description: >
         Optional reference to a specific part of the submission that this
         feedback item refers to. The interpretation of 'locator' depends on
