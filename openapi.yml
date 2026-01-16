@@ -217,13 +217,92 @@ paths:
       summary: Chat about tasks, submissions, or learning topics
       operationId: chat
       description: >
-        Conversational endpoint for educational chat use cases. A conversation
-        can be grounded in a specific exercise or submission, and may optionally
-        use a learner profile to adapt tone and detail. Typical use cases
-        include: asking follow-up questions on feedback, requesting hints,
-        or clarifying concepts.
+        Conversational endpoint for educational chat use cases. A conversation can be 
+        grounded in a specific course, exercise or submission and may use a learner profile to adapt tone and detail.
+        Typical use cases include: asking follow-up questions on feedback, requesting hints, or clarifying concepts.
       tags:
         - chat
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: false
+          description: Optional authorization header
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatRequest"
+      responses:
+        "200":
+          description: Successful chat response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatResponse"
+        "400":
+          description: Invalid request (e.g. missing messages list or conversation id, or invalid schema)
+        "500":
+          description: Internal server error - possible issues with LLM service
+
+  /chat/health:
+    get:
+      summary: Health and capabilities of the chat service
+      operationId: getChatHealth
+      description: >
+        Returns health information and capabilities of this chat service.
+        Clients can use this endpoint to discover whether the service supports
+        optional features such as learner profiles or streaming responses.
+      tags:
+        - chat
+      responses:
+        "200":
+          description: Chat service is reachable and reporting capabilities.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatHealthResponse"
+              examples:
+                exampleHealth:
+                  summary: Example healthy service with capabilities
+                  value:
+                    status: "ok"
+                    statusMessage: "Service healthy"
+                    version: "1.0.0"
+                    capabilities:
+                      supportsChat: true
+                      supportsLearnerProfiles: true
+                      supportsStreaming: true
+                      supportedLanguages:
+                        - "en"
+                        - "de"
+                      supportedModels:
+                        - "gpt-4o"
+                        - "llama-3"
+        "503":
+          description: Chat service is currently unavailable or unhealthy.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatHealthResponse"
+              examples:
+                exampleUnhealthy:
+                  summary: Example degraded / unavailable service
+                  value:
+                    status: "unavailable"
+                    statusMessage: "LLM provider connection failed"
+                    version: "1.0.0"
+                    capabilities:
+                      supportsChat: false
+                      supportsLearnerProfiles: false
+                      supportsStreaming: false
+                      supportedLanguages: []
+                      supportedModels: []
+        "501":
+          description: >
+            The server does not implement the health endpoint for chat.
 
 components:
   schemas:
@@ -259,11 +338,11 @@ components:
             Optional list of grading criteria that structure the assessment.
             If omitted or null, feedback may still be generated in a purely
             qualitative manner.
-          anyOf:
-            - type: array
-              items:
-                $ref: "#/components/schemas/GradingCriterion"
-            - type: "null"
+          type:
+            - array
+            - "null"
+          items:
+            $ref: "#/components/schemas/GradingCriterion"
         preview:
           type: boolean
           description: >
@@ -275,10 +354,114 @@ components:
           description: >
             Optional key-value configuration dictionary that allows clients to
             provide provider-specific or experimental parameters. Not standardized.
+          type:
+            - object
+            - "null"
+          additionalProperties: true
+
+    ChatRequest:
+      type: object
+      description: Request body for the chat endpoint.
+      required:
+        - messages
+      properties:
+        messages:
+          type: array
+          description: List of messages in the conversation (including history).
+          items:
+            $ref: "#/components/schemas/Message"
+        conversationId:
+          type: string
+          description: Unique identifier for the conversation session to allow for history of the chatbot's instance.
+        learnerProfile:
+          description: Profile to adapt the chat style and level.
           anyOf:
-            - type: object
-              additionalProperties: true
+            - $ref: "#/components/schemas/LearnerProfile"
             - type: "null"
+        context:
+          type: object
+          description: Educational context (e.g., course content, student progress on specific topic).
+          properties:
+            courseContent:
+              type: object
+              additionalProperties: true
+            taskContent:
+              type: object
+              additionalProperties: true
+            additionalProperties: true
+          additionalProperties: true
+        configuration:
+          type: object
+          description: Configuration for the model(s).
+          properties:
+            model:
+              type: string
+              description: The specific model to use (e.g., 'gpt-4o', 'llama-3') or name.
+            credentials:
+              type:
+                - object
+                - string
+                - "null"
+              description: >
+                Credentials or API keys required to access the
+                specified model/chat service.
+              additionalProperties: true
+            temperature:
+              type: number
+              description: Sampling temperature.
+            maxTokens:
+              type: integer
+              description: Max tokens to generate.
+            stream:
+              type: boolean
+              description: Whether to stream the response.
+            additionalProperties: true
+
+    ChatResponse:
+      type: object
+      description: Response body for the chat endpoint.
+      required:
+        - response
+      properties:
+        response:
+          $ref: "#/components/schemas/Message"
+          description: The generated response message.
+        reasoning:
+          type: string
+          description: The model's reasoning trace / chain-of-thought.
+        metadata:
+          type: object
+          description: Metadata about the model's response generation.
+          properties:
+            inputTokens:
+              type: integer
+            outputTokens:
+              type: integer
+            totalTokens:
+              type: integer
+            processingTime:
+              type: number
+              description: Time taken to generate the response (in seconds).
+            finishReason:
+              type: string
+              description: >
+                The reason why the model stopped generating tokens. 
+                Values: 'stop' (natural completion), 'length' (hit max token limit), 
+                'content_filter' (flagged by safety filters), 'tool_calls' (model invoked a tool).
+              enum: [stop, length, content_filter, tool_calls]
+            additionalProperties: true
+
+    Message:
+      type: object
+      required:
+        - role
+        - content
+      properties:
+        role:
+          type: string
+          enum: [user, assistant, system, tool]
+        content:
+          type: string
 
     EvaluationHealthResponse:
       type: object
@@ -360,6 +543,66 @@ components:
           items:
             type: string
 
+    ChatHealthResponse:
+      type: object
+      description: >
+        Health status and capabilities of the chat service.
+      required:
+        - status
+        - capabilities
+      properties:
+        status:
+          type: string
+          description: Overall health status of the chat service.
+          enum:
+            - ok
+            - degraded
+            - unavailable
+        statusMessage:
+          type:
+            - string
+            - "null"
+          description: Optional human-readable status message.
+        version:
+          type:
+            - string
+            - "null"
+          description: Version of the chat service implementation.
+        capabilities:
+          $ref: "#/components/schemas/ChatCapabilities"
+
+    ChatCapabilities:
+      type: object
+      description: >
+        Capabilities of the chat service.
+      required:
+        - supportsChat
+      properties:
+        supportsChat:
+          type: boolean
+          description: Indicates whether the /chat endpoint is implemented and usable.
+        supportsLearnerProfiles:
+          type: boolean
+          description: Indicates whether the service supports adapting to learner profiles.
+        supportsStreaming:
+          type: boolean
+          description: Indicates whether the service supports streaming responses.
+        supportedLanguages:
+          type:
+            - array
+            - "null"
+          description: >
+            List of language codes (e.g., 'en', 'de') that this service
+            explicitly supports for feedback messages. If null or empty,
+            language support is unspecified.
+          items:
+            type: string
+        supportedModels:
+          type: array
+          items:
+            type: string
+          description: List of supported models.
+
     # ====== Core domain types ======
 
     Task:
@@ -404,10 +647,10 @@ components:
             Optional reference or example solution for this task. The structure
             is intentionally generic and should mirror the exercise's content
             model (e.g., text answer, code files, model representation).
-          anyOf:
-            - type: object
-              additionalProperties: true
-            - type: "null"
+          type:
+            - object
+            - "null"
+          additionalProperties: true
         metadata:
           type:
             - object
@@ -483,6 +726,14 @@ components:
           description: >
             Preferred language code (e.g. 'en', 'de'). If null, the system may
             choose a default language.
+        taskProgress:
+          type:
+            - object
+            - "null"
+          description: >
+            Information about the learner's progress on the task or
+            related topics.
+          additionalProperties: true
 
     GradingCriterion:
       type: object
@@ -582,10 +833,10 @@ components:
             Opaque locator structure used to identify the relevant fragment
             within the submission content. Examples: character offsets for
             text, file + line range for code, element id for models.
-          anyOf:
-            - type: object
-              additionalProperties: true
-            - type: "null"
+          type:
+            - object
+            - "null"
+          additionalProperties: true
 
     # ====== Enums ======
 
