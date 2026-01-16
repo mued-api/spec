@@ -16,7 +16,7 @@ info:
     <br><br>
     Future endpoints (TBD): <br>
     - **Task/content generation** <br>
-    - **Learning analytics / data analysis**
+    - **Task/content recommendation**
 
 tags:
   - name: evaluation
@@ -149,7 +149,7 @@ paths:
                       message: "Your explanation of polymorphism is generally correct, but it would help to distinguish between subtype polymorphism and parametric polymorphism."
                       suggestedAction: "Add one or two concrete examples of polymorphism in Java, e.g., method overriding."
                       awardedPoints: 2.5
-                      gradingCriterion:
+                      criterion:
                         criterionId: "crit-1"
                         name: "Correctness"
                         description: "The solution produces correct results for the specified problem."
@@ -165,7 +165,7 @@ paths:
                       message: "The overall structure of your answer is clear and easy to follow."
                       suggestedAction: null
                       awardedPoints: null
-                      gradingCriterion: null
+                      criterion: null
                       target: null
         "400":
           description: Invalid request (e.g. missing content or invalid schema).
