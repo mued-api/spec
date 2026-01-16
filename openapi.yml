@@ -363,6 +363,7 @@ paths:
 
 components:
   schemas:
+    # --- Endpoint request/response wrappers ---
     EvaluationRequest:
       type: object
       description: >
@@ -423,17 +424,6 @@ components:
               allOf:
                 - $ref: "#/components/schemas/LLMConfiguration"
 
-    PreSubmissionFeedback:
-      type: object
-      description: Optional configuration for pre-submission feedback runs.
-      required:
-        - enabled
-      properties:
-        enabled:
-          type: boolean
-          description: Indicates whether pre-submission feedback is requested.
-      additionalProperties: true
-
     ChatRequest:
       type: object
       description: Request body for the chat endpoint.
@@ -478,40 +468,6 @@ components:
               allOf:
                 - $ref: "#/components/schemas/LLMConfiguration"
 
-    LLMConfiguration:
-      type: object
-      description: >
-        Optional configuration for an LLM provider. All fields are optional and
-        provider-specific values may be included via additional properties.
-      additionalProperties: true
-      properties:
-        model:
-          type:
-            - string
-            - "null"
-          description: Optional model identifier (e.g., 'gpt-4o', 'llama-3').
-        temperature:
-          type:
-            - number
-            - "null"
-          description: Optional sampling temperature.
-        maxTokens:
-          type:
-            - integer
-            - "null"
-          description: Optional maximum number of tokens to generate.
-        stream:
-          type:
-            - boolean
-            - "null"
-          description: Optional flag indicating whether streaming responses are requested.
-        credentials:
-          type:
-            - object
-            - "null"
-          description: Optional credentials object (e.g., API keys, tokens).
-          additionalProperties: true
-
     ChatResponse:
       type: object
       description: Response body for the chat endpoint.
@@ -528,18 +484,7 @@ components:
           description: Optional metadata about response generation.
           additionalProperties: true
 
-    Message:
-      type: object
-      required:
-        - role
-        - content
-      properties:
-        role:
-          type: string
-          enum: [user, assistant, system, tool]
-        content:
-          type: string
-
+    # --- Health responses + subtypes ---
     EvaluationHealthResponse:
       type: object
       description: Health status and capabilities of the evaluation service.
@@ -593,7 +538,6 @@ components:
             - boolean
             - "null"
           description: Optional flag indicating whether configuration.llm.credentials must be provided.
-
 
     EvaluationCapabilities:
       type: object
@@ -684,6 +628,53 @@ components:
           items:
             type: string
 
+    # --- Shared configuration objects ---
+    LLMConfiguration:
+      type: object
+      description: >
+        Optional configuration for an LLM provider. All fields are optional and
+        provider-specific values may be included via additional properties.
+      additionalProperties: true
+      properties:
+        model:
+          type:
+            - string
+            - "null"
+          description: Optional model identifier (e.g., 'gpt-4o', 'llama-3').
+        temperature:
+          type:
+            - number
+            - "null"
+          description: Optional sampling temperature.
+        maxTokens:
+          type:
+            - integer
+            - "null"
+          description: Optional maximum number of tokens to generate.
+        stream:
+          type:
+            - boolean
+            - "null"
+          description: Optional flag indicating whether streaming responses are requested.
+        credentials:
+          type:
+            - object
+            - "null"
+          description: Optional credentials object (e.g., API keys, tokens).
+          additionalProperties: true
+
+    PreSubmissionFeedback:
+      type: object
+      description: Optional configuration for pre-submission feedback runs.
+      required:
+        - enabled
+      properties:
+        enabled:
+          type: boolean
+          description: Indicates whether pre-submission feedback is requested.
+      additionalProperties: true
+
+    # --- Core domain objects ---
     Task:
       type: object
       description: >
@@ -864,7 +855,6 @@ components:
           allOf:
             - $ref: "#/components/schemas/FeedbackTarget"
 
-
     FeedbackTarget:
       type: object
       description: Optional reference to a specific part of the submission.
@@ -881,6 +871,19 @@ components:
             text, file + line range for code, element id for models.'
           additionalProperties: true
 
+    Message:
+      type: object
+      required:
+        - role
+        - content
+      properties:
+        role:
+          type: string
+          enum: [user, assistant, system, tool]
+        content:
+          type: string
+
+    # --- Enums ---
     ArtefactType:
       type: string
       description: Type of artefact within the submission that feedback refers to.
