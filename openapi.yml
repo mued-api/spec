@@ -25,16 +25,23 @@ tags:
     description: Conversational endpoints for educational dialogue.
 
 paths:
-  /evaluation:
+  /evaluate:
     post:
       summary: Evaluate a submission and generate feedback
       operationId: evaluateSubmission
       description: >
         Generates a list of feedback items for a given student submission.
-        The request can optionally include the task/problem description,
-        learner profile, and grading criteria.
+        The request can optionally include the task context, learner profile,
+        evaluation criteria, pre-submission feedback options, and configuration.
       tags:
         - evaluation
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: false
+          description: Optional authorization header.
       requestBody:
         required: true
         content:
@@ -47,67 +54,86 @@ paths:
                 value:
                   submission:
                     submissionId: "sub-123"
-                    exerciseId: "ex-42"
+                    taskId: "task-42"
+                    type: "TEXT"
                     content:
-                      type: "TEXT"
                       text: "Explain what polymorphism is in object-oriented programming."
                     submittedAt: "2025-12-16T09:30:00Z"
                     version: 1
-                  customConfig: null
-              previewExample:
-                summary: Perform preview evaluation (non-final)
+                  configuration: null
+
+              preSubmissionFeedbackExample:
+                summary: Pre-submission feedback (non-final)
                 value:
                   submission:
                     submissionId: "sub-777"
-                    exerciseId: "ex-42"
+                    taskId: "task-42"
+                    type: "TEXT"
                     content:
-                      type: "TEXT"
                       text: "My short answer..."
-                  preview: true
-                  customConfig: null
+                  preSubmissionFeedback:
+                    enabled: true
+                  configuration:
+                    llm:
+                      model: "gpt-5.2"
+                      temperature: 0.4
+
               withTaskAndExtras:
-                summary: With task description, learner profile, criteria and custom config
+                summary: With task context, learner profile, criteria and configuration
                 value:
                   task:
-                    taskId: "t-12"
+                    taskId: "task-12"
                     title: "Explain polymorphism"
-                    description: "Define polymorphism and give at least one example in Java."
+                    content:
+                      text: "Define polymorphism and give at least one example in Java."
                     learningObjectives:
                       - "Explain the concept of polymorphism."
                       - "Provide an example of subtype polymorphism in Java."
                     referenceSolution:
-                      type: "TEXT"
-                      text: "Polymorphism allows the same method call to result in different behavior depending on the object's runtime type. For example, a variable of type Shape can reference a Circle or Rectangle, and calling draw() will invoke the appropriate implementation."
+                      text: >
+                        Polymorphism allows the same method call to result in different behavior
+                        depending on the object's runtime type. For example, a variable of type
+                        Shape can reference a Circle or Rectangle, and calling draw() will invoke
+                        the appropriate implementation.
+                    context:
+                      constraints: "Answer in 3-6 sentences."
+                      language: "en"
                   submission:
                     submissionId: "sub-456"
-                    exerciseId: "ex-99"
+                    taskId: "task-12"
+                    type: "TEXT"
                     content:
-                      type: "TEXT"
-                      text: "Polymorphism means that an object can take many forms, for example subclasses implementing methods differently."
+                      text: >
+                        Polymorphism means that an object can take many forms, for example
+                        subclasses implementing methods differently.
                     submittedAt: "2025-12-16T10:00:00Z"
                     version: 2
-                    totalScore: null
                   learnerProfile:
                     detailPreference: DETAILED
                     tonePreference: FRIENDLY
                     languagePreference: "en"
-                  gradingCriteria:
+                  criteria:
                     - criterionId: "crit-1"
                       name: "Correctness"
-                      description: "The explanation of polymorphism is conceptually correct."
+                      context: "The explanation of polymorphism is conceptually correct."
                       maxPoints: 10
                     - criterionId: "crit-2"
                       name: "Clarity"
-                      description: "The explanation is clear, well-structured, and easy to understand."
+                      context: "The explanation is clear, well-structured, and easy to understand."
                       maxPoints: 5
-                  preview: false
-                  customConfig:
-                    model: "gpt-5-edu"
-                    temperature: 0.2
+                  preSubmissionFeedback:
+                    enabled: false
+                  configuration:
+                    llm:
+                      model: "gpt-5.2"
+                      temperature: 0.2
+                      maxTokens: 800
+                      credentials:
+                        apiKey: "OPENAI_API_KEY"
                     enforceRubricStrictness: true
       responses:
         "200":
-          description: Successfully generated feedback
+          description: Successfully generated feedback.
           content:
             application/json:
               schema:
@@ -142,22 +168,22 @@ paths:
                       gradingCriterion: null
                       target: null
         "400":
-          description: Invalid request (e.g. missing submission content or invalid schema)
+          description: Invalid request (e.g. missing content or invalid schema).
         "500":
-          description: Internal server error
+          description: Internal server error.
         "501":
           description: >
-            The server does not support the evaluation method. This allows
+            The server does not support the evaluate method. This allows
             service providers to implement only subsets of the µEd API.
 
-  /evaluation/health:
+  /evaluate/health:
     get:
       summary: Health and capabilities of the evaluation service
       operationId: getEvaluationHealth
       description: >
-        Returns health information and capabilities of this evaluation service.
+        Returns health information and capabilities of the evaluation service.
         Clients can use this endpoint to discover whether the service supports
-        optional features such as preview evaluation, formative feedback,
+        optional features such as pre-submission feedback, formative feedback,
         and summative feedback.
       tags:
         - evaluation
@@ -208,18 +234,17 @@ paths:
                       supportedArtefactTypes: []
                       supportedLanguages: []
         "501":
-          description: >
-            The server does not implement the health endpoint for evaluation.
-            This allows providers to implement only parts of the µEd API.
+          description: The server does not implement the health endpoint for evaluation.
 
   /chat:
     post:
       summary: Chat about tasks, submissions, or learning topics
       operationId: chat
       description: >
-        Conversational endpoint for educational chat use cases. A conversation can be 
-        grounded in a specific course, exercise or submission and may use a learner profile to adapt tone and detail.
-        Typical use cases include: asking follow-up questions on feedback, requesting hints, or clarifying concepts.
+        Conversational endpoint for educational chat use cases. A conversation can be
+        grounded in a specific course, task or submission and may use a learner profile
+        to adapt tone and detail. Typical use cases include: asking follow-up questions
+        on feedback, requesting hints, or clarifying concepts.
       tags:
         - chat
       parameters:
@@ -228,31 +253,64 @@ paths:
           schema:
             type: string
           required: false
-          description: Optional authorization header
+          description: Optional authorization header.
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/ChatRequest"
+            examples:
+              minimalChat:
+                summary: Minimal chat request
+                value:
+                  messages:
+                    - role: user
+                      content: "Can you explain polymorphism?"
+                  configuration: null
+
+              chatWithLlmConfig:
+                summary: Chat request with optional LLM configuration
+                value:
+                  conversationId: "conv-1001"
+                  learnerProfile:
+                    detailPreference: MEDIUM
+                    tonePreference: FRIENDLY
+                    languagePreference: "en"
+                  messages:
+                    - role: user
+                      content: "Give me a hint for my answer about polymorphism."
+                  context:
+                    task:
+                      taskId: "task-12"
+                      title: "Explain polymorphism"
+                      content:
+                        text: "Define polymorphism and give at least one example in Java."
+                  configuration:
+                    llm:
+                      model: "gpt-5.2"
+                      temperature: 0.7
+                      stream: false
+                      credentials:
+                        apiKey: "OPENAI_API_KEY"
       responses:
         "200":
-          description: Successful chat response
+          description: Successful chat response.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ChatResponse"
         "400":
-          description: Invalid request (e.g. missing messages list or conversation id, or invalid schema)
+          description: Invalid request (e.g. missing messages or invalid schema).
         "500":
-          description: Internal server error - possible issues with LLM service
+          description: Internal server error (e.g. model provider issues).
 
   /chat/health:
     get:
       summary: Health and capabilities of the chat service
       operationId: getChatHealth
       description: >
-        Returns health information and capabilities of this chat service.
+        Returns health information and capabilities of the chat service.
         Clients can use this endpoint to discover whether the service supports
         optional features such as learner profiles or streaming responses.
       tags:
@@ -301,63 +359,80 @@ paths:
                       supportedLanguages: []
                       supportedModels: []
         "501":
-          description: >
-            The server does not implement the health endpoint for chat.
+          description: The server does not implement the health endpoint for chat.
 
 components:
   schemas:
-    # ====== Request wrapper ======
     EvaluationRequest:
       type: object
       description: >
-        Input for task evaluation. The submission is mandatory; task/problem
-        description, learner profile, grading criteria, preview mode, and
-        customConfig are optional.
+        Input for task evaluation. The submission is mandatory; task,
+        learner profile, criteria, pre-submission feedback options, and
+        configuration are optional.
       required:
         - submission
       properties:
         task:
           description: >
-            Optional task or problem description that provides context for the
-            evaluation. This may include the prompt, instructions, constraints,
-            or learning objectives relevant for assessing the submission.
-          anyOf:
+            Optional task context that can include prompt content, learning objectives,
+            a reference solution, and additional context metadata.
+          type:
+            - object
+            - "null"
+          allOf:
             - $ref: "#/components/schemas/Task"
-            - type: "null"
         submission:
           $ref: "#/components/schemas/Submission"
         learnerProfile:
-          description: >
-            Optional learner preferences that can influence the style and
-            detail of the generated feedback.
-          anyOf:
+          description: Optional learner preferences that can influence tone, detail, and language.
+          type:
+            - object
+            - "null"
+          allOf:
             - $ref: "#/components/schemas/LearnerProfile"
-            - type: "null"
-        gradingCriteria:
-          description: >
-            Optional list of grading criteria that structure the assessment.
-            If omitted or null, feedback may still be generated in a purely
-            qualitative manner.
+        criteria:
           type:
             - array
             - "null"
+          description: Optional criteria used for evaluation.
           items:
-            $ref: "#/components/schemas/GradingCriterion"
-        preview:
-          type: boolean
+            $ref: "#/components/schemas/Criterion"
+        preSubmissionFeedback:
           description: >
-            If true, the evaluation is performed in preview mode. A preview
-            evaluation provides feedback without committing or finalizing any
-            awarded points. If false or omitted, a normal evaluation is performed.
-          default: false
-        customConfig:
+            Optional settings for pre-submission feedback (non-final). When enabled,
+            the service should avoid committing or finalizing grades.
+          type:
+            - object
+            - "null"
+          allOf:
+            - $ref: "#/components/schemas/PreSubmissionFeedback"
+        configuration:
           description: >
-            Optional key-value configuration dictionary that allows clients to
-            provide provider-specific or experimental parameters. Not standardized.
+            Optional key-value configuration dictionary for provider-specific or
+            experimental parameters. Not standardized.
           type:
             - object
             - "null"
           additionalProperties: true
+          properties:
+            llm:
+              description: Optional LLM configuration used for this request.
+              type:
+                - object
+                - "null"
+              allOf:
+                - $ref: "#/components/schemas/LLMConfiguration"
+
+    PreSubmissionFeedback:
+      type: object
+      description: Optional configuration for pre-submission feedback runs.
+      required:
+        - enabled
+      properties:
+        enabled:
+          type: boolean
+          description: Indicates whether pre-submission feedback is requested.
+      additionalProperties: true
 
     ChatRequest:
       type: object
@@ -371,51 +446,71 @@ components:
           items:
             $ref: "#/components/schemas/Message"
         conversationId:
-          type: string
-          description: Unique identifier for the conversation session to allow for history of the chatbot's instance.
+          type:
+            - string
+            - "null"
+          description: Optional identifier for the conversation session.
         learnerProfile:
-          description: Profile to adapt the chat style and level.
-          anyOf:
+          description: Optional profile to adapt the chat style and level.
+          type:
+            - object
+            - "null"
+          allOf:
             - $ref: "#/components/schemas/LearnerProfile"
-            - type: "null"
         context:
-          type: object
-          description: Educational context (e.g., course content, student progress on specific topic).
-          properties:
-            courseContent:
-              type: object
-              additionalProperties: true
-            taskContent:
-              type: object
-              additionalProperties: true
-            additionalProperties: true
+          type:
+            - object
+            - "null"
+          description: Optional educational context (e.g., course material, task context).
           additionalProperties: true
         configuration:
-          type: object
-          description: Configuration for the model(s).
+          type:
+            - object
+            - "null"
+          description: Optional configuration for the model(s).
+          additionalProperties: true
           properties:
-            model:
-              type: string
-              description: The specific model to use (e.g., 'gpt-4o', 'llama-3') or name.
-            credentials:
+            llm:
+              description: Optional LLM configuration used for this request.
               type:
                 - object
-                - string
                 - "null"
-              description: >
-                Credentials or API keys required to access the
-                specified model/chat service.
-              additionalProperties: true
-            temperature:
-              type: number
-              description: Sampling temperature.
-            maxTokens:
-              type: integer
-              description: Max tokens to generate.
-            stream:
-              type: boolean
-              description: Whether to stream the response.
-            additionalProperties: true
+              allOf:
+                - $ref: "#/components/schemas/LLMConfiguration"
+
+    LLMConfiguration:
+      type: object
+      description: >
+        Optional configuration for an LLM provider. All fields are optional and
+        provider-specific values may be included via additional properties.
+      additionalProperties: true
+      properties:
+        model:
+          type:
+            - string
+            - "null"
+          description: Optional model identifier (e.g., 'gpt-4o', 'llama-3').
+        temperature:
+          type:
+            - number
+            - "null"
+          description: Optional sampling temperature.
+        maxTokens:
+          type:
+            - integer
+            - "null"
+          description: Optional maximum number of tokens to generate.
+        stream:
+          type:
+            - boolean
+            - "null"
+          description: Optional flag indicating whether streaming responses are requested.
+        credentials:
+          type:
+            - object
+            - "null"
+          description: Optional credentials object (e.g., API keys, tokens).
+          additionalProperties: true
 
     ChatResponse:
       type: object
@@ -425,31 +520,13 @@ components:
       properties:
         response:
           $ref: "#/components/schemas/Message"
-          description: The generated response message.
-        reasoning:
-          type: string
-          description: The model's reasoning trace / chain-of-thought.
+          description: The generated assistant response.
         metadata:
-          type: object
-          description: Metadata about the model's response generation.
-          properties:
-            inputTokens:
-              type: integer
-            outputTokens:
-              type: integer
-            totalTokens:
-              type: integer
-            processingTime:
-              type: number
-              description: Time taken to generate the response (in seconds).
-            finishReason:
-              type: string
-              description: >
-                The reason why the model stopped generating tokens. 
-                Values: 'stop' (natural completion), 'length' (hit max token limit), 
-                'content_filter' (flagged by safety filters), 'tool_calls' (model invoked a tool).
-              enum: [stop, length, content_filter, tool_calls]
-            additionalProperties: true
+          type:
+            - object
+            - "null"
+          description: Optional metadata about response generation.
+          additionalProperties: true
 
     Message:
       type: object
@@ -465,10 +542,7 @@ components:
 
     EvaluationHealthResponse:
       type: object
-      description: >
-        Health status and capabilities of the evaluation service. This allows
-        clients to discover which optional features are supported and whether
-        the service is currently healthy.
+      description: Health status and capabilities of the evaluation service.
       required:
         - status
         - capabilities
@@ -476,10 +550,7 @@ components:
         status:
           type: string
           description: Overall health status of the evaluation service.
-          enum:
-            - ok
-            - degraded
-            - unavailable
+          enum: [ok, degraded, unavailable]
         message:
           type:
             - string
@@ -489,15 +560,44 @@ components:
           type:
             - string
             - "null"
-          description: Version of the evaluation service implementation.
+          description: Optional version of the evaluation service implementation.
+        requirements:
+          type:
+            - object
+            - "null"
+          description: Optional requirements clients must satisfy to use this service.
+          allOf:
+            - $ref: "#/components/schemas/EvaluationRequirements"
         capabilities:
           $ref: "#/components/schemas/EvaluationCapabilities"
 
-    EvaluationCapabilities:
+    EvaluationRequirements:
       type: object
       description: >
-        Capabilities of the evaluation service. Each flag indicates whether
-        a given feature is supported. Lists may be empty if not applicable.
+        Requirements for calling the evaluation endpoint, e.g. whether an
+        Authorization header and/or LLM configuration or credentials are required.
+      additionalProperties: true
+      properties:
+        requiresAuthorizationHeader:
+          type:
+            - boolean
+            - "null"
+          description: Optional flag indicating whether an Authorization header is required.
+        requiresLlmConfiguration:
+          type:
+            - boolean
+            - "null"
+          description: Optional flag indicating whether configuration.llm must be provided.
+        requiresLlmCredentials:
+          type:
+            - boolean
+            - "null"
+          description: Optional flag indicating whether configuration.llm.credentials must be provided.
+
+
+    EvaluationCapabilities:
+      type: object
+      description: Capabilities of the evaluation service.
       required:
         - supportsEvaluation
         - supportsPreviewEvaluation
@@ -506,58 +606,41 @@ components:
       properties:
         supportsEvaluation:
           type: boolean
-          description: >
-            Indicates whether the /evaluation endpoint is implemented and usable.
+          description: Indicates whether the /evaluate endpoint is implemented and usable.
         supportsPreviewEvaluation:
           type: boolean
-          description: >
-            Indicates whether the service supports a "preview" mode for evaluation
-            (e.g., via the preview flag in EvaluationRequest).
+          description: Indicates whether the service supports pre-submission feedback runs.
         supportsFormativeFeedback:
           type: boolean
-          description: >
-            Indicates whether the service supports purely formative feedback
-            (qualitative comments without awarded points).
+          description: Indicates whether the service supports qualitative feedback without points.
         supportsSummativeFeedback:
           type: boolean
-          description: >
-            Indicates whether the service supports summative feedback with
-            awarded points / grading signals.
+          description: Indicates whether the service supports feedback with points / grading signals.
         supportedArtefactTypes:
           type:
             - array
             - "null"
-          description: >
-            List of artefact types that this evaluation service can handle.
-            If null or empty, the supported types are unspecified.
+          description: Optional list of supported artefact types.
           items:
             $ref: "#/components/schemas/ArtefactType"
         supportedLanguages:
           type:
             - array
             - "null"
-          description: >
-            List of language codes (e.g., 'en', 'de') that this service
-            explicitly supports for feedback messages. If null or empty,
-            language support is unspecified.
+          description: Optional list of supported language codes (e.g., 'en', 'de').
           items:
             type: string
 
     ChatHealthResponse:
       type: object
-      description: >
-        Health status and capabilities of the chat service.
+      description: Health status and capabilities of the chat service.
       required:
         - status
         - capabilities
       properties:
         status:
           type: string
-          description: Overall health status of the chat service.
-          enum:
-            - ok
-            - degraded
-            - unavailable
+          enum: [ok, degraded, unavailable]
         statusMessage:
           type:
             - string
@@ -567,14 +650,13 @@ components:
           type:
             - string
             - "null"
-          description: Version of the chat service implementation.
+          description: Optional version of the chat service implementation.
         capabilities:
           $ref: "#/components/schemas/ChatCapabilities"
 
     ChatCapabilities:
       type: object
-      description: >
-        Capabilities of the chat service.
+      description: Capabilities of the chat service.
       required:
         - supportsChat
       properties:
@@ -591,126 +673,104 @@ components:
           type:
             - array
             - "null"
-          description: >
-            List of language codes (e.g., 'en', 'de') that this service
-            explicitly supports for feedback messages. If null or empty,
-            language support is unspecified.
+          description: Optional list of supported language codes.
           items:
             type: string
         supportedModels:
-          type: array
+          type:
+            - array
+            - "null"
+          description: Optional list of supported models.
           items:
             type: string
-          description: List of supported models.
-
-    # ====== Core domain types ======
 
     Task:
       type: object
       description: >
-        Description of the task or problem that the learner was asked to solve.
-        This may include the prompt, instructions, learning objectives, a
-        reference solution, or other contextual information needed for
-        evaluation.
+        Task context including the content, learning objectives,
+        optional reference solution, optional context information, and optional metadata.
       required:
         - taskId
         - title
       properties:
         taskId:
           type: string
-          description: Unique identifier for the task or problem.
+          description: Unique identifier for the task.
         title:
           type: string
           description: Short title or label for the task.
-        description:
+        content:
           type:
-            - string
+            - object
             - "null"
-          description: >
-            Full problem statement or assignment text shown to the student.
-        instructions:
+          description: Optional content shown to the learner (structure is task-specific).
+          additionalProperties: true
+        context:
           type:
-            - string
+            - object
             - "null"
-          description: >
-            Optional instructions or constraints for solving the task.
+          description: Optional educational context (e.g., course material).
+          additionalProperties: true
         learningObjectives:
           type:
             - array
             - "null"
-          description: >
-            Optional list of learning objectives addressed by this task.
+          description: Optional list of learning objectives addressed by this task.
           items:
             type: string
         referenceSolution:
-          description: >
-            Optional reference or example solution for this task. The structure
-            is intentionally generic and should mirror the exercise's content
-            model (e.g., text answer, code files, model representation).
           type:
             - object
             - "null"
+          description: Optional reference or example solution (structure is task-specific).
           additionalProperties: true
         metadata:
           type:
             - object
             - "null"
-          description: >
-            Optional metadata specific to the task, such as difficulty, topic,
-            or tags.
+          description: Optional metadata such as difficulty, topic, tags, etc.
           additionalProperties: true
 
     Submission:
       type: object
       description: >
-        A student's submission for an exercise. The structure of 'content' is
-        intentionally generic and exercise/tool-specific.
+        A student's submission for a task. The structure of 'content' is intentionally
+        generic and task-specific.
       required:
         - submissionId
+        - type
         - content
       properties:
         submissionId:
           type: string
           description: Unique identifier of the submission.
-        exerciseId:
+        taskId:
           type:
             - string
             - "null"
-          description: >
-            Optional identifier of the exercise this submission belongs to.
+          description: Optional identifier of the task this submission belongs to.
+        type:
+          $ref: "#/components/schemas/ArtefactType"
         content:
           type: object
           additionalProperties: true
-          description: >
-            Logical representation of the submission content. Its structure is
-            defined by the exercise type (e.g., text answer, code files, model
-            representation).
+          description: Logical representation of the submission content.
         submittedAt:
           type:
             - string
             - "null"
           format: date-time
-          description: Timestamp when the submission was created.
+          description: Optional timestamp when the submission was created.
         version:
           type:
             - integer
             - "null"
           format: int32
-          description: Version number of the submission (e.g., for resubmissions).
-        totalScore:
-          type:
-            - number
-            - "null"
-          format: double
-          description: >
-            Overall score already assigned to this submission, if any. May be
-            omitted or null for formative feedback only.
+          description: Optional version number (e.g., resubmissions).
 
     LearnerProfile:
       type: object
-      description: >
-        Optional learner preferences that can be used to adapt the style and
-        level of detail of the generated feedback.
+      description: Optional learner preferences influencing tone, detail, and language.
       required:
         - detailPreference
         - tonePreference
@@ -723,57 +783,47 @@ components:
           type:
             - string
             - "null"
-          description: >
-            Preferred language code (e.g. 'en', 'de'). If null, the system may
-            choose a default language.
+          description: Optional preferred language code (e.g., 'en', 'de').
         taskProgress:
           type:
             - object
             - "null"
-          description: >
-            Information about the learner's progress on the task or
-            related topics.
+          description: Optional information about the learner's progress on this task/topic.
           additionalProperties: true
 
-    GradingCriterion:
+    Criterion:
       type: object
-      description: >
-        A grading criterion describing one dimension along which the submission
-        is assessed (e.g., correctness, style, argumentation).
+      description: A criterion used to assess one dimension of a submission.
       required:
         - criterionId
         - name
       properties:
         criterionId:
           type: string
-          description: Unique identifier of the grading criterion.
+          description: Unique identifier of the criterion.
         name:
           type: string
           description: Human-readable name of the criterion.
-        description:
+        context:
           type:
             - string
             - "null"
-          description: Detailed description of the criterion.
+          description: Optional additional context about how to apply this criterion.
         maxPoints:
           type:
             - number
             - "null"
           format: double
-          description: >
-            Maximum number of points that can be awarded for this criterion.
-            May be omitted if the feedback is purely qualitative.
+          description: Optional maximum points for this criterion.
 
     Feedback:
       type: object
       description: >
-        A single feedback item produced for the submission. May contain a
-        textual message, an optional suggested action, and optionally points
-        awarded under a given grading criterion, and/or a target within the
-        submission.
+        A single feedback item produced for the submission. It may include
+        suggested actions, optional points, optional criterion linkage, and
+        optional targeting into the submission.
       required:
         - feedbackId
-        - message
       properties:
         feedbackId:
           type: string
@@ -782,86 +832,66 @@ components:
           type:
             - string
             - "null"
-          description: Short summary or label for this feedback item.
+          description: Optional short label for this feedback item.
         message:
-          type: string
-          description: Main feedback text shown to the student.
+          type:
+            - string
+            - "null"
+          description: Optional feedback text shown to the learner.
         suggestedAction:
           type:
             - string
             - "null"
-          description: >
-            Optional suggestion for how the learner can act on this feedback
-            (e.g., "Split this method into smaller functions.").
+          description: Optional suggestion for how to act on this feedback.
         awardedPoints:
           type:
             - number
             - "null"
           format: double
-          description: >
-            Points awarded for the part of the submission referenced by this
-            feedback item. Null for purely formative feedback.
-        gradingCriterion:
-          description: >
-            The grading criterion under which this feedback item is evaluated,
-            if any.
-          anyOf:
-            - $ref: "#/components/schemas/GradingCriterion"
-            - type: "null"
+          description: Optional points awarded for this feedback item.
+        criterion:
+          type:
+            - object
+            - "null"
+          description: Optional criterion linked to this feedback item.
+          allOf:
+            - $ref: "#/components/schemas/Criterion"
         target:
-          description: >
-            Optional reference to a specific part of the submission that this
-            feedback item refers to (e.g., a text span, a code region, a model
-            element).
-          anyOf:
+          type:
+            - object
+            - "null"
+          description: Optional target reference inside the submission.
+          allOf:
             - $ref: "#/components/schemas/FeedbackTarget"
-            - type: "null"
+
 
     FeedbackTarget:
       type: object
-      description: >
-        Optional reference to a specific part of the submission that this
-        feedback item refers to. The interpretation of 'locator' depends on
-        'artefactType' and the structure of the submission content.
+      description: Optional reference to a specific part of the submission.
       required:
         - artefactType
       properties:
         artefactType:
           $ref: "#/components/schemas/ArtefactType"
         locator:
-          description: >
-            Opaque locator structure used to identify the relevant fragment
-            within the submission content. Examples: character offsets for
-            text, file + line range for code, element id for models.
           type:
             - object
             - "null"
+          description: 'Optional opaque locator into the submission content. Examples: character offsets for
+            text, file + line range for code, element id for models.'
           additionalProperties: true
-
-    # ====== Enums ======
 
     ArtefactType:
       type: string
-      description: Type of artefact within the submission that the feedback refers to.
-      enum:
-        - TEXT
-        - CODE
-        - MODEL
-        - MATH
-        - OTHER
+      description: Type of artefact within the submission that feedback refers to.
+      enum: [TEXT, CODE, MODEL, MATH, OTHER]
 
     FeedbackDetailPreference:
       type: string
       description: Level of detail preferred by the learner.
-      enum:
-        - BRIEF
-        - MEDIUM
-        - DETAILED
+      enum: [BRIEF, MEDIUM, DETAILED]
 
     FeedbackTonePreference:
       type: string
       description: Preferred tone for feedback messages.
-      enum:
-        - FORMAL
-        - NEUTRAL
-        - FRIENDLY
+      enum: [FORMAL, NEUTRAL, FRIENDLY]
