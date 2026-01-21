@@ -1,10 +1,9 @@
 openapi: 3.1.0
 info:
   title: µEd API - Educational Microservices
-  version: 1.0.0
+  version: 0.1.0
   contact:
     name: µEd API Maintainers
-    url: https://github.com/maximiliansoelch/mEd-api
   description: >
     The µEd API ("microservices for education") is a specification
     for interoperable educational services.
@@ -681,12 +680,11 @@ components:
         Task context including the content, learning objectives,
         optional reference solution, optional context information, and optional metadata.
       required:
-        - taskId
         - title
       properties:
         taskId:
           type: string
-          description: Unique identifier for the task.
+          description: Optional unique identifier for the task.
         title:
           type: string
           description: Short title or label for the task.
@@ -728,13 +726,12 @@ components:
         A student's submission for a task. The structure of 'content' is intentionally
         generic and task-specific.
       required:
-        - submissionId
         - type
         - content
       properties:
         submissionId:
           type: string
-          description: Unique identifier of the submission.
+          description: Optional unique identifier of the submission.
         taskId:
           type:
             - string
@@ -786,12 +783,11 @@ components:
       type: object
       description: A criterion used to assess one dimension of a submission.
       required:
-        - criterionId
         - name
       properties:
         criterionId:
           type: string
-          description: Unique identifier of the criterion.
+          description: Optional unique identifier of the criterion.
         name:
           type: string
           description: Human-readable name of the criterion.
