@@ -292,6 +292,85 @@ paths:
                       stream: false
                       credentials:
                         apiKey: "OPENAI_API_KEY"
+              chatWithContext:
+                summary: Chat request with complex educational context
+                value:
+                  messages:
+                    - role: user
+                      content: "What should I do for this part?"
+                  learnerProfile:
+                    detailPreference: DETAILED
+                    tonePreference: NEUTRAL
+                    languagePreference: "en"
+                    taskProgress:
+                      currentQuestionId: "question-321"
+                      timeSpentOnQuestion: "30 minutes"
+                      currentPart:
+                        partId: "part-1"
+                        timeSpentOnPart: "10 minutes"
+                        submission:
+                          type: "TEXT"
+                          content:
+                            text: 'outputs= ["Woof!", "Meow!"]'
+                          feedback:
+                            - feedbackId: "fb-101"
+                              message: "Incomplete answer, explain why these outputs occur."
+                  context:
+                    module:
+                      moduleId: "module-456"
+                      title: "Introduction to Object-Oriented Programming (OOP)"
+                    set:
+                      setId: "set-789"
+                      title: "Fundamentals"
+                    question:
+                      questionId: "question-321"
+                      title: "Understanding Polymorphism"
+                      content: >
+                        Answer the questions for the following example of polymorphism in Python.
+
+                        ```python
+                        class Animal:
+                            def speak(self):
+                                pass
+
+                        class Dog(Animal):
+                            def speak(self):
+                                return "Woof!"
+
+                        class Cat(Animal):
+                            def speak(self):
+                                return "Meow!"
+
+                        animals = [Dog(), Cat()]
+                        for animal in animals:
+                            print(animal.speak())
+                        ```
+                      estimatedTime: "15-25 minutes"
+                      parts:
+                        - partId: "part-1"
+                          content: >
+                            Looking at the code example, identify which method is being overridden
+                            and explain how this demonstrates polymorphism. What output would the
+                            code produce and why?
+
+                        - partId: "part-2"
+                          content: >
+                            Write a new class called `Bird` that inherits from `Animal` and
+                            overrides the `speak()` method to return "Tweet!". Then add an
+                            instance of `Bird` to the animals list.
+                          referenceSolution:
+                            code: |
+                              class Bird(Animal):
+                                  def speak(self):
+                                      return "Tweet!"
+
+                              animals = [Dog(), Cat(), Bird()]
+                              for animal in animals:
+                                  print(animal.speak())
+                  configuration:
+                    llm:
+                      model: "gpt-5.2"
+                      temperature: 0.5
       responses:
         "200":
           description: Successful chat response.
@@ -778,6 +857,7 @@ components:
             - "null"
           description: Optional information about the learner's progress on this task/topic.
           additionalProperties: true
+        additionalProperties: true
 
     Criterion:
       type: object
@@ -863,8 +943,9 @@ components:
           type:
             - object
             - "null"
-          description: 'Optional opaque locator into the submission content. Examples: character offsets for
-            text, file + line range for code, element id for models.'
+          description:
+            "Optional opaque locator into the submission content. Examples: character offsets for
+            text, file + line range for code, element id for models."
           additionalProperties: true
 
     Message:
