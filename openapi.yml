@@ -1,10 +1,9 @@
 openapi: 3.1.0
 info:
   title: µEd API - Educational Microservices
-  version: 1.0.0
+  version: 0.1.0
   contact:
     name: µEd API Maintainers
-    url: https://github.com/maximiliansoelch/mEd-api
   description: >
     The µEd API ("microservices for education") is a specification
     for interoperable educational services.
