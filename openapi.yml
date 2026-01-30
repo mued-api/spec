@@ -15,7 +15,8 @@ info:
     <br><br>
     Future endpoints (TBD): <br>
     - **Task/content generation** <br>
-    - **Task/content recommendation**
+    - **Task/content recommendation** <br>
+    - **Learning analytics**
 
 tags:
   - name: evaluation
