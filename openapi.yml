@@ -152,7 +152,7 @@ paths:
                       criterion:
                         criterionId: "crit-1"
                         name: "Correctness"
-                        description: "The solution produces correct results for the specified problem."
+                        context: "The solution produces correct results for the specified problem."
                         maxPoints: 10
                       target:
                         artefactType: "TEXT"
@@ -163,10 +163,6 @@ paths:
                     - feedbackId: "fb-2"
                       title: "Overall structure"
                       message: "The overall structure of your answer is clear and easy to follow."
-                      suggestedAction: null
-                      awardedPoints: null
-                      criterion: null
-                      target: null
         "400":
           description: Invalid request (e.g. missing content or invalid schema).
         "500":
