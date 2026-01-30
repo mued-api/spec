@@ -15,7 +15,8 @@ info:
     <br><br>
     Future endpoints (TBD): <br>
     - **Task/content generation** <br>
-    - **Task/content recommendation**
+    - **Task/content recommendation** <br>
+    - **Learning analytics**
 
 tags:
   - name: evaluation
@@ -167,11 +168,6 @@ paths:
                     - feedbackId: "fb-2"
                       title: "Overall structure"
                       message: "The overall structure of your answer is clear and easy to follow."
-                      suggestedAction: null
-                      awardedPoints: null
-                      criterion: null
-                      target: null
-
         "400":
           description: Invalid request (e.g. missing content or invalid schema).
           headers:
