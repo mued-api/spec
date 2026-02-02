@@ -723,6 +723,7 @@ components:
           description: Optional list of supported language codes (e.g., 'en', 'de').
           items:
             type: string
+        additionalProperties: true
 
     ChatHealthResponse:
       type: object
@@ -776,6 +777,7 @@ components:
           description: Optional list of supported models.
           items:
             type: string
+        additionalProperties: true
 
     # --- Shared configuration objects ---
     LLMConfiguration:
@@ -953,8 +955,10 @@ components:
         context:
           type:
             - string
+            - object
             - "null"
           description: Optional additional context about how to apply this criterion.
+          additionalProperties: true
         maxPoints:
           type:
             - number
