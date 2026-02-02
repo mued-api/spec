@@ -287,6 +287,7 @@ paths:
                       content:
                         text: "Define polymorphism and give at least one example in Java."
                   configuration:
+                    type: "Java Assistant"
                     llm:
                       model: "gpt-5.2"
                       temperature: 0.7
@@ -371,6 +372,7 @@ paths:
                               for animal in animals:
                                   print(animal.speak())
                   configuration:
+                    type: "CS Assistant"
                     llm:
                       model: "gpt-5.2"
                       temperature: 0.5
@@ -381,6 +383,67 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ChatResponse"
+              examples:
+                minimalChatResponse:
+                  summary: Minimal chat response
+                  value:
+                    response:
+                      role: assistant
+                      content: >
+                        Polymorphism is a core concept in object-oriented programming that allows
+                        objects of different classes to be treated as objects of a common superclass.
+                        It enables a single interface to represent different underlying forms (data types).
+                        For example, in Java, you can have a superclass `Animal` with a method `speak()`,
+                        and subclasses like `Dog` and `Cat` that provide their own implementations of `speak()`.
+                        When you call `speak()` on an `Animal` reference, the appropriate subclass method is invoked
+                        based on the actual object type at runtime.
+                    metadata: null
+                chatWithLlmConfigResponse:
+                  summary: Chat response with LLM configuration
+                  value:
+                    response:
+                      role: assistant
+                      content: >
+                        Here's a hint for your answer about polymorphism: Focus on how polymorphism
+                        allows methods to do different things based on the object that it is acting upon,
+                        even when accessed through a common interface. You might want to mention method
+                        overriding and how it enables this behavior in object-oriented programming.
+                    metadata:
+                      responseTimeMs: 1800
+                      type: "Java Assistant"
+                      createdAt: "2025-12-10T11:15:00Z"
+                      llm:
+                        model: "gpt-5.2"
+                        temperature: 0.7
+                        outputTokens: 78
+                chatWithContextResponse:
+                  summary: Chat response with context
+                  value:
+                    response:
+                      role: assistant
+                      content: >
+                        In the provided code example, the `speak()` method is being overridden
+                        in the `Dog` and `Cat` subclasses of the `Animal` superclass. This demonstrates
+                        polymorphism because when we call `speak()` on each animal in the `animals` list,
+                        the method that gets executed depends on the actual object type (either `Dog` or `Cat`),
+                        not the reference type (`Animal`). The output of the code would be:
+
+                        ```
+                        Woof!
+                        Meow!
+                        ```
+
+                        This happens because each subclass provides its own implementation of the `speak()` method,
+                        and at runtime, the correct method is called based on the object's type.
+                    metadata:
+                      responseTimeMs: 2000
+                      type: "CS Assistant"
+                      createdAt: "2025-12-10T11:15:00Z"
+                      llm:
+                        model: "gpt-5.2"
+                        temperature: 0.5
+                        outputTokens: 143
+
         "400":
           description: Invalid request (e.g. missing messages or invalid schema).
         "500":
@@ -541,6 +604,11 @@ components:
           description: Optional configuration for the model(s).
           additionalProperties: true
           properties:
+            type:
+              type:
+                - string
+                - "null"
+              description: Optional type for the chatbot or chat model.
             llm:
               description: Optional LLM configuration used for this request.
               type:
