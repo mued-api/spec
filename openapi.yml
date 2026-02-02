@@ -397,13 +397,25 @@ paths:
                         and subclasses like `Dog` and `Cat` that provide their own implementations of `speak()`.
                         When you call `speak()` on an `Animal` reference, the appropriate subclass method is invoked
                         based on the actual object type at runtime.
+                    metadata: null
+                chatWithLlmConfigResponse:
+                  summary: Chat response with LLM configuration
+                  value:
+                    response:
+                      role: assistant
+                      content: >
+                        Here's a hint for your answer about polymorphism: Focus on how polymorphism
+                        allows methods to do different things based on the object that it is acting upon,
+                        even when accessed through a common interface. You might want to mention method
+                        overriding and how it enables this behavior in object-oriented programming.
                     metadata:
-                      responseTimeMs: 1500
+                      responseTimeMs: 1800
+                      type: "Java Assistant"
                       createdAt: "2025-12-10T11:15:00Z"
                       llm:
-                        model: gpt-5.2
-                        temperature: 0.5
-                        outputTokens: 121
+                        model: "gpt-5.2"
+                        temperature: 0.7
+                        outputTokens: 78
                 chatWithContextResponse:
                   summary: Chat response with context
                   value:
