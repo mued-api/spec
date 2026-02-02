@@ -599,7 +599,7 @@ components:
       type: object
       description: >
         Requirements for calling the evaluation endpoint, e.g. whether an
-        Authorization header and/or LLM configuration or credentials (provided via a proxy) are required.
+        Authorization header and/or LLM configuration or credentials (provided via a proxy, preferably time-based and/or signed tokens) are required.
       additionalProperties: true
       properties:
         requiresAuthorizationHeader:
