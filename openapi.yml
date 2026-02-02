@@ -383,6 +383,55 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ChatResponse"
+              examples:
+                minimalChatResponse:
+                  summary: Minimal chat response
+                  value:
+                    response:
+                      role: assistant
+                      content: >
+                        Polymorphism is a core concept in object-oriented programming that allows
+                        objects of different classes to be treated as objects of a common superclass.
+                        It enables a single interface to represent different underlying forms (data types).
+                        For example, in Java, you can have a superclass `Animal` with a method `speak()`,
+                        and subclasses like `Dog` and `Cat` that provide their own implementations of `speak()`.
+                        When you call `speak()` on an `Animal` reference, the appropriate subclass method is invoked
+                        based on the actual object type at runtime.
+                    metadata:
+                      responseTimeMs: 1500
+                      createdAt: "2025-12-10T11:15:00Z"
+                      llm:
+                        model: gpt-5.2
+                        temperature: 0.5
+                        outputTokens: 121
+                chatWithContextResponse:
+                  summary: Chat response with context
+                  value:
+                    response:
+                      role: assistant
+                      content: >
+                        In the provided code example, the `speak()` method is being overridden
+                        in the `Dog` and `Cat` subclasses of the `Animal` superclass. This demonstrates
+                        polymorphism because when we call `speak()` on each animal in the `animals` list,
+                        the method that gets executed depends on the actual object type (either `Dog` or `Cat`),
+                        not the reference type (`Animal`). The output of the code would be:
+
+                        ```
+                        Woof!
+                        Meow!
+                        ```
+
+                        This happens because each subclass provides its own implementation of the `speak()` method,
+                        and at runtime, the correct method is called based on the object's type.
+                    metadata:
+                      responseTimeMs: 2000
+                      type: "CS Assistant"
+                      createdAt: "2025-12-10T11:15:00Z"
+                      llm:
+                        model: "gpt-5.2"
+                        temperature: 0.5
+                        outputTokens: 143
+
         "400":
           description: Invalid request (e.g. missing messages or invalid schema).
         "500":
