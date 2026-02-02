@@ -642,6 +642,7 @@ components:
         - supportsPreviewEvaluation
         - supportsFormativeFeedback
         - supportsSummativeFeedback
+        - supportsDataPolicy
       properties:
         supportsEvaluation:
           type: boolean
@@ -655,6 +656,11 @@ components:
         supportsSummativeFeedback:
           type: boolean
           description: Indicates whether the service supports feedback with points / grading signals.
+        supportsDataPolicy:
+          type: string
+          enum: [TRUE, FALSE, PARTIAL]
+          additionalProperties: true
+          description: Indicates whether the service supports data policy configuration.
         supportedArtefactTypes:
           type:
             - array
@@ -698,6 +704,7 @@ components:
       description: Capabilities of the chat service.
       required:
         - supportsChat
+        - supportsDataPolicy
       properties:
         supportsChat:
           type: boolean
@@ -708,6 +715,11 @@ components:
         supportsStreaming:
           type: boolean
           description: Indicates whether the service supports streaming responses.
+        supportsDataPolicy:
+          type: string
+          enum: [TRUE, FALSE, PARTIAL]
+          additionalProperties: true
+          description: Indicates whether the service supports data policy configuration.
         supportedLanguages:
           type:
             - array
