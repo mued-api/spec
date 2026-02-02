@@ -287,6 +287,7 @@ paths:
                       content:
                         text: "Define polymorphism and give at least one example in Java."
                   configuration:
+                    type: "Java Assistant"
                     llm:
                       model: "gpt-5.2"
                       temperature: 0.7
@@ -371,6 +372,7 @@ paths:
                               for animal in animals:
                                   print(animal.speak())
                   configuration:
+                    type: "CS Assistant"
                     llm:
                       model: "gpt-5.2"
                       temperature: 0.5
@@ -541,6 +543,11 @@ components:
           description: Optional configuration for the model(s).
           additionalProperties: true
           properties:
+            type:
+              type:
+                - string
+                - "null"
+              description: Optional type for the chatbot or chat model.
             llm:
               description: Optional LLM configuration used for this request.
               type:
