@@ -504,6 +504,13 @@ components:
                 - "null"
               allOf:
                 - $ref: "#/components/schemas/LLMConfiguration"
+            dataPolicy:
+              description: Optional data policy governing how this request's data may be processed and retained.
+              type:
+                - object
+                - "null"
+              allOf:
+                - $ref: "#/components/schemas/DataPolicy"
 
     ChatRequest:
       type: object
@@ -548,6 +555,13 @@ components:
                 - "null"
               allOf:
                 - $ref: "#/components/schemas/LLMConfiguration"
+            dataPolicy:
+              description: Optional data policy governing how this request's data may be processed and retained.
+              type:
+                - object
+                - "null"
+              allOf:
+                - $ref: "#/components/schemas/DataPolicy"
 
     ChatResponse:
       type: object
@@ -970,6 +984,181 @@ components:
           enum: [user, assistant, system, tool]
         content:
           type: string
+
+    DataPolicy:
+      type: object
+      description: >
+        Declares what downstream services are allowed to do with data associated with this request:
+        which legal regimes apply, what uses are permitted, how long data may be retained,
+        where it may be processed, and what constraints apply (especially for children / sensitive data).
+      additionalProperties: true
+      properties:
+        legal:
+          type:
+            - object
+            - "null"
+          description: Legal framework and authority governing this data.
+          properties:
+            applicableLaws:
+              type: array
+              description: One or more applicable legal regimes.
+              items:
+                type: string
+                enum: [GDPR, UK_GDPR, EPRIVACY, CCPA_CPRA, COPPA, FERPA, PPRA, PIPEDA, LGPD, POPIA, APPI, PIPL, OTHER]
+            legalBasis:
+              type:
+                - array
+                - "null"
+              description: Optional but recommended legal basis for processing.
+              items:
+                type: string
+                enum: [consent, contract, legal_obligation, public_task, legitimate_interests, vital_interests, other]
+        jurisdiction:
+          type:
+            - object
+            - "null"
+          description: Geographic constraints for data subjects and processing.
+          properties:
+            dataSubjectRegions:
+              type:
+                - array
+                - "null"
+              description: Where the data subjects are located.
+              items:
+                $ref: '#/components/schemas/Region'
+            allowedProcessingRegions:
+              type:
+                - array
+                - "null"
+              description: Where processing/storage is allowed.
+              items:
+                $ref: '#/components/schemas/Region'
+            disallowedProcessingRegions:
+              type:
+                - array
+                - "null"
+              description: Explicit exclusions for processing regions.
+              items:
+                $ref: '#/components/schemas/Region'
+        dataSubject:
+          type:
+            - object
+            - "null"
+          description: Information about who this data is about.
+          properties:
+            population:
+              type:
+                - string
+                - "null"
+              description: Type of population this data concerns.
+              enum: [student, staff, guardian, mixed, other]
+            isChildData:
+              type:
+                - boolean
+                - "null"
+              description: Indicates whether this data concerns children.
+            minAge:
+              type:
+                - integer
+                - "null"
+              description: Minimum age of data subjects, if relevant/known.
+        dataCategory:
+          type:
+            - object
+            - "null"
+          description: Classification of the type of data.
+          properties:
+            classification:
+              type:
+                - string
+                - "null"
+              description: Primary classification of the data.
+              enum: [anonymous, pseudonymous, personal, education_record, sensitive,other]
+              additionalProperties: true
+        retentionPermission:
+          type:
+            - array
+            - "null"
+          description: What retention and secondary uses are permitted.
+          items:
+            type: string
+            enum: [never, security, logging, product-improvement-no-share, product-improvement-share-limited, research-confidential, public, other]
+        retention:
+          type:
+            - object
+            - "null"
+          description: How long data may be retained.
+          properties:
+            maxRetention:
+              type:
+                - string
+                - "null"
+              description: Maximum retention period classification.
+              enum: [transient, short, medium, long, indefinite]
+            timeToLiveDays:
+              type:
+                - integer
+                - "null"
+              description: Concrete time-to-live in days, if specified.
+            deleteOnRequest:
+              type:
+                - boolean
+                - "null"
+              description: Whether data must be deleted on user request.
+            legalHoldAllowed:
+              type:
+                - boolean
+                - "null"
+              description: Whether legal holds are permitted on this data.
+        sharing:
+          type:
+            - object
+            - "null"
+          description: Constraints on who can receive this data.
+          properties:
+            thirdPartySharing:
+              type:
+                - string
+                - "null"
+              description: Third-party sharing policy.
+              enum: [prohibited, allowed, allowed-limited]
+            subprocessorsAllowed:
+              type:
+                - boolean
+                - "null"
+              description: Whether subprocessors are allowed.
+            allowedRecipients:
+              type:
+                - array
+                - "null"
+              description: Categories of allowed recipients.
+              items:
+                type: string
+                enum: [controller-only, internal-services, named-partners, public]
+        deidentification:
+          type:
+            - object
+            - "null"
+          description: Required deidentification for specific uses.
+          properties:
+            requiredForProductImprovement:
+              type:
+                - string
+                - "null"
+              description: Deidentification required for product improvement.
+              enum: [none, pseudonymized, anonymized]
+            requiredForResearch:
+              type:
+                - string
+                - "null"
+              description: Deidentification required for research.
+              enum: [pseudonymized, anonymized, aggregated]
+
+    Region:
+      type: string
+      description: >
+        Geographic regions using ISO 3166-1 alpha-2 country codes (e.g., US, GB, DE)
+        or regional groupings (e.g., EEA, EU, APAC).
 
     # --- Enums ---
     ArtefactType:
