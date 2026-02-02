@@ -887,12 +887,61 @@ components:
             - string
             - "null"
           description: Optional additional context about how to apply this criterion.
-        maxPoints:
-          type:
-            - number
-            - "null"
-          format: double
-          description: Optional maximum points for this criterion.
+        gradeConfig:
+          oneOf:
+              - $ref: '#/components/schemas/NumericGrade'
+              - $ref: '#/components/schemas/LetterOnlyGrade'
+              - $ref: '#/components/schemas/LetterPlusMinusGrade'
+              - $ref: '#/components/schemas/OtherGrade'
+          description: Optional configuration for grades for this criterion.
+
+    NumericGrade:
+      title: Numeric Grade
+      type: object
+      required:
+        - min
+        - max
+        - value
+      properties:
+        min:
+          type: integer
+          description: Minimum value for the numeric range
+        max:
+          type: integer
+          description: Maximum value for the numeric range
+        value:
+          type: integer
+          description: The actual rating value within the min-max range
+
+    LetterOnlyGrade:
+      title: Letter Only Grade
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          type: string
+          enum: [A, B, C, D, E, F, "n/a"]
+
+    LetterPlusMinusGrade:
+      title: Letter +/- grades
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          type: string
+          enum: ["A+", A, "A-", "B+", B, "B-", "C+", C, "C-", "D+", D, "D-", "E+", E, "E-", F]
+
+    OtherGrade:
+      title: Other
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          type: string
+          description: Free-form string rating
 
     Feedback:
       type: object
