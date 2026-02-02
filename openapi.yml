@@ -904,14 +904,10 @@ components:
         - value
       properties:
         min:
-          type: 
-            - integer
-            - double
+          type: number
           description: Minimum value for the numeric range
         max:
-          type: 
-            - integer
-            - double
+          type: number
           description: Maximum value for the numeric range
         value:
           type: integer
