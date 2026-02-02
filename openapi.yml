@@ -9,7 +9,7 @@ info:
     for interoperable educational services.
     <br><br>
     Currently defined endpoints:<br>
-    - **Task evaluation**: automatic feedback and grading for student submissions. <br>
+    - **Evaluate Task**: automatic feedback and grading for student submissions. <br>
     - **Chat**: conversational interactions around tasks, submissions, or general
       learning questions. <br>
     <br><br>
@@ -19,7 +19,7 @@ info:
     - **Learning analytics**
 
 tags:
-  - name: evaluation
+  - name: evaluate
     description: Endpoints for evaluating student submissions and generating feedback.
   - name: chat
     description: Conversational endpoints for educational dialogue.
@@ -32,9 +32,9 @@ paths:
       description: >
         Generates a list of feedback items for a given student submission.
         The request can optionally include the task context, user information,
-        evaluation criteria, pre-submission feedback options, and configuration.
+        criteria to evaluate on, pre-submission feedback options, and configuration.
       tags:
-        - evaluation
+        - evaluate
       parameters:
         - in: header
           name: Authorization
@@ -47,7 +47,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/EvaluationRequest"
+              $ref: "#/components/schemas/EvaluateRequest"
             examples:
               simpleTextSubmission:
                 summary: Simple text submission without user or criteria
@@ -176,22 +176,22 @@ paths:
 
   /evaluate/health:
     get:
-      summary: Health and capabilities of the evaluation service
-      operationId: getEvaluationHealth
+      summary: Health and capabilities of the evaluate service
+      operationId: getEvaluateHealth
       description: >
-        Returns health information and capabilities of the evaluation service.
+        Returns health information and capabilities of the evaluate service.
         Clients can use this endpoint to discover whether the service supports
         optional features such as pre-submission feedback, formative feedback,
         and summative feedback.
       tags:
-        - evaluation
+        - evaluate
       responses:
         "200":
-          description: Evaluation service is reachable and reporting capabilities.
+          description: Evaluate service is reachable and reporting capabilities.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/EvaluationHealthResponse"
+                $ref: "#/components/schemas/EvaluateHealthResponse"
               examples:
                 exampleHealth:
                   summary: Example healthy service with capabilities
@@ -200,8 +200,8 @@ paths:
                     message: "Service healthy"
                     version: "1.0.0"
                     capabilities:
-                      supportsEvaluation: true
-                      supportsPreviewEvaluation: false
+                      supportsEvaluate: true
+                      supportsPreviewEvaluate: false
                       supportsFormativeFeedback: true
                       supportsSummativeFeedback: true
                       supportedArtefactTypes:
@@ -212,11 +212,11 @@ paths:
                         - "en"
                         - "de"
         "503":
-          description: Evaluation service is currently unavailable or unhealthy.
+          description: Evaluate service is currently unavailable or unhealthy.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/EvaluationHealthResponse"
+                $ref: "#/components/schemas/EvaluateHealthResponse"
               examples:
                 exampleUnhealthy:
                   summary: Example degraded / unavailable service
@@ -225,14 +225,14 @@ paths:
                     message: "Database connection failed"
                     version: "1.0.0"
                     capabilities:
-                      supportsEvaluation: false
-                      supportsPreviewEvaluation: false
+                      supportsEvaluate: false
+                      supportsPreviewEvaluate: false
                       supportsFormativeFeedback: false
                       supportsSummativeFeedback: false
                       supportedArtefactTypes: []
                       supportedLanguages: []
         "501":
-          description: The server does not implement the health endpoint for evaluation.
+          description: The server does not implement the health endpoint for evaluate.
 
   /chat:
     post:
@@ -508,10 +508,10 @@ paths:
 components:
   schemas:
     # --- Endpoint request/response wrappers ---
-    EvaluationRequest:
+    EvaluateRequest:
       type: object
       description: >
-        Input for task evaluation. The submission is mandatory; task,
+        Input for task evaluate service. The submission is mandatory; task,
         user, criteria, pre-submission feedback options, and
         configuration are optional.
       required:
@@ -539,7 +539,7 @@ components:
           type:
             - array
             - "null"
-          description: Optional criteria used for evaluation.
+          description: Optional criteria used for evaluate.
           items:
             $ref: "#/components/schemas/Criterion"
         preSubmissionFeedback:
@@ -634,16 +634,16 @@ components:
           additionalProperties: true
 
     # --- Health responses + subtypes ---
-    EvaluationHealthResponse:
+    EvaluateHealthResponse:
       type: object
-      description: Health status and capabilities of the evaluation service.
+      description: Health status and capabilities of the evaluate service.
       required:
         - status
         - capabilities
       properties:
         status:
           type: string
-          description: Overall health status of the evaluation service.
+          description: Overall health status of the evaluate service.
           enum: [ok, degraded, unavailable]
         message:
           type:
@@ -654,21 +654,21 @@ components:
           type:
             - string
             - "null"
-          description: Optional version of the evaluation service implementation.
+          description: Optional version of the evaluate service implementation.
         requirements:
           type:
             - object
             - "null"
           description: Optional requirements clients must satisfy to use this service.
           allOf:
-            - $ref: "#/components/schemas/EvaluationRequirements"
+            - $ref: "#/components/schemas/EvaluateRequirements"
         capabilities:
-          $ref: "#/components/schemas/EvaluationCapabilities"
+          $ref: "#/components/schemas/EvaluateCapabilities"
 
-    EvaluationRequirements:
+    EvaluateRequirements:
       type: object
       description: >
-        Requirements for calling the evaluation endpoint, e.g. whether an
+        Requirements for calling the evaluate endpoint, e.g. whether an
         Authorization header and/or LLM configuration or credentials are required.
       additionalProperties: true
       properties:
@@ -688,19 +688,19 @@ components:
             - "null"
           description: Optional flag indicating whether configuration.llm.credentials must be provided.
 
-    EvaluationCapabilities:
+    EvaluateCapabilities:
       type: object
-      description: Capabilities of the evaluation service.
+      description: Capabilities of the evaluate service.
       required:
-        - supportsEvaluation
-        - supportsPreviewEvaluation
+        - supportsEvaluate
+        - supportsPreviewEvaluate
         - supportsFormativeFeedback
         - supportsSummativeFeedback
       properties:
-        supportsEvaluation:
+        supportsEvaluate:
           type: boolean
           description: Indicates whether the /evaluate endpoint is implemented and usable.
-        supportsPreviewEvaluation:
+        supportsPreviewEvaluate:
           type: boolean
           description: Indicates whether the service supports pre-submission feedback runs.
         supportsFormativeFeedback:
