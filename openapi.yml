@@ -130,8 +130,7 @@ paths:
                       model: "gpt-5.2"
                       temperature: 0.2
                       maxTokens: 800
-                      credentials:
-                        apiKey: "OPENAI_API_KEY"
+                      credentials: "JWT_KEY"
                     enforceRubricStrictness: true
       responses:
         "200":
@@ -291,8 +290,7 @@ paths:
                       model: "gpt-5.2"
                       temperature: 0.7
                       stream: false
-                      credentials:
-                        apiKey: "OPENAI_API_KEY"
+                      credentials: "JWT_KEY"
               chatWithContext:
                 summary: Chat request with complex educational context
                 value:
@@ -601,7 +599,7 @@ components:
       type: object
       description: >
         Requirements for calling the evaluation endpoint, e.g. whether an
-        Authorization header and/or LLM configuration or credentials are required.
+        Authorization header and/or LLM configuration or credentials (provided via a proxy) are required.
       additionalProperties: true
       properties:
         requiresAuthorizationHeader:
@@ -614,11 +612,11 @@ components:
             - boolean
             - "null"
           description: Optional flag indicating whether configuration.llm must be provided.
-        requiresLlmCredentials:
+        requiresLlmCredentialProxy:
           type:
             - boolean
             - "null"
-          description: Optional flag indicating whether configuration.llm.credentials must be provided.
+          description: Optional flag indicating whether configuration.llm.credentials must be provided via a proxy.
 
     EvaluationCapabilities:
       type: object
@@ -741,7 +739,7 @@ components:
           type:
             - object
             - "null"
-          description: Optional credentials object (e.g., API keys, tokens).
+          description: Optional credentials object to be supplied with time-based key via a proxy.
           additionalProperties: true
 
     PreSubmissionFeedback:
