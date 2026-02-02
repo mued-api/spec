@@ -31,7 +31,7 @@ paths:
       operationId: evaluateSubmission
       description: >
         Generates a list of feedback items for a given student submission.
-        The request can optionally include the task context, learner profile,
+        The request can optionally include the task context, user information,
         evaluation criteria, pre-submission feedback options, and configuration.
       tags:
         - evaluation
@@ -50,7 +50,7 @@ paths:
               $ref: "#/components/schemas/EvaluationRequest"
             examples:
               simpleTextSubmission:
-                summary: Simple text submission without learner profile or criteria
+                summary: Simple text submission without user or criteria
                 value:
                   submission:
                     submissionId: "sub-123"
@@ -81,7 +81,7 @@ paths:
                       temperature: 0.4
 
               withTaskAndExtras:
-                summary: With task context, learner profile, criteria and configuration
+                summary: With task context, user, criteria and configuration
                 value:
                   task:
                     taskId: "task-12"
@@ -111,7 +111,9 @@ paths:
                         subclasses implementing methods differently.
                     submittedAt: "2025-12-16T10:00:00Z"
                     version: 2
-                  learnerProfile:
+                  user:
+                    userId: "user-789"
+                    type: LEARNER
                     detailPreference: DETAILED
                     tonePreference: FRIENDLY
                     languagePreference: "en"
@@ -452,7 +454,7 @@ paths:
       operationId: chat
       description: >
         Conversational endpoint for educational chat use cases. A conversation can be
-        grounded in a specific course, task or submission and may use a learner profile
+        grounded in a specific course, task or submission and may use user information
         to adapt tone and detail. Typical use cases include: asking follow-up questions
         on feedback, requesting hints, or clarifying concepts.
       tags:
@@ -483,7 +485,9 @@ paths:
                 summary: Chat request with optional LLM configuration
                 value:
                   conversationId: "conv-1001"
-                  learnerProfile:
+                  user:
+                    userId: "user-456"
+                    type: LEARNER
                     detailPreference: MEDIUM
                     tonePreference: FRIENDLY
                     languagePreference: "en"
@@ -509,7 +513,9 @@ paths:
                   messages:
                     - role: user
                       content: "What should I do for this part?"
-                  learnerProfile:
+                  user:
+                    userId: "user-321"
+                    type: LEARNER
                     detailPreference: DETAILED
                     tonePreference: NEUTRAL
                     languagePreference: "en"
@@ -601,7 +607,7 @@ paths:
       description: >
         Returns health information and capabilities of the chat service.
         Clients can use this endpoint to discover whether the service supports
-        optional features such as learner profiles or streaming responses.
+        optional features such as user preferences or streaming responses.
       tags:
         - chat
       responses:
@@ -620,7 +626,7 @@ paths:
                     version: "1.0.0"
                     capabilities:
                       supportsChat: true
-                      supportsLearnerProfiles: true
+                      supportsUserPreferences: true
                       supportsStreaming: true
                       supportedLanguages:
                         - "en"
@@ -643,7 +649,7 @@ paths:
                     version: "1.0.0"
                     capabilities:
                       supportsChat: false
-                      supportsLearnerProfiles: false
+                      supportsUserPreferences: false
                       supportsStreaming: false
                       supportedLanguages: []
                       supportedModels: []
@@ -657,7 +663,7 @@ components:
       type: object
       description: >
         Input for task evaluation. The submission is mandatory; task,
-        learner profile, criteria, pre-submission feedback options, and
+        user, criteria, pre-submission feedback options, and
         configuration are optional.
       required:
         - submission
@@ -673,13 +679,13 @@ components:
             - $ref: "#/components/schemas/Task"
         submission:
           $ref: "#/components/schemas/Submission"
-        learnerProfile:
-          description: Optional learner preferences that can influence tone, detail, and language.
+        user:
+          description: Optional user information including type and preferences that can influence response tone, detail, and language.
           type:
             - object
             - "null"
           allOf:
-            - $ref: "#/components/schemas/LearnerProfile"
+            - $ref: "#/components/schemas/User"
         criteria:
           type:
             - array
@@ -729,13 +735,13 @@ components:
             - string
             - "null"
           description: Optional identifier for the conversation session.
-        learnerProfile:
-          description: Optional profile to adapt the chat style and level.
+        user:
+          description: Optional user information to adapt the chat style and level.
           type:
             - object
             - "null"
           allOf:
-            - $ref: "#/components/schemas/LearnerProfile"
+            - $ref: "#/components/schemas/User"
         context:
           type:
             - object
@@ -898,9 +904,9 @@ components:
         supportsChat:
           type: boolean
           description: Indicates whether the /chat endpoint is implemented and usable.
-        supportsLearnerProfiles:
+        supportsUserPreferences:
           type: boolean
-          description: Indicates whether the service supports adapting to learner profiles.
+          description: Indicates whether the service supports adapting to user preferences.
         supportsStreaming:
           type: boolean
           description: Indicates whether the service supports streaming responses.
@@ -1065,17 +1071,25 @@ components:
           format: int32
           description: Optional version number (e.g., resubmissions).
 
-    LearnerProfile:
+    User:
       type: object
-      description: Optional learner preferences influencing tone, detail, and language.
+      description: User information including type and optional preferences influencing response tone, detail, and language.
       required:
-        - detailPreference
-        - tonePreference
+        - type
       properties:
+        userId:
+          type:
+            - string
+            - "null"
+          description: Optional unique identifier for the user.
+        type:
+          $ref: "#/components/schemas/UserType"
         detailPreference:
-          $ref: "#/components/schemas/FeedbackDetailPreference"
+          description: Optional preferred level of detail in responses.
+          $ref: "#/components/schemas/ResponseDetailPreference"
         tonePreference:
-          $ref: "#/components/schemas/FeedbackTonePreference"
+          description: Optional preferred tone for responses.
+          $ref: "#/components/schemas/ResponseTonePreference"
         languagePreference:
           type:
             - string
@@ -1085,9 +1099,9 @@ components:
           type:
             - object
             - "null"
-          description: Optional information about the learner's progress on this task/topic.
+          description: Optional information about the user's progress on this task/topic.
           additionalProperties: true
-        additionalProperties: true
+      additionalProperties: true
 
     Criterion:
       type: object
@@ -1248,12 +1262,17 @@ components:
         format (e.g., programming language for CODE, notation for MATH).
       enum: [TEXT, CODE, MODEL, MATH, OTHER]
 
-    FeedbackDetailPreference:
+    UserType:
       type: string
-      description: Level of detail preferred by the learner.
+      description: Type of user interacting with the API.
+      enum: [LEARNER, TEACHER, EDU_ADMIN, SYS_ADMIN, OTHER]
+
+    ResponseDetailPreference:
+      type: string
+      description: Level of detail preferred in responses.
       enum: [BRIEF, MEDIUM, DETAILED]
 
-    FeedbackTonePreference:
+    ResponseTonePreference:
       type: string
-      description: Preferred tone for feedback messages.
+      description: Preferred tone for responses.
       enum: [FORMAL, NEUTRAL, FRIENDLY]
