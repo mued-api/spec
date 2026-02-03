@@ -856,10 +856,10 @@ components:
           properties:
             detail:
               description: Optional preferred level of detail in responses.
-              $ref: "#/components/schemas/ResponseDetailPreference"
+              $ref: "#/components/schemas/Detail"
             tone:
               description: Optional preferred tone for responses.
-              $ref: "#/components/schemas/ResponseTonePreference"
+              $ref: "#/components/schemas/Tone"
             language:
               type:
                 - string
@@ -985,12 +985,12 @@ components:
       description: Type of user interacting with the API.
       enum: [LEARNER, TEACHER, EDU_ADMIN, SYS_ADMIN, OTHER]
 
-    ResponseDetailPreference:
+    Detail:
       type: string
-      description: Level of detail preferred in responses.
+      description: Level of detail preferred in responses or feedback.
       enum: [BRIEF, MEDIUM, DETAILED]
 
-    ResponseTonePreference:
+    Tone:
       type: string
-      description: Preferred tone for responses.
+      description: Preferred tone for responses or feedback.
       enum: [FORMAL, NEUTRAL, FRIENDLY]
