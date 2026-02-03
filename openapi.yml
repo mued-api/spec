@@ -1043,7 +1043,7 @@ components:
             - "null"
           description: >
             Optional format specifier providing additional detail about the artefact.
-            For TEXT: plain, markdown, html, rich_text.
+            For TEXT: plain_text, markdown, html, rich_text, other.
             For CODE: programming language (e.g., python, java, javascript).
             For MATH: latex, mathml, sympy, wolfram, asciimath.
             For MODEL: uml, er, bpmn, petri_net, state_machine.
