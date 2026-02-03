@@ -1044,7 +1044,7 @@ components:
           description: >
             Optional format specifier providing additional detail about the artefact.
             For TEXT: plain_text, markdown, html, rich_text, etc.
-            For CODE: programming language (e.g., python, java, javascript).
+            For CODE: programming language (e.g., python, java, javascript, wolfram, matlab).
             For MATH: latex, mathml, sympy, wolfram, asciimath, etc.
             For MODEL: uml, er, bpmn, petri_net, state_machine, etc.
             Use lowercase values and snakecase. Services should document which formats they support.
@@ -1235,7 +1235,7 @@ components:
             type: string
           examples:
             - ["plain", "markdown"]
-            - ["python", "java", "javascript"]
+            - ["python", "java", "javascript", "wolfram", "matlab"]
             - ["latex", "mathml"]
         contentSchema:
           type:
