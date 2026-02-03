@@ -513,7 +513,7 @@ paths:
                       supportsPreSubmissionFeedback: false
                       supportsFormativeFeedback: true
                       supportsSummativeFeedback: true
-                      supportsDataPolicy: false
+                      supportsDataPolicy: "PARTIAL"
                       supportedArtefactProfiles:
                         - type: "TEXT"
                           supportedFormats: ["plain", "markdown"]
@@ -579,7 +579,7 @@ paths:
                       supportsPreSubmissionFeedback: false
                       supportsFormativeFeedback: false
                       supportsSummativeFeedback: false
-                      supportsDataPolicy: false
+                      supportsDataPolicy: "FALSE"
                       supportedArtefactProfiles: []
                       supportedLanguages: []
 
@@ -927,6 +927,7 @@ paths:
                       supportsChat: true
                       supportsUserPreferences: true
                       supportsStreaming: true
+                      supportsDataPolicy: "FALSE"
                       supportedLanguages:
                         - "en"
                         - "de"
@@ -985,6 +986,7 @@ paths:
                       supportsChat: false
                       supportsUserPreferences: false
                       supportsStreaming: false
+                      supportsDataPolicy: "FALSE"
                       supportedLanguages: []
                       supportedModels: []
 
