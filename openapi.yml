@@ -1068,7 +1068,7 @@ components:
               type:
                 - boolean
                 - "null"
-              description: Indicates whether this data concerns children. If true, then minAge required
+              description: Indicates whether this data concerns children. If true, then minAge required.
             minAge:
               type:
                 - integer
@@ -1105,7 +1105,7 @@ components:
               type:
                 - string
                 - "null"
-              description: Concrete retention period, following ISO 8601 standard
+              description: Concrete retention period, following ISO 8601 standard.
             deleteOnRequest:
               type:
                 - boolean
@@ -1148,17 +1148,9 @@ components:
           description: Required deidentification for specific uses.
           properties:
             requiredForServiceImprovement:
-              type:
-                - string
-                - "null"
-              description: Deidentification required for service improvement.
-              enum: [NONE, PSEUDONYMIZED, ANONYMIZED, AGGREGATED]
+              $ref: '#/components/schemas/AnonymizationLevel'
             requiredForResearch:
-              type:
-                - string
-                - "null"
-              description: Deidentification required for research.
-              enum: [NONE, PSEUDONYMIZED, ANONYMIZED, AGGREGATED]
+              $ref: '#/components/schemas/AnonymizationLevel'
 
     Region:
       type: string
@@ -1186,3 +1178,8 @@ components:
       type: string
       description: Preferred tone for responses.
       enum: [FORMAL, NEUTRAL, FRIENDLY]
+    
+    AnonymizationLevel:
+      type: string
+      description: Level of required Anonymization
+      enum: [NONE, PSEUDONYMIZED, ANONYMIZED, AGGREGATED]
