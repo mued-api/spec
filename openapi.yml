@@ -1152,7 +1152,7 @@ components:
                 - string
                 - "null"
               description: Deidentification required for product improvement.
-              enum: [NONE, PSEUDONYMIZED, ANONYMIZED]
+              enum: [NONE, PSEUDONYMIZED, ANONYMIZED, AGGREGATED]
             requiredForResearch:
               type:
                 - string
