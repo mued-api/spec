@@ -201,7 +201,7 @@ paths:
                     version: "1.0.0"
                     capabilities:
                       supportsEvaluate: true
-                      supportsPreviewEvaluate: false
+                      supportsPreSubmissionFeedback: false
                       supportsFormativeFeedback: true
                       supportsSummativeFeedback: true
                       supportedArtefactTypes:
@@ -226,7 +226,7 @@ paths:
                     version: "1.0.0"
                     capabilities:
                       supportsEvaluate: false
-                      supportsPreviewEvaluate: false
+                      supportsPreSubmissionFeedback: false
                       supportsFormativeFeedback: false
                       supportsSummativeFeedback: false
                       supportedArtefactTypes: []
@@ -693,14 +693,14 @@ components:
       description: Capabilities of the evaluate service.
       required:
         - supportsEvaluate
-        - supportsPreviewEvaluate
+        - supportsPreSubmissionFeedback
         - supportsFormativeFeedback
         - supportsSummativeFeedback
       properties:
         supportsEvaluate:
           type: boolean
           description: Indicates whether the /evaluate endpoint is implemented and usable.
-        supportsPreviewEvaluate:
+        supportsPreSubmissionFeedback:
           type: boolean
           description: Indicates whether the service supports pre-submission feedback runs.
         supportsFormativeFeedback:
