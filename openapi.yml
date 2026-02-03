@@ -42,6 +42,12 @@ paths:
             type: string
           required: false
           description: Optional authorization header.
+        - in: header
+          name:  X-Request-Id
+          description: Request id for tracing this request across services.
+          schema:
+            type: string
+          
       requestBody:
         required: true
         content:
@@ -244,6 +250,12 @@ paths:
         Clients can use this endpoint to discover whether the service supports
         optional features such as pre-submission feedback, formative feedback,
         and summative feedback.
+      parameters:
+        - in: header
+          name:  X-Request-Id
+          description: Request id for tracing this request across services.
+          schema:
+            type: string
       tags:
         - evaluation
       responses:
@@ -334,6 +346,11 @@ paths:
             type: string
           required: false
           description: Optional authorization header.
+        - in: header
+          name:  X-Request-Id
+          description: Request id for tracing this request across services.
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -520,6 +537,12 @@ paths:
         optional features such as learner profiles or streaming responses.
       tags:
         - chat
+      parameters:
+        - in: header
+          name:  X-Request-Id
+          description: Request id for tracing this request across services.
+          schema:
+            type: string
       responses:
         "200":
           description: Chat service is reachable and reporting capabilities.
