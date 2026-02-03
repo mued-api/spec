@@ -62,6 +62,7 @@ paths:
                     submissionId: "sub-123"
                     taskId: "task-42"
                     type: "TEXT"
+                    format: "plain"
                     content:
                       text: "Explain what polymorphism is in object-oriented programming."
                     submittedAt: "2025-12-16T09:30:00Z"
@@ -75,6 +76,7 @@ paths:
                     submissionId: "sub-777"
                     taskId: "task-42"
                     type: "TEXT"
+                    format: "plain"
                     content:
                       text: "My short answer..."
                   preSubmissionFeedback:
@@ -108,6 +110,7 @@ paths:
                     submissionId: "sub-456"
                     taskId: "task-12"
                     type: "TEXT"
+                    format: "plain"
                     content:
                       text: >
                         Polymorphism means that an object can take many forms, for example
@@ -140,6 +143,213 @@ paths:
                         type: "JWT"
                         key: "Some-Key"
                     enforceRubricStrictness: true
+
+              # --- Canonical examples for each artefact type ---
+              codeSubmissionExample:
+                summary: Code submission (Python)
+                value:
+                  submission:
+                    submissionId: "sub-code-001"
+                    taskId: "task-python-101"
+                    type: "CODE"
+                    format: "python"
+                    content:
+                      code: |
+                        def fibonacci(n):
+                            if n <= 1:
+                                return n
+                            return fibonacci(n-1) + fibonacci(n-2)
+                        
+                        # Test the function
+                        for i in range(10):
+                            print(fibonacci(i))
+                    submittedAt: "2025-12-16T11:00:00Z"
+                    version: 1
+
+              codeMultiFileExample:
+                summary: Code submission with multiple files
+                value:
+                  submission:
+                    submissionId: "sub-code-002"
+                    taskId: "task-java-201"
+                    type: "CODE"
+                    format: "java"
+                    content:
+                      files:
+                        - path: "src/Main.java"
+                          content: |
+                            public class Main {
+                                public static void main(String[] args) {
+                                    Calculator calc = new Calculator();
+                                    System.out.println(calc.add(2, 3));
+                                }
+                            }
+                        - path: "src/Calculator.java"
+                          content: |
+                            public class Calculator {
+                                public int add(int a, int b) {
+                                    return a + b;
+                                }
+                            }
+                      entryPoint: "src/Main.java"
+                    submittedAt: "2025-12-16T11:30:00Z"
+                    version: 1
+
+              codeSympyExample:
+                summary: Math submission (SymPy/Python)
+                value:
+                  submission:
+                    submissionId: "sub-math-002"
+                    taskId: "task-algebra-101"
+                    type: "CODE"
+                    format: "sympy"
+                    content:
+                      expression: "solve(x**2 - 4, x)"
+                      imports: ["from sympy import symbols, solve", "x = symbols('x')"]
+                    submittedAt: "2025-12-16T12:30:00Z"
+                    version: 1
+
+              mathInlineLatexExample:
+                summary: Inline math submission (Inline LaTeX)
+                value:
+                  submission:
+                    submissionId: "sub-math-001"
+                    taskId: "task-calculus-101"
+                    type: "MATH"
+                    format: "latex"
+                    content:
+                      expression: "\\int_{0}^{\\infty} e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}"
+                    submittedAt: "2025-12-16T12:00:00Z"
+                    version: 1
+
+              mathMathMLExample:
+                summary: Math submission (MathML)
+                value:
+                  submission:
+                    submissionId: "sub-math-003"
+                    taskId: "task-geometry-101"
+                    type: "MATH"
+                    format: "mathml"
+                    content:
+                      expression: |
+                        <math xmlns="http://www.w3.org/1998/Math/MathML">
+                          <mrow>
+                            <mi>a</mi>
+                            <mo>=</mo>
+                            <msqrt>
+                              <mrow>
+                                <msup><mi>b</mi><mn>2</mn></msup>
+                                <mo>+</mo>
+                                <msup><mi>c</mi><mn>2</mn></msup>
+                              </mrow>
+                            </msqrt>
+                          </mrow>
+                        </math>
+                    submittedAt: "2025-12-16T13:00:00Z"
+                    version: 1
+
+              modelUmlExample:
+                summary: Model submission (UML class diagram - PlantUML)
+                value:
+                  submission:
+                    submissionId: "sub-model-001"
+                    taskId: "task-oop-design-101"
+                    type: "MODEL"
+                    format: "uml"
+                    content:
+                      model: |
+                        @startuml
+                        abstract class Animal {
+                          +name: String
+                          +speak(): String
+                        }
+                        
+                        class Dog extends Animal {
+                          +speak(): String
+                        }
+                        
+                        class Cat extends Animal {
+                          +speak(): String
+                        }
+                        @enduml
+                      notation: "plantuml"
+                      diagramType: "class"
+                    submittedAt: "2025-12-16T14:00:00Z"
+                    version: 1
+
+              modelErExample:
+                summary: Model submission (ER diagram - JSON structure)
+                value:
+                  submission:
+                    submissionId: "sub-model-002"
+                    taskId: "task-database-101"
+                    type: "MODEL"
+                    format: "er"
+                    content:
+                      model:
+                        entities:
+                          - name: "Student"
+                            attributes:
+                              - { name: "student_id", type: "INTEGER", primaryKey: true }
+                              - { name: "name", type: "VARCHAR(100)" }
+                              - { name: "email", type: "VARCHAR(255)" }
+                          - name: "Course"
+                            attributes:
+                              - { name: "course_id", type: "INTEGER", primaryKey: true }
+                              - { name: "title", type: "VARCHAR(200)" }
+                        relationships:
+                          - name: "enrolls_in"
+                            from: "Student"
+                            to: "Course"
+                            cardinality: "many-to-many"
+                      notation: "json"
+                    submittedAt: "2025-12-16T14:30:00Z"
+                    version: 1
+
+              modelBpmnExample:
+                summary: Model submission (BPMN process)
+                value:
+                  submission:
+                    submissionId: "sub-model-003"
+                    taskId: "task-process-101"
+                    type: "MODEL"
+                    format: "bpmn"
+                    content:
+                      model: |
+                        <?xml version="1.0" encoding="UTF-8"?>
+                        <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL">
+                          <bpmn:process id="OrderProcess">
+                            <bpmn:startEvent id="Start"/>
+                            <bpmn:task id="ReceiveOrder" name="Receive Order"/>
+                            <bpmn:task id="ProcessPayment" name="Process Payment"/>
+                            <bpmn:task id="ShipOrder" name="Ship Order"/>
+                            <bpmn:endEvent id="End"/>
+                          </bpmn:process>
+                        </bpmn:definitions>
+                      notation: "bpmn-xml"
+                    submittedAt: "2025-12-16T15:00:00Z"
+                    version: 1
+
+              textMarkdownExample:
+                summary: Text submission (Markdown with formatting)
+                value:
+                  submission:
+                    submissionId: "sub-text-002"
+                    taskId: "task-essay-101"
+                    type: "TEXT"
+                    format: "markdown"
+                    content:
+                      markdown: |
+                        # Introduction to Polymorphism
+                        
+                        Polymorphism is a fundamental concept in **object-oriented programming** that allows objects to be treated as instances of their parent class.
+                        
+                        ## Key Points
+                        
+                        1. **Subtype polymorphism**: Different classes can be used interchangeably
+                        2. **Method overriding**: Subclasses provide specific implementations
+                    submittedAt: "2025-12-16T15:30:00Z"
+                    version: 1
       responses:
         "200":
           description: Successfully generated feedback.
@@ -170,8 +380,9 @@ paths:
                         maxPoints: 10
                       target:
                         artefactType: "TEXT"
+                        format: "plain"
                         locator:
-                          type: "SPAN"
+                          type: "span"
                           startIndex: 0
                           endIndex: 120
                     - feedbackId: "fb-2"
@@ -302,10 +513,13 @@ paths:
                       supportsPreSubmissionFeedback: false
                       supportsFormativeFeedback: true
                       supportsSummativeFeedback: true
-                      supportedArtefactTypes:
-                        - "TEXT"
-                        - "CODE"
-                        - "MODEL"
+                      supportedArtefactProfiles:
+                        - type: "TEXT"
+                          supportedFormats: ["plain", "markdown"]
+                        - type: "CODE"
+                          supportedFormats: ["python", "java", "javascript"]
+                        - type: "MATH"
+                          supportedFormats: ["latex", "mathml"]
                       supportedLanguages:
                         - "en"
                         - "de"
@@ -364,7 +578,7 @@ paths:
                       supportsPreSubmissionFeedback: false
                       supportsFormativeFeedback: false
                       supportsSummativeFeedback: false
-                      supportedArtefactTypes: []
+                      supportedArtefactProfiles: []
                       supportedLanguages: []
 
   /chat:
@@ -1008,13 +1222,15 @@ components:
         supportsSummativeFeedback:
           type: boolean
           description: Indicates whether the service supports feedback with points / grading signals.
-        supportedArtefactTypes:
+        supportedArtefactProfiles:
           type:
             - array
             - "null"
-          description: Optional list of supported artefact types.
+          description: >
+            Optional list of supported artefact profiles. Each profile specifies
+            an artefact type and the formats supported for that type.
           items:
-            $ref: "#/components/schemas/ArtefactType"
+            $ref: "#/components/schemas/ArtefactProfile"
         supportedLanguages:
           type:
             - array
@@ -1190,10 +1406,27 @@ components:
           description: Optional identifier of the task this submission belongs to.
         type:
           $ref: "#/components/schemas/ArtefactType"
+        format:
+          type:
+            - string
+            - "null"
+          description: >
+            Optional format specifier providing additional detail about the artefact.
+            For TEXT: plain_text, markdown, html, rich_text, etc.
+            For CODE: programming language (e.g., python, java, javascript, wolfram, matlab).
+            For MATH: latex, mathml, sympy, wolfram, asciimath, etc.
+            For MODEL: uml, er, bpmn, petri_net, state_machine, etc.
+            Use lowercase values and snakecase. Services should document which formats they support.
         content:
           type: object
           additionalProperties: true
-          description: Logical representation of the submission content.
+          description: >
+            Logical representation of the submission content. The expected structure
+            depends on the artefact type:
+            - TEXT: { text: string } or { markdown: string }
+            - CODE: { code: string } or { files: [{ path: string, content: string }], entryPoint?: string }
+            - MATH: { expression: string }
+            - MODEL: { model: string | object, notation?: string }
         submittedAt:
           type:
             - string
@@ -1391,13 +1624,22 @@ components:
       properties:
         artefactType:
           $ref: "#/components/schemas/ArtefactType"
+        format:
+          type:
+            - string
+            - "null"
+          description: >
+            Optional format specifier matching the submission format (e.g., python, latex).
         locator:
           type:
             - object
             - "null"
-          description:
-            "Optional opaque locator into the submission content. Examples: character offsets for
-            text, file + line range for code, element id for models."
+          description: >
+            Optional locator into the submission content. Standard locator types:
+            - TEXT: { type: "span", startIndex: number, endIndex: number }
+            - CODE: { type: "range", file?: string, startLine: number, endLine: number, startColumn?: number, endColumn?: number }
+            - MATH: { type: "subexpression", path: string } (e.g., path to subexpression)
+            - MODEL: { type: "element", elementId: string, elementType?: string }
           additionalProperties: true
 
     Message:
@@ -1412,10 +1654,53 @@ components:
         content:
           type: string
 
+    # --- Artefact Profiles ---
+    ArtefactProfile:
+      type: object
+      description: >
+        Describes support for a specific artefact type and its formats.
+        Used in health/capabilities responses to advertise what a service can handle.
+      required:
+        - type
+      properties:
+        type:
+          $ref: "#/components/schemas/ArtefactType"
+        supportedFormats:
+          type:
+            - array
+            - "null"
+          description: >
+            List of supported formats for this artefact type. Use lowercase values.
+            If null or empty, the service accepts any format for this type.
+          items:
+            type: string
+          examples:
+            - ["plain", "markdown"]
+            - ["python", "java", "javascript", "wolfram", "matlab"]
+            - ["latex", "mathml"]
+        contentSchema:
+          type:
+            - object
+            - "null"
+          description: >
+            Optional JSON Schema describing the expected content structure for this
+            artefact type. Allows services to advertise their exact requirements.
+          additionalProperties: true
+        locatorSchema:
+          type:
+            - object
+            - "null"
+          description: >
+            Optional JSON Schema describing the locator structure used for feedback
+            targeting within this artefact type.
+          additionalProperties: true
+
     # --- Enums ---
     ArtefactType:
       type: string
-      description: Type of artefact within the submission that feedback refers to.
+      description: >
+        High-level type of artefact. Use the 'format' field to specify the exact
+        format (e.g., programming language for CODE, notation for MATH).
       enum: [TEXT, CODE, MODEL, MATH, OTHER]
 
     UserType:
