@@ -505,7 +505,7 @@ paths:
                 exampleHealth:
                   summary: Example healthy service with capabilities
                   value:
-                    status: "ok"
+                    status: "OK"
                     message: "Service healthy"
                     version: "1.0.0"
                     capabilities:
@@ -513,6 +513,7 @@ paths:
                       supportsPreSubmissionFeedback: false
                       supportsFormativeFeedback: true
                       supportsSummativeFeedback: true
+                      supportsDataPolicy: "PARTIAL"
                       supportedArtefactProfiles:
                         - type: "TEXT"
                           supportedFormats: ["plain", "markdown"]
@@ -578,6 +579,7 @@ paths:
                       supportsPreSubmissionFeedback: false
                       supportsFormativeFeedback: false
                       supportsSummativeFeedback: false
+                      supportsDataPolicy: "NOT_SUPPORTED"
                       supportedArtefactProfiles: []
                       supportedLanguages: []
 
@@ -615,7 +617,7 @@ paths:
                 summary: Minimal chat request
                 value:
                   messages:
-                    - role: user
+                    - role: USER
                       content: "Can you explain polymorphism?"
                   configuration: null
 
@@ -630,7 +632,7 @@ paths:
                     tonePreference: FRIENDLY
                     languagePreference: "en"
                   messages:
-                    - role: user
+                    - role: USER
                       content: "Give me a hint for my answer about polymorphism."
                   context:
                     task:
@@ -651,7 +653,7 @@ paths:
                 summary: Chat request with complex educational context
                 value:
                   messages:
-                    - role: user
+                    - role: USER
                       content: "What should I do for this part?"
                   user:
                     userId: "user-321"
@@ -746,7 +748,7 @@ paths:
                   summary: Minimal chat response
                   value:
                     response:
-                      role: assistant
+                      role: ASSISANT
                       content: >
                         Polymorphism is a core concept in object-oriented programming that allows
                         objects of different classes to be treated as objects of a common superclass.
@@ -760,7 +762,7 @@ paths:
                   summary: Chat response with LLM configuration
                   value:
                     response:
-                      role: assistant
+                      role: ASSISANT
                       content: >
                         Here's a hint for your answer about polymorphism: Focus on how polymorphism
                         allows methods to do different things based on the object that it is acting upon,
@@ -778,7 +780,7 @@ paths:
                   summary: Chat response with context
                   value:
                     response:
-                      role: assistant
+                      role: ASSISANT
                       content: >
                         In the provided code example, the `speak()` method is being overridden
                         in the `Dog` and `Cat` subclasses of the `Animal` superclass. This demonstrates
@@ -918,13 +920,14 @@ paths:
                 exampleHealth:
                   summary: Example healthy service with capabilities
                   value:
-                    status: "ok"
+                    status: "OK"
                     statusMessage: "Service healthy"
                     version: "1.0.0"
                     capabilities:
                       supportsChat: true
                       supportsUserPreferences: true
                       supportsStreaming: true
+                      supportsDataPolicy: "NOT_SUPPORTED"
                       supportedLanguages:
                         - "en"
                         - "de"
@@ -983,6 +986,7 @@ paths:
                       supportsChat: false
                       supportsUserPreferences: false
                       supportsStreaming: false
+                      supportsDataPolicy: "NOT_SUPPORTED"
                       supportedLanguages: []
                       supportedModels: []
 
@@ -1080,6 +1084,13 @@ components:
                 - "null"
               allOf:
                 - $ref: "#/components/schemas/LLMConfiguration"
+            dataPolicy:
+              description: Optional data policy governing how this request's data may be processed and retained.
+              type:
+                - object
+                - "null"
+              allOf:
+                - $ref: "#/components/schemas/DataPolicy"
 
     ChatRequest:
       type: object
@@ -1129,6 +1140,13 @@ components:
                 - "null"
               allOf:
                 - $ref: "#/components/schemas/LLMConfiguration"
+            dataPolicy:
+              description: Optional data policy governing how this request's data may be processed and retained.
+              type:
+                - object
+                - "null"
+              allOf:
+                - $ref: "#/components/schemas/DataPolicy"
 
     ChatResponse:
       type: object
@@ -1155,9 +1173,7 @@ components:
         - capabilities
       properties:
         status:
-          type: string
-          description: Overall health status of the evaluate service.
-          enum: [ok, degraded, unavailable]
+          $ref: "#/components/schemas/HealthStatus"
         message:
           type:
             - string
@@ -1209,6 +1225,7 @@ components:
         - supportsPreSubmissionFeedback
         - supportsFormativeFeedback
         - supportsSummativeFeedback
+        - supportsDataPolicy
       properties:
         supportsEvaluate:
           type: boolean
@@ -1222,6 +1239,8 @@ components:
         supportsSummativeFeedback:
           type: boolean
           description: Indicates whether the service supports feedback with points / grading signals.
+        supportsDataPolicy:
+          $ref: "#/components/schemas/DataPolicySupport"
         supportedArtefactProfiles:
           type:
             - array
@@ -1248,8 +1267,7 @@ components:
         - capabilities
       properties:
         status:
-          type: string
-          enum: [ok, degraded, unavailable]
+          $ref: "#/components/schemas/HealthStatus"
         statusMessage:
           type:
             - string
@@ -1268,6 +1286,7 @@ components:
       description: Capabilities of the chat service.
       required:
         - supportsChat
+        - supportsDataPolicy
       properties:
         supportsChat:
           type: boolean
@@ -1278,6 +1297,8 @@ components:
         supportsStreaming:
           type: boolean
           description: Indicates whether the service supports streaming responses.
+        supportsDataPolicy:
+          $ref: "#/components/schemas/DataPolicySupport"
         supportedLanguages:
           type:
             - array
@@ -1650,7 +1671,7 @@ components:
       properties:
         role:
           type: string
-          enum: [user, assistant, system, tool]
+          enum: [USER, ASSISANT, SYSTEM, TOOL]
         content:
           type: string
 
@@ -1695,6 +1716,167 @@ components:
             targeting within this artefact type.
           additionalProperties: true
 
+    DataPolicy:
+      type: object
+      description: >
+        Declares what downstream services are allowed to do with data associated with this request:
+        which legal regimes apply, what uses are permitted, how long data may be retained,
+        where it may be processed, and what constraints apply (especially for children / sensitive data).
+      additionalProperties: true
+      properties:
+        legal:
+          type:
+            - object
+            - "null"
+          description: Legal framework and authority governing this data.
+          properties:
+            applicableLaws:
+              type: array
+              description: One or more applicable legal regimes.
+              items:
+                type: string
+                enum: [GDPR, UK_GDPR, EPRIVACY, CCPA_CPRA, COPPA, FERPA, PPRA, PIPEDA, LGPD, POPIA, APPI, PIPL, OTHER]
+            legalBasis:
+              type:
+                - array
+                - "null"
+              description: Optional but recommended legal basis for processing.
+              items:
+                type: string
+                enum: [CONSENT, CONTRACT, LEGAL_OBLIGATION, PUBLIC_TASK, LEGITIMATE_INTERESTS, VITAL_INTERESTS, OTHER]
+        jurisdiction:
+          type:
+            - object
+            - "null"
+          description: Geographic constraints for data subjects and processing.
+          properties:
+            dataSubjectRegions:
+              type:
+                - array
+                - "null"
+              description: Where the data subjects are located.
+              items:
+                $ref: '#/components/schemas/Region'
+            allowedProcessingRegions:
+              type:
+                - array
+                - "null"
+              description: Where processing/storage is allowed.
+              items:
+                $ref: '#/components/schemas/Region'
+            disallowedProcessingRegions:
+              type:
+                - array
+                - "null"
+              description: Explicit exclusions for processing regions.
+              items:
+                $ref: '#/components/schemas/Region'
+        dataSubject:
+          type:
+            - object
+            - "null"
+          description: Information about who this data is about.
+          properties:
+            population:
+              type:
+                - string
+                - "null"
+              description: Type of population this data concerns.
+              enum: [STUDENT, STAFF, GUARDIAN, MIXED, OTHER]
+            isChildData:
+              type:
+                - boolean
+                - "null"
+              description: Indicates whether this data concerns children. If true, then minAge required.
+            minAge:
+              type:
+                - integer
+                - "null"
+              description: Minimum age of data subjects, if relevant/known.
+        dataCategory:
+          type:
+            - object
+            - "null"
+          description: Classification of the type of data.
+          properties:
+            classification:
+              type:
+                - string
+                - "null"
+              description: Primary classification of the data.
+              enum: [ANONYMOUS, PSEUDONYMOUS, PERSONAL, EDUCATION_RECORD, SENSITIVE,OTHER]
+              additionalProperties: true
+        retentionPermission:
+          type:
+            - array
+            - "null"
+          description: What retention and secondary uses are permitted.
+          items:
+            type: string
+            enum: [NEVER, SECURITY, LOGGING, PRODUCT-IMPROVEMENT-NO-SHARE, PRODUCT-IMPROVEMENT-SHARE-LIMITED, RESEARCH-CONFIDENTIAL, PUBLIC, OTHER]
+        retention:
+          type:
+            - object
+            - "null"
+          description: How long data may be retained.
+          properties:
+            retentionPeriod:
+              type:
+                - string
+                - "null"
+              description: Concrete retention period, following ISO 8601 standard.
+            deleteOnRequest:
+              type:
+                - boolean
+                - "null"
+              description: Whether data must be deleted on user request.
+            legalHoldAllowed:
+              type:
+                - boolean
+                - "null"
+              description: Whether legal holds are permitted on this data.
+        sharing:
+          type:
+            - object
+            - "null"
+          description: Constraints on who can receive this data.
+          properties:
+            thirdPartySharing:
+              type:
+                - string
+                - "null"
+              description: Third-party sharing policy.
+              enum: [PROHIBITED, ALLOWED, ALLOWED-LIMITED]
+            subprocessorsAllowed:
+              type:
+                - boolean
+                - "null"
+              description: Whether subprocessors are allowed.
+            allowedRecipients:
+              type:
+                - array
+                - "null"
+              description: Categories of allowed recipients.
+              items:
+                type: string
+                enum: [CONTROLLER-ONLY, INTERNAL-SERVICES, NAMED-PARTNERS, PUBLIC]
+        deidentification:
+          type:
+            - object
+            - "null"
+          description: Required deidentification for specific uses.
+          properties:
+            requiredForServiceImprovement:
+              $ref: '#/components/schemas/AnonymizationLevel'
+            requiredForResearch:
+              $ref: '#/components/schemas/AnonymizationLevel'
+
+    Region:
+      type: string
+      description: >
+        Geographic regions using ISO 3166-1 alpha-2 country codes (e.g., US, GB, DE)
+        or regional groupings (e.g., EEA, EU, APAC).
+
     # --- Enums ---
     ArtefactType:
       type: string
@@ -1717,3 +1899,18 @@ components:
       type: string
       description: Preferred tone for responses or feedback.
       enum: [FORMAL, NEUTRAL, FRIENDLY]
+    
+    AnonymizationLevel:
+      type: string
+      description: Level of required anonymization.
+      enum: [NONE, PSEUDONYMIZED, ANONYMIZED, AGGREGATED]
+
+    HealthStatus:
+      type: string
+      description: Overall health status of the evaluation service.
+      enum: [OK, DEGRADED, UNAVAILABLE]
+
+    DataPolicySupport:
+        type: string
+        enum: [SUPPORTED, NOT_SUPPORTED, PARTIAL]
+        description: Indicates whether the service supports data policy configuration.
