@@ -135,7 +135,7 @@ paths:
         "200":
           description: Successfully generated feedback.
           headers:
-            errorId:
+            X-Request-Id:
               description: Request id for tracing this request across services.
               schema:
                 type: string
@@ -171,7 +171,7 @@ paths:
         "400":
           description: Invalid request (e.g. missing content or invalid schema).
           headers:
-            errorId:
+            X-Request-Id:
               description: Request id for tracing this request across services.
               schema:
                 type: string
@@ -194,7 +194,7 @@ paths:
         "500":
           description: Internal server error.
           headers:
-            errorId:
+            X-Request-Id:
               description: Request id for tracing this request across services.
               schema:
                 type: string
@@ -219,7 +219,7 @@ paths:
             The server does not support the evaluate method. This allows
             service providers to implement only subsets of the µEd API.
           headers:
-            errorId:
+            X-Request-Id:
               description: Request id for tracing this request across services.
               schema:
                 type: string
@@ -279,7 +279,7 @@ paths:
         "503":
           description: Evaluation service is currently unavailable or unhealthy.
           headers:
-            errorId:
+            X-Request-Id:
               description: Request id for tracing this request across services.
               schema:
                 type: string
@@ -302,7 +302,7 @@ paths:
         "501":
           description: The server does not implement the health endpoint for evaluation.
           headers:
-            errorId:
+            X-Request-Id:
               description: Request id for tracing this request across services.
               schema:
                 type: string
@@ -462,7 +462,7 @@ paths:
         "200":
           description: Successful chat response.
           headers:
-            errorId:
+            X-Request-Id:
               description: Request id for tracing this request across services.
               schema:
                 type: string
@@ -474,7 +474,7 @@ paths:
         "400":
           description: Invalid request (e.g. missing messages or invalid schema).
           headers:
-            errorId:
+            X-Request-Id:
               description: Request id for tracing this request across services.
               schema:
                 type: string
@@ -497,7 +497,7 @@ paths:
         "500":
           description: Internal server error (e.g. model provider issues).
           headers:
-            errorId:
+            X-Request-Id:
               description: Request id for tracing this request across services.
               schema:
                 type: string
@@ -554,7 +554,7 @@ paths:
         "503":
           description: Chat service is currently unavailable or unhealthy.
           headers:
-            errorId:
+            X-Request-Id:
               description: Request id for tracing this request across services.
               schema:
                 type: string
@@ -576,7 +576,7 @@ paths:
         "501":
           description: The server does not implement the health endpoint for chat.
           headers:
-            errorId:
+            X-Request-Id:
               description: Request id for tracing this request across services.
               schema:
                 type: string
