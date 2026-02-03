@@ -1158,7 +1158,7 @@ components:
                 - string
                 - "null"
               description: Deidentification required for research.
-              enum: [PSEUDONYMIZED, ANONYMIZED, AGGREGATED]
+              enum: [NONE, PSEUDONYMIZED, ANONYMIZED, AGGREGATED]
 
     Region:
       type: string
