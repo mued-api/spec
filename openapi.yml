@@ -43,11 +43,11 @@ paths:
           required: false
           description: Optional authorization header.
         - in: header
-          name:  X-Request-Id
+          name: X-Request-Id
           description: Request id for tracing this request across services.
           schema:
             type: string
-          
+
       requestBody:
         required: true
         content:
@@ -136,7 +136,7 @@ paths:
                       model: "gpt-5.2"
                       temperature: 0.2
                       maxTokens: 800
-                      credentials: 
+                      credentials:
                         type: "JWT"
                         key: "Some-Key"
                     enforceRubricStrictness: true
@@ -277,7 +277,7 @@ paths:
         and summative feedback.
       parameters:
         - in: header
-          name:  X-Request-Id
+          name: X-Request-Id
           description: Request id for tracing this request across services.
           schema:
             type: string
@@ -352,6 +352,10 @@ paths:
                     trace: null
                     details:
                       reason: "Database connection failed"
+                unhealthy:
+                  summary: Example degraded / unavailable service
+                  value:
+                    title: "Service unhealthy"
                     status: "unavailable"
                     message: "Database connection failed"
                     version: "1.0.0"
@@ -382,7 +386,7 @@ paths:
           required: false
           description: Optional authorization header.
         - in: header
-          name:  X-Request-Id
+          name: X-Request-Id
           description: Request id for tracing this request across services.
           schema:
             type: string
@@ -426,7 +430,7 @@ paths:
                       model: "gpt-5.2"
                       temperature: 0.7
                       stream: false
-                      credentials: 
+                      credentials:
                         type: "JWT"
                         key: "Some-Key"
               chatWithContext:
@@ -685,7 +689,7 @@ paths:
         - chat
       parameters:
         - in: header
-          name:  X-Request-Id
+          name: X-Request-Id
           description: Request id for tracing this request across services.
           schema:
             type: string
@@ -713,7 +717,6 @@ paths:
                       supportedModels:
                         - "gpt-4o"
                         - "llama-3"
-        
         "501":
           description: The server does not implement the health endpoint for chat.
           headers:
@@ -1257,10 +1260,10 @@ components:
           additionalProperties: true
         gradeConfig:
           oneOf:
-              - $ref: '#/components/schemas/NumericGrade'
-              - $ref: '#/components/schemas/LetterOnlyGrade'
-              - $ref: '#/components/schemas/LetterPlusMinusGrade'
-              - $ref: '#/components/schemas/OtherGrade'
+            - $ref: "#/components/schemas/NumericGrade"
+            - $ref: "#/components/schemas/LetterOnlyGrade"
+            - $ref: "#/components/schemas/LetterPlusMinusGrade"
+            - $ref: "#/components/schemas/OtherGrade"
           description: Optional configuration for grades for this criterion.
 
     NumericGrade:
@@ -1299,7 +1302,25 @@ components:
       properties:
         value:
           type: string
-          enum: ["A+", A, "A-", "B+", B, "B-", "C+", C, "C-", "D+", D, "D-", "E+", E, "E-", F]
+          enum:
+            [
+              "A+",
+              A,
+              "A-",
+              "B+",
+              B,
+              "B-",
+              "C+",
+              C,
+              "C-",
+              "D+",
+              D,
+              "D-",
+              "E+",
+              E,
+              "E-",
+              F,
+            ]
 
     OtherGrade:
       title: Other
