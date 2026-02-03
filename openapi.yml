@@ -747,8 +747,9 @@ paths:
                 unhealthy:
                   summary: Example degraded / unavailable service
                   value:
-                    status: "unavailable"
-                    statusMessage: "LLM provider connection failed"
+                    title: "Service unhealthy"
+                    message: "LLM provider connection failed"
+                    code: "SERVICE_UNHEALTHY"
                     version: "1.0.0"
                     capabilities:
                       supportsChat: false
