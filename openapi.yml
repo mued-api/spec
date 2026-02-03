@@ -588,9 +588,7 @@ components:
         - capabilities
       properties:
         status:
-          type: string
-          description: Overall health status of the evaluation service.
-          enum: [OK, DEGRADED, UNAVAILABLE]
+          $ref: "#/components/schemas/HealthStatus"
         message:
           type:
             - string
@@ -684,8 +682,7 @@ components:
         - capabilities
       properties:
         status:
-          type: string
-          enum: [OK, DEGRADED, UNAVAILABLE]
+          $ref: "#/components/schemas/HealthStatus"
         statusMessage:
           type:
             - string
@@ -1183,3 +1180,8 @@ components:
       type: string
       description: Level of required Anonymization
       enum: [NONE, PSEUDONYMIZED, ANONYMIZED, AGGREGATED]
+
+    HealthStatus:
+          type: string
+          description: Overall health status of the evaluation service.
+          enum: [OK, DEGRADED, UNAVAILABLE]
