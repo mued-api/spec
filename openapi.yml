@@ -910,7 +910,7 @@ components:
           type: number
           description: Maximum value for the numeric range
         value:
-          type: integer
+          type: number
           description: The actual rating value within the min-max range
 
     LetterOnlyGrade:
