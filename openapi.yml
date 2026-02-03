@@ -513,6 +513,7 @@ paths:
                       supportsPreSubmissionFeedback: false
                       supportsFormativeFeedback: true
                       supportsSummativeFeedback: true
+                      supportsDataPolicy: false
                       supportedArtefactProfiles:
                         - type: "TEXT"
                           supportedFormats: ["plain", "markdown"]
@@ -578,6 +579,7 @@ paths:
                       supportsPreSubmissionFeedback: false
                       supportsFormativeFeedback: false
                       supportsSummativeFeedback: false
+                      supportsDataPolicy: false
                       supportedArtefactProfiles: []
                       supportedLanguages: []
 
