@@ -331,26 +331,26 @@ paths:
                     details: null
 
         "503":
-        description: Evaluation service is currently unavailable or unhealthy.
-        headers:
-          X-Request-Id:
-            description: Request id for tracing this request across services.
-            schema:
-              type: string
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ErrorResponse"
-            examples:
-              serviceUnavailable:
-                summary: Example unavailable error
-                value:
-                  title: "Service unavailable"
-                  message: "Evaluation service is currently unavailable."
-                  code: "SERVICE_UNAVAILABLE"
-                  trace: null
-                  details:
-                    reason: "Database connection failed"
+          description: Evaluation service is currently unavailable or unhealthy.
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                serviceUnavailable:
+                  summary: Example unavailable error
+                  value:
+                    title: "Service unavailable"
+                    message: "Evaluation service is currently unavailable."
+                    code: "SERVICE_UNAVAILABLE"
+                    trace: null
+                    details:
+                      reason: "Database connection failed"
 
   /chat:
     post:
