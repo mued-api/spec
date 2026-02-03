@@ -571,6 +571,28 @@ paths:
                     trace: null
                     details:
                       provider: "openai"
+        "501":
+          description: >
+            The server does not support the chat method. This allows
+            service providers to implement only subsets of the µEd API.
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                notImplemented:
+                  summary: Example not implemented error
+                  value:
+                    title: "Not implemented"
+                    message: "This service does not implement /chat."
+                    code: "NOT_IMPLEMENTED"
+                    trace: null
+                    details: null
 
   /chat/health:
     get:
