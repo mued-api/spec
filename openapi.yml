@@ -1068,7 +1068,7 @@ components:
               type:
                 - boolean
                 - "null"
-              description: Indicates whether this data concerns children.
+              description: Indicates whether this data concerns children. If true, then minAge required
             minAge:
               type:
                 - integer
@@ -1101,17 +1101,11 @@ components:
             - "null"
           description: How long data may be retained.
           properties:
-            maxRetention:
+            retentionPeriod:
               type:
                 - string
                 - "null"
-              description: Maximum retention period classification.
-              enum: [TRANSIENT, SHORT, MEDIUM, LONG, INDEFINITE]
-            timeToLiveDays:
-              type:
-                - integer
-                - "null"
-              description: Concrete time-to-live in days, if specified.
+              description: Concrete retention period, following ISO 8601 standard
             deleteOnRequest:
               type:
                 - boolean
