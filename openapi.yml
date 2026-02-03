@@ -294,7 +294,7 @@ paths:
                 exampleHealth:
                   summary: Example healthy service with capabilities
                   value:
-                    status: "ok"
+                    status: "OK"
                     message: "Service healthy"
                     version: "1.0.0"
                     capabilities:
@@ -401,7 +401,7 @@ paths:
                 summary: Minimal chat request
                 value:
                   messages:
-                    - role: user
+                    - role: USER
                       content: "Can you explain polymorphism?"
                   configuration: null
 
@@ -416,7 +416,7 @@ paths:
                     tonePreference: FRIENDLY
                     languagePreference: "en"
                   messages:
-                    - role: user
+                    - role: USER
                       content: "Give me a hint for my answer about polymorphism."
                   context:
                     task:
@@ -437,7 +437,7 @@ paths:
                 summary: Chat request with complex educational context
                 value:
                   messages:
-                    - role: user
+                    - role: USER
                       content: "What should I do for this part?"
                   user:
                     userId: "user-321"
@@ -532,7 +532,7 @@ paths:
                   summary: Minimal chat response
                   value:
                     response:
-                      role: assistant
+                      role: ASSISANT
                       content: >
                         Polymorphism is a core concept in object-oriented programming that allows
                         objects of different classes to be treated as objects of a common superclass.
@@ -546,7 +546,7 @@ paths:
                   summary: Chat response with LLM configuration
                   value:
                     response:
-                      role: assistant
+                      role: ASSISANT
                       content: >
                         Here's a hint for your answer about polymorphism: Focus on how polymorphism
                         allows methods to do different things based on the object that it is acting upon,
@@ -564,7 +564,7 @@ paths:
                   summary: Chat response with context
                   value:
                     response:
-                      role: assistant
+                      role: ASSISANT
                       content: >
                         In the provided code example, the `speak()` method is being overridden
                         in the `Dog` and `Cat` subclasses of the `Animal` superclass. This demonstrates
@@ -704,7 +704,7 @@ paths:
                 exampleHealth:
                   summary: Example healthy service with capabilities
                   value:
-                    status: "ok"
+                    status: "OK"
                     statusMessage: "Service healthy"
                     version: "1.0.0"
                     capabilities:
