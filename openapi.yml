@@ -861,7 +861,7 @@ components:
           type:
             - string
             - "null"
-          description: Optional preferred language code (e.g., 'en', 'de').
+          description: Optional preferred language code following ISO 639 language codes (e.g., 'en', 'de').
         taskProgress:
           type:
             - object
