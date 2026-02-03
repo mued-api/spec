@@ -851,17 +851,20 @@ components:
           description: Optional unique identifier for the user.
         type:
           $ref: "#/components/schemas/UserType"
-        detailPreference:
-          description: Optional preferred level of detail in responses.
-          $ref: "#/components/schemas/ResponseDetailPreference"
-        tonePreference:
-          description: Optional preferred tone for responses.
-          $ref: "#/components/schemas/ResponseTonePreference"
-        languagePreference:
-          type:
-            - string
-            - "null"
-          description: Optional preferred language code following ISO 639 language codes (e.g., 'en', 'de').
+        preference:
+          type: object
+          properties:
+            detail:
+              description: Optional preferred level of detail in responses.
+              $ref: "#/components/schemas/ResponseDetailPreference"
+            tone:
+              description: Optional preferred tone for responses.
+              $ref: "#/components/schemas/ResponseTonePreference"
+            language:
+              type:
+                - string
+                - "null"
+              description: Optional preferred language code following ISO 639 language codes (e.g., 'en', 'de').
         taskProgress:
           type:
             - object
