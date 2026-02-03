@@ -42,6 +42,12 @@ paths:
             type: string
           required: false
           description: Optional authorization header.
+        - in: header
+          name:  X-Request-Id
+          description: Request id for tracing this request across services.
+          schema:
+            type: string
+          
       requestBody:
         required: true
         content:
@@ -130,12 +136,18 @@ paths:
                       model: "gpt-5.2"
                       temperature: 0.2
                       maxTokens: 800
-                      credentials:
-                        apiKey: "OPENAI_API_KEY"
+                      credentials: 
+                        type: "JWT"
+                        key: "Some-Key"
                     enforceRubricStrictness: true
       responses:
         "200":
           description: Successfully generated feedback.
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -167,12 +179,92 @@ paths:
                       message: "The overall structure of your answer is clear and easy to follow."
         "400":
           description: Invalid request (e.g. missing content or invalid schema).
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                validationError:
+                  summary: Example validation error
+                  value:
+                    title: "Invalid request"
+                    message: "submission.content must not be empty."
+                    code: "VALIDATION_ERROR"
+                    trace: null
+                    details:
+                      field: "submission.content"
+        "403":
+          description: Forbidden (e.g. insufficient permissions or access denied).
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                permissionError:
+                  summary: Example permission error
+                  value:
+                    title: "Forbidden"
+                    message: "You do not have permission to access this resource."
+                    code: "PERMISSION_DENIED"
+                    trace: null
+                    details:
+                      resource: "submission"
+                      required_permission: "write"
+
         "500":
           description: Internal server error.
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                internalError:
+                  summary: Example internal error
+                  value:
+                    title: "Internal server error"
+                    message: "Unexpected failure while generating feedback."
+                    code: "INTERNAL_ERROR"
+                    trace: "java.lang.RuntimeException: ... (stack trace omitted)"
+                    details:
+                      subsystem: "llm-provider"
+
         "501":
           description: >
             The server does not support the evaluate method. This allows
             service providers to implement only subsets of the µEd API.
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                notImplemented:
+                  summary: Example not implemented error
+                  value:
+                    title: "Not implemented"
+                    message: "This service does not implement /evaluate."
+                    code: "NOT_IMPLEMENTED"
+                    trace: null
+                    details: null
 
   /evaluate/health:
     get:
@@ -183,6 +275,12 @@ paths:
         Clients can use this endpoint to discover whether the service supports
         optional features such as pre-submission feedback, formative feedback,
         and summative feedback.
+      parameters:
+        - in: header
+          name:  X-Request-Id
+          description: Request id for tracing this request across services.
+          schema:
+            type: string
       tags:
         - evaluate
       responses:
@@ -211,16 +309,49 @@ paths:
                       supportedLanguages:
                         - "en"
                         - "de"
-        "503":
-          description: Evaluate service is currently unavailable or unhealthy.
+
+        "501":
+          description: The server does not implement the health endpoint for evaluate.
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/EvaluateHealthResponse"
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
-                exampleUnhealthy:
-                  summary: Example degraded / unavailable service
+                notImplemented:
+                  summary: Example not implemented error
                   value:
+                    title: "Not implemented"
+                    message: "This service does not implement /evaluate/health."
+                    code: "NOT_IMPLEMENTED"
+                    trace: null
+                    details: null
+
+        "503":
+          description: Evaluate service is currently unavailable or unhealthy.
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                serviceUnavailable:
+                  summary: Example unavailable error
+                  value:
+                    title: "Service unavailable"
+                    message: "Evaluate service is currently unavailable."
+                    code: "SERVICE_UNAVAILABLE"
+                    trace: null
+                    details:
+                      reason: "Database connection failed"
                     status: "unavailable"
                     message: "Database connection failed"
                     version: "1.0.0"
@@ -231,8 +362,6 @@ paths:
                       supportsSummativeFeedback: false
                       supportedArtefactTypes: []
                       supportedLanguages: []
-        "501":
-          description: The server does not implement the health endpoint for evaluate.
 
   /chat:
     post:
@@ -252,6 +381,11 @@ paths:
             type: string
           required: false
           description: Optional authorization header.
+        - in: header
+          name:  X-Request-Id
+          description: Request id for tracing this request across services.
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -292,8 +426,9 @@ paths:
                       model: "gpt-5.2"
                       temperature: 0.7
                       stream: false
-                      credentials:
-                        apiKey: "OPENAI_API_KEY"
+                      credentials: 
+                        type: "JWT"
+                        key: "Some-Key"
               chatWithContext:
                 summary: Chat request with complex educational context
                 value:
@@ -379,6 +514,11 @@ paths:
       responses:
         "200":
           description: Successful chat response.
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -446,8 +586,92 @@ paths:
 
         "400":
           description: Invalid request (e.g. missing messages or invalid schema).
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                invalidChatRequest:
+                  summary: Example invalid chat request
+                  value:
+                    title: "Invalid request"
+                    message: "messages must contain at least one item."
+                    code: "VALIDATION_ERROR"
+                    trace: null
+                    details:
+                      field: "messages"
+
+        "403":
+          description: Forbidden (e.g. insufficient permissions or access denied).
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                permissionError:
+                  summary: Example permission error
+                  value:
+                    title: "Forbidden"
+                    message: "You do not have permission to access this resource."
+                    code: "PERMISSION_DENIED"
+                    trace: null
+                    details:
+                      resource: "submission"
+                      required_permission: "write"
+
         "500":
           description: Internal server error (e.g. model provider issues).
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                modelProviderError:
+                  summary: Example model provider error
+                  value:
+                    title: "Model provider error"
+                    message: "LLM provider returned an error while generating a response."
+                    code: "LLM_PROVIDER_ERROR"
+                    trace: null
+                    details:
+                      provider: "openai"
+        "501":
+          description: >
+            The server does not support the chat method. This allows
+            service providers to implement only subsets of the µEd API.
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                notImplemented:
+                  summary: Example not implemented error
+                  value:
+                    title: "Not implemented"
+                    message: "This service does not implement /chat."
+                    code: "NOT_IMPLEMENTED"
+                    trace: null
+                    details: null
 
   /chat/health:
     get:
@@ -459,6 +683,12 @@ paths:
         optional features such as user preferences or streaming responses.
       tags:
         - chat
+      parameters:
+        - in: header
+          name:  X-Request-Id
+          description: Request id for tracing this request across services.
+          schema:
+            type: string
       responses:
         "200":
           description: Chat service is reachable and reporting capabilities.
@@ -483,18 +713,54 @@ paths:
                       supportedModels:
                         - "gpt-4o"
                         - "llama-3"
-        "503":
-          description: Chat service is currently unavailable or unhealthy.
+        
+        "501":
+          description: The server does not implement the health endpoint for chat.
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ChatHealthResponse"
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
-                exampleUnhealthy:
+                notImplemented:
+                  summary: Example not implemented error
+                  value:
+                    title: "Not implemented"
+                    message: "This service does not implement /chat/health."
+                    code: "NOT_IMPLEMENTED"
+                    trace: null
+                    details: null
+        "503":
+          description: Chat service is currently unavailable or unhealthy.
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                serviceUnavailable:
+                  summary: Example unavailable error
+                  value:
+                    title: "Service unavailable"
+                    message: "Chat service is currently unavailable."
+                    code: "SERVICE_UNAVAILABLE"
+                    trace: null
+                    details:
+                      reason: "LLM provider connection failed"
+                unhealthy:
                   summary: Example degraded / unavailable service
                   value:
-                    status: "unavailable"
-                    statusMessage: "LLM provider connection failed"
+                    title: "Service unhealthy"
+                    message: "LLM provider connection failed"
+                    code: "SERVICE_UNHEALTHY"
                     version: "1.0.0"
                     capabilities:
                       supportsChat: false
@@ -502,11 +768,41 @@ paths:
                       supportsStreaming: false
                       supportedLanguages: []
                       supportedModels: []
-        "501":
-          description: The server does not implement the health endpoint for chat.
 
 components:
   schemas:
+    # --- Standard error object (shared across ALL endpoints) ---
+    ErrorResponse:
+      type: object
+      description: Standard error response returned by µEd API services.
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          description: Short, human-readable error title.
+        message:
+          type:
+            - string
+            - "null"
+          description: Optional human-readable error message.
+        code:
+          type:
+            - string
+            - "null"
+          description: Optional application-specific error code.
+        trace:
+          type:
+            - string
+            - "null"
+          description: Optional debug trace or stack trace (should be omitted in production by default).
+        details:
+          type:
+            - object
+            - "null"
+          description: Optional provider-specific details for debugging or programmatic handling.
+          additionalProperties: true
+
     # --- Endpoint request/response wrappers ---
     EvaluateRequest:
       type: object
@@ -669,7 +965,7 @@ components:
       type: object
       description: >
         Requirements for calling the evaluate endpoint, e.g. whether an
-        Authorization header and/or LLM configuration or credentials are required.
+        Authorization header and/or LLM configuration or credentials (provided via a proxy, preferably time-based and/or signed tokens) are required.
       additionalProperties: true
       properties:
         requiresAuthorizationHeader:
@@ -682,11 +978,11 @@ components:
             - boolean
             - "null"
           description: Optional flag indicating whether configuration.llm must be provided.
-        requiresLlmCredentials:
+        requiresLlmCredentialProxy:
           type:
             - boolean
             - "null"
-          description: Optional flag indicating whether configuration.llm.credentials must be provided.
+          description: Optional flag indicating whether configuration.llm.credentials must be provided via a proxy.
 
     EvaluateCapabilities:
       type: object
@@ -811,7 +1107,7 @@ components:
           type:
             - object
             - "null"
-          description: Optional credentials object (e.g., API keys, tokens).
+          description: Optional credentials object to be supplied with time-based key via a proxy.
           additionalProperties: true
 
     PreSubmissionFeedback:
@@ -959,12 +1255,61 @@ components:
             - "null"
           description: Optional additional context about how to apply this criterion.
           additionalProperties: true
-        maxPoints:
-          type:
-            - number
-            - "null"
-          format: double
-          description: Optional maximum points for this criterion.
+        gradeConfig:
+          oneOf:
+              - $ref: '#/components/schemas/NumericGrade'
+              - $ref: '#/components/schemas/LetterOnlyGrade'
+              - $ref: '#/components/schemas/LetterPlusMinusGrade'
+              - $ref: '#/components/schemas/OtherGrade'
+          description: Optional configuration for grades for this criterion.
+
+    NumericGrade:
+      title: Numeric Grade
+      type: object
+      required:
+        - min
+        - max
+        - value
+      properties:
+        min:
+          type: number
+          description: Minimum value for the numeric range
+        max:
+          type: number
+          description: Maximum value for the numeric range
+        value:
+          type: number
+          description: The actual rating value within the min-max range
+
+    LetterOnlyGrade:
+      title: Letter Only Grade
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          type: string
+          enum: [A, B, C, D, E, F, "n/a"]
+
+    LetterPlusMinusGrade:
+      title: Letter +/- grades
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          type: string
+          enum: ["A+", A, "A-", "B+", B, "B-", "C+", C, "C-", "D+", D, "D-", "E+", E, "E-", F]
+
+    OtherGrade:
+      title: Other
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          type: string
+          description: Free-form string rating
 
     Feedback:
       type: object
