@@ -1147,11 +1147,11 @@ components:
             - "null"
           description: Required deidentification for specific uses.
           properties:
-            requiredForProductImprovement:
+            requiredForServiceImprovement:
               type:
                 - string
                 - "null"
-              description: Deidentification required for product improvement.
+              description: Deidentification required for service improvement.
               enum: [NONE, PSEUDONYMIZED, ANONYMIZED, AGGREGATED]
             requiredForResearch:
               type:
