@@ -1043,10 +1043,10 @@ components:
             - "null"
           description: >
             Optional format specifier providing additional detail about the artefact.
-            For TEXT: plain_text, markdown, html, rich_text, other.
+            For TEXT: plain_text, markdown, html, rich_text, etc.
             For CODE: programming language (e.g., python, java, javascript).
-            For MATH: latex, mathml, sympy, wolfram, asciimath.
-            For MODEL: uml, er, bpmn, petri_net, state_machine.
+            For MATH: latex, mathml, sympy, wolfram, asciimath, etc.
+            For MODEL: uml, er, bpmn, petri_net, state_machine, etc.
             Use lowercase values. Services should document which formats they support.
         content:
           type: object
