@@ -130,7 +130,9 @@ paths:
                       model: "gpt-5.2"
                       temperature: 0.2
                       maxTokens: 800
-                      credentials: "JWT_KEY"
+                      credentials: 
+                        type: "JWT"
+                        key: "Some-Key"
                     enforceRubricStrictness: true
       responses:
         "200":
@@ -290,7 +292,9 @@ paths:
                       model: "gpt-5.2"
                       temperature: 0.7
                       stream: false
-                      credentials: "JWT_KEY"
+                      credentials: 
+                        type: "JWT"
+                        key: "Some-Key"
               chatWithContext:
                 summary: Chat request with complex educational context
                 value:
