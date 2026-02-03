@@ -590,7 +590,7 @@ components:
         status:
           type: string
           description: Overall health status of the evaluation service.
-          enum: [ok, degraded, unavailable]
+          enum: [OK, DEGRADED, UNAVAILABLE]
         message:
           type:
             - string
@@ -685,7 +685,7 @@ components:
       properties:
         status:
           type: string
-          enum: [ok, degraded, unavailable]
+          enum: [OK, DEGRADED, UNAVAILABLE]
         statusMessage:
           type:
             - string
@@ -993,7 +993,7 @@ components:
       properties:
         role:
           type: string
-          enum: [user, assistant, system, tool]
+          enum: [USER, ASSISANT, SYSTEM, TOOL]
         content:
           type: string
 
@@ -1024,7 +1024,7 @@ components:
               description: Optional but recommended legal basis for processing.
               items:
                 type: string
-                enum: [consent, contract, legal_obligation, public_task, legitimate_interests, vital_interests, other]
+                enum: [CONSENT, CONTRACT, LEGAL_OBLIGATION, PUBLIC_TASK, LEGITIMATE_INTERESTS, VITAL_INTERESTS, OTHER]
         jurisdiction:
           type:
             - object
@@ -1063,7 +1063,7 @@ components:
                 - string
                 - "null"
               description: Type of population this data concerns.
-              enum: [student, staff, guardian, mixed, other]
+              enum: [STUDENT, STAFF, GUARDIAN, MIXED, OTHER]
             isChildData:
               type:
                 - boolean
@@ -1085,7 +1085,7 @@ components:
                 - string
                 - "null"
               description: Primary classification of the data.
-              enum: [anonymous, pseudonymous, personal, education_record, sensitive,other]
+              enum: [ANONYMOUS, PSEUDONYMOUS, PERSONAL, EDUCATION_RECORD, SENSITIVE,OTHER]
               additionalProperties: true
         retentionPermission:
           type:
@@ -1094,7 +1094,7 @@ components:
           description: What retention and secondary uses are permitted.
           items:
             type: string
-            enum: [never, security, logging, product-improvement-no-share, product-improvement-share-limited, research-confidential, public, other]
+            enum: [NEVER, SECURITY, LOGGING, PRODUCT-IMPROVEMENT-NO-SHARE, PRODUCT-IMPROVEMENT-SHARE-LIMITED, RESEARCH-CONFIDENTIAL, PUBLIC, OTHER]
         retention:
           type:
             - object
@@ -1106,7 +1106,7 @@ components:
                 - string
                 - "null"
               description: Maximum retention period classification.
-              enum: [transient, short, medium, long, indefinite]
+              enum: [TRANSIENT, SHORT, MEDIUM, LONG, INDEFINITE]
             timeToLiveDays:
               type:
                 - integer
@@ -1133,7 +1133,7 @@ components:
                 - string
                 - "null"
               description: Third-party sharing policy.
-              enum: [prohibited, allowed, allowed-limited]
+              enum: [PROHIBITED, ALLOWED, ALLOWED-LIMITED]
             subprocessorsAllowed:
               type:
                 - boolean
@@ -1146,7 +1146,7 @@ components:
               description: Categories of allowed recipients.
               items:
                 type: string
-                enum: [controller-only, internal-services, named-partners, public]
+                enum: [CONTROLLER-ONLY, INTERNAL-SERVICES, NAMED-PARTNERS, PUBLIC]
         deidentification:
           type:
             - object
@@ -1158,13 +1158,13 @@ components:
                 - string
                 - "null"
               description: Deidentification required for product improvement.
-              enum: [none, pseudonymized, anonymized]
+              enum: [NONE, PSEUDONYMIZED, ANONYMIZED]
             requiredForResearch:
               type:
                 - string
                 - "null"
               description: Deidentification required for research.
-              enum: [pseudonymized, anonymized, aggregated]
+              enum: [PSEUDONYMIZED, ANONYMIZED, AGGREGATED]
 
     Region:
       type: string
