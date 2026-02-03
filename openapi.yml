@@ -1623,6 +1623,6 @@ components:
       enum: [NONE, PSEUDONYMIZED, ANONYMIZED, AGGREGATED]
 
     HealthStatus:
-          type: string
-          description: Overall health status of the evaluation service.
-          enum: [OK, DEGRADED, UNAVAILABLE]
+      type: string
+      description: Overall health status of the evaluation service.
+      enum: [OK, DEGRADED, UNAVAILABLE]
