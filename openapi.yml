@@ -290,6 +290,27 @@ paths:
                         - "en"
                         - "de"
 
+        "501":
+          description: The server does not implement the health endpoint for evaluation.
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                notImplemented:
+                  summary: Example not implemented error
+                  value:
+                    title: "Not implemented"
+                    message: "This service does not implement /evaluate/health."
+                    code: "NOT_IMPLEMENTED"
+                    trace: null
+                    details: null
+        
         "503":
           description: Evaluation service is currently unavailable or unhealthy.
           headers:
@@ -311,27 +332,6 @@ paths:
                     trace: null
                     details:
                       reason: "Database connection failed"
-
-        "501":
-          description: The server does not implement the health endpoint for evaluation.
-          headers:
-            X-Request-Id:
-              description: Request id for tracing this request across services.
-              schema:
-                type: string
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-              examples:
-                notImplemented:
-                  summary: Example not implemented error
-                  value:
-                    title: "Not implemented"
-                    message: "This service does not implement /evaluate/health."
-                    code: "NOT_IMPLEMENTED"
-                    trace: null
-                    details: null
 
   /chat:
     post:
@@ -577,6 +577,26 @@ paths:
                       supportedModels:
                         - "gpt-4o"
                         - "llama-3"
+        "501":
+          description: The server does not implement the health endpoint for chat.
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                notImplemented:
+                  summary: Example not implemented error
+                  value:
+                    title: "Not implemented"
+                    message: "This service does not implement /chat/health."
+                    code: "NOT_IMPLEMENTED"
+                    trace: null
+                    details: null
         "503":
           description: Chat service is currently unavailable or unhealthy.
           headers:
@@ -598,26 +618,6 @@ paths:
                     trace: null
                     details:
                       reason: "LLM provider connection failed"
-        "501":
-          description: The server does not implement the health endpoint for chat.
-          headers:
-            X-Request-Id:
-              description: Request id for tracing this request across services.
-              schema:
-                type: string
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-              examples:
-                notImplemented:
-                  summary: Example not implemented error
-                  value:
-                    title: "Not implemented"
-                    message: "This service does not implement /chat/health."
-                    code: "NOT_IMPLEMENTED"
-                    trace: null
-                    details: null
 
 components:
   schemas:
