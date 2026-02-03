@@ -579,7 +579,7 @@ paths:
                       supportsPreSubmissionFeedback: false
                       supportsFormativeFeedback: false
                       supportsSummativeFeedback: false
-                      supportsDataPolicy: "FALSE"
+                      supportsDataPolicy: "NOT_SUPPORTED"
                       supportedArtefactProfiles: []
                       supportedLanguages: []
 
@@ -927,7 +927,7 @@ paths:
                       supportsChat: true
                       supportsUserPreferences: true
                       supportsStreaming: true
-                      supportsDataPolicy: false
+                      supportsDataPolicy: "NOT_SUPPORTED"
                       supportedLanguages:
                         - "en"
                         - "de"
@@ -986,7 +986,7 @@ paths:
                       supportsChat: false
                       supportsUserPreferences: false
                       supportsStreaming: false
-                      supportsDataPolicy: false
+                      supportsDataPolicy: "NOT_SUPPORTED"
                       supportedLanguages: []
                       supportedModels: []
 
@@ -1241,7 +1241,7 @@ components:
           description: Indicates whether the service supports feedback with points / grading signals.
         supportsDataPolicy:
           type: string
-          enum: [TRUE, FALSE, PARTIAL]
+          enum: [SUPPORTED, NOT_SUPPORTED, PARTIAL]
           additionalProperties: true
           description: Indicates whether the service supports data policy configuration.
         supportedArtefactProfiles:
