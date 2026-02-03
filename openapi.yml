@@ -195,6 +195,28 @@ paths:
                     trace: null
                     details:
                       field: "submission.content"
+        "403":
+          description: Forbidden (e.g. insufficient permissions or access denied).
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                permissionError:
+                  summary: Example permission error
+                  value:
+                    title: "Forbidden"
+                    message: "You do not have permission to access this resource."
+                    code: "PERMISSION_DENIED"
+                    trace: null
+                    details:
+                      resource: "submission"
+                      required_permission: "write"
 
         "500":
           description: Internal server error.
@@ -260,12 +282,7 @@ paths:
         - evaluation
       responses:
         "200":
-          description: Evaluation service is reachable and reporting capabilities
-          headers:
-            X-Request-Id:
-              description: Request id for tracing this request across services.
-              schema:
-                type: string
+          description: Evaluation service is reachable and reporting capabilities.
           content:
             application/json:
               schema:
@@ -290,27 +307,6 @@ paths:
                         - "en"
                         - "de"
 
-        "501":
-          description: The server does not implement the health endpoint for evaluation.
-          headers:
-            X-Request-Id:
-              description: Request id for tracing this request across services.
-              schema:
-                type: string
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-              examples:
-                notImplemented:
-                  summary: Example not implemented error
-                  value:
-                    title: "Not implemented"
-                    message: "This service does not implement /evaluate/health."
-                    code: "NOT_IMPLEMENTED"
-                    trace: null
-                    details: null
-        
         "503":
           description: Evaluation service is currently unavailable or unhealthy.
           headers:
@@ -332,6 +328,27 @@ paths:
                     trace: null
                     details:
                       reason: "Database connection failed"
+
+        "501":
+          description: The server does not implement the health endpoint for evaluation.
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                notImplemented:
+                  summary: Example not implemented error
+                  value:
+                    title: "Not implemented"
+                    message: "This service does not implement /evaluate/health."
+                    code: "NOT_IMPLEMENTED"
+                    trace: null
+                    details: null
 
   /chat:
     post:
@@ -510,6 +527,29 @@ paths:
                     details:
                       field: "messages"
 
+        "403":
+          description: Forbidden (e.g. insufficient permissions or access denied).
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                permissionError:
+                  summary: Example permission error
+                  value:
+                    title: "Forbidden"
+                    message: "You do not have permission to access this resource."
+                    code: "PERMISSION_DENIED"
+                    trace: null
+                    details:
+                      resource: "submission"
+                      required_permission: "write"
+
         "500":
           description: Internal server error (e.g. model provider issues).
           headers:
@@ -551,11 +591,6 @@ paths:
       responses:
         "200":
           description: Chat service is reachable and reporting capabilities.
-          headers:
-            X-Request-Id:
-              description: Request id for tracing this request across services.
-              schema:
-                type: string
           content:
             application/json:
               schema:
@@ -577,26 +612,6 @@ paths:
                       supportedModels:
                         - "gpt-4o"
                         - "llama-3"
-        "501":
-          description: The server does not implement the health endpoint for chat.
-          headers:
-            X-Request-Id:
-              description: Request id for tracing this request across services.
-              schema:
-                type: string
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-              examples:
-                notImplemented:
-                  summary: Example not implemented error
-                  value:
-                    title: "Not implemented"
-                    message: "This service does not implement /chat/health."
-                    code: "NOT_IMPLEMENTED"
-                    trace: null
-                    details: null
         "503":
           description: Chat service is currently unavailable or unhealthy.
           headers:
@@ -618,6 +633,26 @@ paths:
                     trace: null
                     details:
                       reason: "LLM provider connection failed"
+        "501":
+          description: The server does not implement the health endpoint for chat.
+          headers:
+            X-Request-Id:
+              description: Request id for tracing this request across services.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                notImplemented:
+                  summary: Example not implemented error
+                  value:
+                    title: "Not implemented"
+                    message: "This service does not implement /chat/health."
+                    code: "NOT_IMPLEMENTED"
+                    trace: null
+                    details: null
 
 components:
   schemas:
