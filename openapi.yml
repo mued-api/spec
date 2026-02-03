@@ -183,7 +183,6 @@ paths:
                 validationError:
                   summary: Example validation error
                   value:
-                    requestId: "0d7f2b67-1e6f-4a2a-9c7f-3c23a2e6f1ab"
                     title: "Invalid request"
                     message: "submission.content must not be empty."
                     code: "VALIDATION_ERROR"
@@ -206,7 +205,6 @@ paths:
                 internalError:
                   summary: Example internal error
                   value:
-                    requestId: "9a1c4d32-7f02-4b7f-9c2f-74bd2e7c8a10"
                     title: "Internal server error"
                     message: "Unexpected failure while generating feedback."
                     code: "INTERNAL_ERROR"
@@ -231,7 +229,6 @@ paths:
                 notImplemented:
                   summary: Example not implemented error
                   value:
-                    requestId: "f3cddf3a-2c29-4a40-8f8b-1f37d3d8a2c1"
                     title: "Not implemented"
                     message: "This service does not implement /evaluate."
                     code: "NOT_IMPLEMENTED"
@@ -291,7 +288,6 @@ paths:
                 serviceUnavailable:
                   summary: Example unavailable error
                   value:
-                    requestId: "b5d7b6c1-6d53-4d75-8a66-8a1f3d9879cf"
                     title: "Service unavailable"
                     message: "Evaluation service is currently unavailable."
                     code: "SERVICE_UNAVAILABLE"
@@ -314,7 +310,6 @@ paths:
                 notImplemented:
                   summary: Example not implemented error
                   value:
-                    requestId: "c0c0a2d8-9c4e-4c1e-bd3e-62c7d2f07e44"
                     title: "Not implemented"
                     message: "This service does not implement /evaluate/health."
                     code: "NOT_IMPLEMENTED"
@@ -486,7 +481,6 @@ paths:
                 invalidChatRequest:
                   summary: Example invalid chat request
                   value:
-                    requestId: "3f2a9a60-8c6f-4edb-a58a-7df2f8d9fb6d"
                     title: "Invalid request"
                     message: "messages must contain at least one item."
                     code: "VALIDATION_ERROR"
@@ -509,7 +503,6 @@ paths:
                 modelProviderError:
                   summary: Example model provider error
                   value:
-                    requestId: "b8b1a1c5-1f91-4b63-a10f-6b3b6dfe6f6e"
                     title: "Model provider error"
                     message: "LLM provider returned an error while generating a response."
                     code: "LLM_PROVIDER_ERROR"
@@ -566,7 +559,6 @@ paths:
                 serviceUnavailable:
                   summary: Example unavailable error
                   value:
-                    requestId: "e1b33c7c-2b4a-4a1c-93a5-6f4b4a2d8c21"
                     title: "Service unavailable"
                     message: "Chat service is currently unavailable."
                     code: "SERVICE_UNAVAILABLE"
@@ -588,7 +580,6 @@ paths:
                 notImplemented:
                   summary: Example not implemented error
                   value:
-                    requestId: "8a6c9c0f-3fbe-4b9c-8dcf-6c7f0d1a2b3c"
                     title: "Not implemented"
                     message: "This service does not implement /chat/health."
                     code: "NOT_IMPLEMENTED"
@@ -604,11 +595,6 @@ components:
       required:
         - title
       properties:
-        requestId:
-          type:
-            - string
-            - "null"
-          description: Optional request id for tracing this request across services.
         title:
           type: string
           description: Short, human-readable error title.
