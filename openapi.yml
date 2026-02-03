@@ -1240,10 +1240,7 @@ components:
           type: boolean
           description: Indicates whether the service supports feedback with points / grading signals.
         supportsDataPolicy:
-          type: string
-          enum: [SUPPORTED, NOT_SUPPORTED, PARTIAL]
-          additionalProperties: true
-          description: Indicates whether the service supports data policy configuration.
+          $ref: "#/components/schemas/DataPolicySupport"
         supportedArtefactProfiles:
           type:
             - array
@@ -1301,10 +1298,7 @@ components:
           type: boolean
           description: Indicates whether the service supports streaming responses.
         supportsDataPolicy:
-          type: string
-          enum: [TRUE, FALSE, PARTIAL]
-          additionalProperties: true
-          description: Indicates whether the service supports data policy configuration.
+          $ref: "#/components/schemas/DataPolicySupport"
         supportedLanguages:
           type:
             - array
@@ -1915,3 +1909,8 @@ components:
       type: string
       description: Overall health status of the evaluation service.
       enum: [OK, DEGRADED, UNAVAILABLE]
+
+    DataPolicySupport:
+        type: string
+        enum: [SUPPORTED, NOT_SUPPORTED, PARTIAL]
+        description: Indicates whether the service supports data policy configuration.
