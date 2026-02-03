@@ -927,7 +927,7 @@ paths:
                       supportsChat: true
                       supportsUserPreferences: true
                       supportsStreaming: true
-                      supportsDataPolicy: "FALSE"
+                      supportsDataPolicy: false
                       supportedLanguages:
                         - "en"
                         - "de"
@@ -986,7 +986,7 @@ paths:
                       supportsChat: false
                       supportsUserPreferences: false
                       supportsStreaming: false
-                      supportsDataPolicy: "FALSE"
+                      supportsDataPolicy: false
                       supportedLanguages: []
                       supportedModels: []
 
