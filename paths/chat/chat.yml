@@ -1,0 +1,218 @@
+post:
+  summary: Chat about tasks, submissions, or learning topics
+  operationId: chat
+  description: >
+    Conversational endpoint for educational chat use cases. A conversation can be
+    grounded in a specific course, task or submission and may use user information
+    to adapt tone and detail. Typical use cases include: asking follow-up questions
+    on feedback, requesting hints, or clarifying concepts.
+  tags:
+    - chat
+  parameters:
+    - $ref: "../shared/parameters/Authorization.yml"
+    - $ref: "../shared/parameters/X-Request-Id.yml"
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "./schemas/ChatRequest.yml"
+        examples:
+          minimalChat:
+            summary: Minimal chat request
+            value:
+              messages:
+                - role: USER
+                  content: "Can you explain polymorphism?"
+              configuration: null
+
+          chatWithLlmConfig:
+            summary: Chat request with optional LLM configuration
+            value:
+              conversationId: "conv-1001"
+              user:
+                userId: "user-456"
+                type: LEARNER
+                detailPreference: MEDIUM
+                tonePreference: FRIENDLY
+                languagePreference: "en"
+              messages:
+                - role: USER
+                  content: "Give me a hint for my answer about polymorphism."
+              context:
+                task:
+                  taskId: "task-12"
+                  title: "Explain polymorphism"
+                  content:
+                    text: "Define polymorphism and give at least one example in Java."
+              configuration:
+                type: "Java Assistant"
+                llm:
+                  model: "gpt-5.2"
+                  temperature: 0.7
+                  stream: false
+                  credentials:
+                    type: "JWT"
+                    key: "Some-Key"
+          chatWithContext:
+            summary: Chat request with complex educational context
+            value:
+              messages:
+                - role: USER
+                  content: "What should I do for this part?"
+              user:
+                userId: "user-321"
+                type: LEARNER
+                detailPreference: DETAILED
+                tonePreference: NEUTRAL
+                languagePreference: "en"
+                taskProgress:
+                  currentQuestionId: "question-321"
+                  timeSpentOnQuestion: "30 minutes"
+                  currentPart:
+                    partId: "part-1"
+                    timeSpentOnPart: "10 minutes"
+                    submission:
+                      type: "TEXT"
+                      content:
+                        text: 'outputs= ["Woof!", "Meow!"]'
+                      feedback:
+                        - feedbackId: "fb-101"
+                          message: "Incomplete answer, explain why these outputs occur."
+              context:
+                module:
+                  moduleId: "module-456"
+                  title: "Introduction to Object-Oriented Programming (OOP)"
+                set:
+                  setId: "set-789"
+                  title: "Fundamentals"
+                question:
+                  questionId: "question-321"
+                  title: "Understanding Polymorphism"
+                  content: >
+                    Answer the questions for the following example of polymorphism in Python.
+
+                    ```python
+                    class Animal:
+                        def speak(self):
+                            pass
+
+                    class Dog(Animal):
+                        def speak(self):
+                            return "Woof!"
+
+                    class Cat(Animal):
+                        def speak(self):
+                            return "Meow!"
+
+                    animals = [Dog(), Cat()]
+                    for animal in animals:
+                        print(animal.speak())
+                    ```
+                  estimatedTime: "15-25 minutes"
+                  parts:
+                    - partId: "part-1"
+                      content: >
+                        Looking at the code example, identify which method is being overridden
+                        and explain how this demonstrates polymorphism. What output would the
+                        code produce and why?
+
+                    - partId: "part-2"
+                      content: >
+                        Write a new class called `Bird` that inherits from `Animal` and
+                        overrides the `speak()` method to return "Tweet!". Then add an
+                        instance of `Bird` to the animals list.
+                      referenceSolution:
+                        code: |
+                          class Bird(Animal):
+                              def speak(self):
+                                  return "Tweet!"
+
+                          animals = [Dog(), Cat(), Bird()]
+                          for animal in animals:
+                              print(animal.speak())
+              configuration:
+                type: "CS Assistant"
+                llm:
+                  model: "gpt-5.2"
+                  temperature: 0.5
+  responses:
+    "200":
+      description: Successful chat response.
+      headers:
+        X-Request-Id:
+          description: Request id for tracing this request across services.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: "./schemas/ChatResponse.yml"
+          examples:
+            minimalChatResponse:
+              summary: Minimal chat response
+              value:
+                response:
+                  role: ASSISTANT
+                  content: >
+                    Polymorphism is a core concept in object-oriented programming that allows
+                    objects of different classes to be treated as objects of a common superclass.
+                    It enables a single interface to represent different underlying forms (data types).
+                    For example, in Java, you can have a superclass `Animal` with a method `speak()`,
+                    and subclasses like `Dog` and `Cat` that provide their own implementations of `speak()`.
+                    When you call `speak()` on an `Animal` reference, the appropriate subclass method is invoked
+                    based on the actual object type at runtime.
+                metadata: null
+            chatWithLlmConfigResponse:
+              summary: Chat response with LLM configuration
+              value:
+                response:
+                  role: ASSISTANT
+                  content: >
+                    Here's a hint for your answer about polymorphism: Focus on how polymorphism
+                    allows methods to do different things based on the object that it is acting upon,
+                    even when accessed through a common interface. You might want to mention method
+                    overriding and how it enables this behavior in object-oriented programming.
+                metadata:
+                  responseTimeMs: 1800
+                  type: "Java Assistant"
+                  createdAt: "2025-12-10T11:15:00Z"
+                  llm:
+                    model: "gpt-5.2"
+                    temperature: 0.7
+                    outputTokens: 78
+            chatWithContextResponse:
+              summary: Chat response with context
+              value:
+                response:
+                  role: ASSISTANT
+                  content: >
+                    In the provided code example, the `speak()` method is being overridden
+                    in the `Dog` and `Cat` subclasses of the `Animal` superclass. This demonstrates
+                    polymorphism because when we call `speak()` on each animal in the `animals` list,
+                    the method that gets executed depends on the actual object type (either `Dog` or `Cat`),
+                    not the reference type (`Animal`). The output of the code would be:
+
+                    ```
+                    Woof!
+                    Meow!
+                    ```
+
+                    This happens because each subclass provides its own implementation of the `speak()` method,
+                    and at runtime, the correct method is called based on the object's type.
+                metadata:
+                  responseTimeMs: 2000
+                  type: "CS Assistant"
+                  createdAt: "2025-12-10T11:15:00Z"
+                  llm:
+                    model: "gpt-5.2"
+                    temperature: 0.5
+                    outputTokens: 143
+    "400":
+      $ref: "./responses/400-BadRequest.yml"
+    "403":
+      $ref: "./responses/403-Forbidden.yml"
+    "500":
+      $ref: "./responses/500-InternalError.yml"
+    "501":
+      $ref: "./responses/501-NotImplemented.yml"

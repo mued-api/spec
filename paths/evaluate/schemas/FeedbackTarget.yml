@@ -1,0 +1,24 @@
+type: object
+description: Optional reference to a specific part of the submission.
+required:
+  - artefactType
+properties:
+  artefactType:
+    $ref: "../../shared/enums/ArtefactType.yml"
+  format:
+    type:
+      - string
+      - "null"
+    description: >
+      Optional format specifier matching the submission format (e.g., python, latex).
+  locator:
+    type:
+      - object
+      - "null"
+    description: >
+      Optional locator into the submission content. Standard locator types:
+      - TEXT: { type: "span", startIndex: number, endIndex: number }
+      - CODE: { type: "range", file?: string, startLine: number, endLine: number, startColumn?: number, endColumn?: number }
+      - MATH: { type: "subexpression", path: string } (e.g., path to subexpression)
+      - MODEL: { type: "element", elementId: string, elementType?: string }
+    additionalProperties: true

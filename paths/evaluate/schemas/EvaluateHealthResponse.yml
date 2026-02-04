@@ -1,0 +1,27 @@
+type: object
+description: Health status and capabilities of the evaluate service.
+required:
+  - status
+  - capabilities
+properties:
+  status:
+    $ref: "../../shared/enums/HealthStatus.yml"
+  message:
+    type:
+      - string
+      - "null"
+    description: Optional human-readable status message.
+  version:
+    type:
+      - string
+      - "null"
+    description: Optional version of the evaluate service implementation.
+  requirements:
+    type:
+      - object
+      - "null"
+    description: Optional requirements clients must satisfy to use this service.
+    allOf:
+      - $ref: "./EvaluateRequirements.yml"
+  capabilities:
+    $ref: "./EvaluateCapabilities.yml"

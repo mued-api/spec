@@ -1,0 +1,35 @@
+description: Service is currently unavailable or unhealthy.
+headers:
+  X-Request-Id:
+    description: Request id for tracing this request across services.
+    schema:
+      type: string
+content:
+  application/json:
+    schema:
+      $ref: "../../shared/schemas/ErrorResponse.yml"
+    examples:
+      serviceUnavailable:
+        summary: Example unavailable error
+        value:
+          title: "Service unavailable"
+          message: "Evaluate service is currently unavailable."
+          code: "SERVICE_UNAVAILABLE"
+          trace: null
+          details:
+            reason: "Database connection failed"
+      unhealthy:
+        summary: Example degraded / unavailable service
+        value:
+          title: "Service unhealthy"
+          status: "UNAVAILABLE"
+          message: "Database connection failed"
+          version: "1.0.0"
+          capabilities:
+            supportsEvaluate: false
+            supportsPreSubmissionFeedback: false
+            supportsFormativeFeedback: false
+            supportsSummativeFeedback: false
+            supportsDataPolicy: "NOT_SUPPORTED"
+            supportedArtefactProfiles: []
+            supportedLanguages: []

@@ -1,0 +1,6 @@
+in: header
+name: Authorization
+schema:
+  type: string
+required: false
+description: Optional authorization header.

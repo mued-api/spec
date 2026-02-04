@@ -1,0 +1,14 @@
+type: object
+description: Response body for the chat endpoint.
+required:
+  - response
+properties:
+  response:
+    $ref: "./Message.yml"
+    description: The generated assistant response.
+  metadata:
+    type:
+      - object
+      - "null"
+    description: Optional metadata about response generation.
+    additionalProperties: true

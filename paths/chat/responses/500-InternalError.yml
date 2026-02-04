@@ -1,0 +1,29 @@
+description: Internal server error.
+headers:
+  X-Request-Id:
+    description: Request id for tracing this request across services.
+    schema:
+      type: string
+content:
+  application/json:
+    schema:
+      $ref: "../../shared/schemas/ErrorResponse.yml"
+    examples:
+      internalError:
+        summary: Example internal error
+        value:
+          title: "Internal server error"
+          message: "Unexpected failure while generating response."
+          code: "INTERNAL_ERROR"
+          trace: "java.lang.RuntimeException: ... (stack trace omitted)"
+          details:
+            subsystem: "llm-provider"
+      modelProviderError:
+        summary: Example model provider error
+        value:
+          title: "Model provider error"
+          message: "LLM provider returned an error while generating a response."
+          code: "LLM_PROVIDER_ERROR"
+          trace: null
+          details:
+            provider: "openai"

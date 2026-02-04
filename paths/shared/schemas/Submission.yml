@@ -1,0 +1,51 @@
+type: object
+description: >
+  A student's submission for a task. The structure of 'content' is intentionally
+  generic and task-specific.
+required:
+  - type
+  - content
+properties:
+  submissionId:
+    type: string
+    description: Optional unique identifier of the submission.
+  taskId:
+    type:
+      - string
+      - "null"
+    description: Optional identifier of the task this submission belongs to.
+  type:
+    $ref: "../enums/ArtefactType.yml"
+  format:
+    type:
+      - string
+      - "null"
+    description: >
+      Optional format specifier providing additional detail about the artefact.
+      For TEXT: plain_text, markdown, html, rich_text, etc.
+      For CODE: programming language (e.g., python, java, javascript, wolfram, matlab).
+      For MATH: latex, mathml, sympy, wolfram, asciimath, etc.
+      For MODEL: uml, er, bpmn, petri_net, state_machine, etc.
+      Use lowercase values and snakecase. Services should document which formats they support.
+  content:
+    type: object
+    additionalProperties: true
+    description: >
+      Logical representation of the submission content. The expected structure
+      depends on the artefact type:
+      - TEXT: { text: string } or { markdown: string }
+      - CODE: { code: string } or { files: [{ path: string, content: string }], entryPoint?: string }
+      - MATH: { expression: string }
+      - MODEL: { model: string | object, notation?: string }
+  submittedAt:
+    type:
+      - string
+      - "null"
+    format: date-time
+    description: Optional timestamp when the submission was created.
+  version:
+    type:
+      - integer
+      - "null"
+    format: int32
+    description: Optional version number (e.g., resubmissions).

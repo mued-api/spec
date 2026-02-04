@@ -1,0 +1,54 @@
+type: object
+description: Request body for the chat endpoint.
+required:
+  - messages
+properties:
+  messages:
+    type: array
+    description: List of messages in the conversation (including history).
+    items:
+      $ref: "./Message.yml"
+  conversationId:
+    type:
+      - string
+      - "null"
+    description: Optional identifier for the conversation session.
+  user:
+    description: Optional user information to adapt the chat style and level.
+    type:
+      - object
+      - "null"
+    allOf:
+      - $ref: "../../shared/schemas/User.yml"
+  context:
+    type:
+      - object
+      - "null"
+    description: Optional educational context (e.g., course material, task context).
+    additionalProperties: true
+  configuration:
+    type:
+      - object
+      - "null"
+    description: Optional configuration for the model(s).
+    additionalProperties: true
+    properties:
+      type:
+        type:
+          - string
+          - "null"
+        description: Optional type for the chatbot or chat model.
+      llm:
+        description: Optional LLM configuration used for this request.
+        type:
+          - object
+          - "null"
+        allOf:
+          - $ref: "../../shared/schemas/LLMConfiguration.yml"
+      dataPolicy:
+        description: Optional data policy governing how this request's data may be processed and retained.
+        type:
+          - object
+          - "null"
+        allOf:
+          - $ref: "../../shared/schemas/DataPolicy.yml"

@@ -1,0 +1,34 @@
+description: Service is currently unavailable or unhealthy.
+headers:
+  X-Request-Id:
+    description: Request id for tracing this request across services.
+    schema:
+      type: string
+content:
+  application/json:
+    schema:
+      $ref: "../../shared/schemas/ErrorResponse.yml"
+    examples:
+      serviceUnavailable:
+        summary: Example unavailable error
+        value:
+          title: "Service unavailable"
+          message: "Chat service is currently unavailable."
+          code: "SERVICE_UNAVAILABLE"
+          trace: null
+          details:
+            reason: "LLM provider connection failed"
+      serviceUnhealthy:
+        summary: Example degraded / unavailable service
+        value:
+          title: "Service unhealthy"
+          message: "LLM provider connection failed"
+          code: "SERVICE_UNHEALTHY"
+          version: "1.0.0"
+          capabilities:
+            supportsChat: false
+            supportsUserPreferences: false
+            supportsStreaming: false
+            supportsDataPolicy: "NOT_SUPPORTED"
+            supportedLanguages: []
+            supportedModels: []

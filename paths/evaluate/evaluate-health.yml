@@ -1,0 +1,47 @@
+get:
+  summary: Health and capabilities of the evaluate service
+  operationId: getEvaluateHealth
+  description: >
+    Returns health information and capabilities of the evaluate service.
+    Clients can use this endpoint to discover whether the service supports
+    optional features such as pre-submission feedback, formative feedback,
+    and summative feedback.
+  tags:
+    - evaluate
+  parameters:
+    - $ref: "../shared/parameters/X-Request-Id.yml"
+  responses:
+    "200":
+      description: Evaluate service is reachable and reporting capabilities.
+      content:
+        application/json:
+          schema:
+            $ref: "./schemas/EvaluateHealthResponse.yml"
+          examples:
+            exampleHealth:
+              summary: Example healthy service with capabilities
+              value:
+                status: "OK"
+                message: "Service healthy"
+                version: "1.0.0"
+                capabilities:
+                  supportsEvaluate: true
+                  supportsPreSubmissionFeedback: false
+                  supportsFormativeFeedback: true
+                  supportsSummativeFeedback: true
+                  supportsDataPolicy: "PARTIAL"
+                  supportedArtefactProfiles:
+                    - type: "TEXT"
+                      supportedFormats: ["plain", "markdown"]
+                    - type: "CODE"
+                      supportedFormats: ["python", "java", "javascript"]
+                    - type: "MATH"
+                      supportedFormats: ["latex", "mathml"]
+                  supportedLanguages:
+                    - "en"
+                    - "de"
+    "501":
+      description: The server does not implement the health endpoint for evaluate.
+      $ref: "./responses/501-NotImplemented.yml"
+    "503":
+      $ref: "./responses/503-ServiceUnavailable.yml"

@@ -1,0 +1,21 @@
+type: object
+description: >
+  Requirements for calling the evaluate endpoint, e.g. whether an
+  Authorization header and/or LLM configuration or credentials (provided via a proxy, preferably time-based and/or signed tokens) are required.
+additionalProperties: true
+properties:
+  requiresAuthorizationHeader:
+    type:
+      - boolean
+      - "null"
+    description: Optional flag indicating whether an Authorization header is required.
+  requiresLlmConfiguration:
+    type:
+      - boolean
+      - "null"
+    description: Optional flag indicating whether configuration.llm must be provided.
+  requiresLlmCredentialProxy:
+    type:
+      - boolean
+      - "null"
+    description: Optional flag indicating whether configuration.llm.credentials must be provided via a proxy.

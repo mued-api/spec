@@ -1,0 +1,32 @@
+type: object
+description: Capabilities of the chat service.
+required:
+  - supportsChat
+  - supportsDataPolicy
+properties:
+  supportsChat:
+    type: boolean
+    description: Indicates whether the /chat endpoint is implemented and usable.
+  supportsUserPreferences:
+    type: boolean
+    description: Indicates whether the service supports adapting to user preferences.
+  supportsStreaming:
+    type: boolean
+    description: Indicates whether the service supports streaming responses.
+  supportsDataPolicy:
+    $ref: "../../shared/enums/DataPolicySupport.yml"
+  supportedLanguages:
+    type:
+      - array
+      - "null"
+    description: Optional list of supported language codes.
+    items:
+      type: string
+  supportedModels:
+    type:
+      - array
+      - "null"
+    description: Optional list of supported models.
+    items:
+      type: string
+  additionalProperties: true

@@ -1,0 +1,46 @@
+type: object
+description: >
+  A single feedback item produced for the submission. It may include
+  suggested actions, optional points, optional criterion linkage, and
+  optional targeting into the submission.
+required:
+  - feedbackId
+properties:
+  feedbackId:
+    type: string
+    description: Unique identifier of the feedback item.
+  title:
+    type:
+      - string
+      - "null"
+    description: Optional short label for this feedback item.
+  message:
+    type:
+      - string
+      - "null"
+    description: Optional feedback text shown to the learner.
+  suggestedAction:
+    type:
+      - string
+      - "null"
+    description: Optional suggestion for how to act on this feedback.
+  awardedPoints:
+    type:
+      - number
+      - "null"
+    format: double
+    description: Optional points awarded for this feedback item.
+  criterion:
+    type:
+      - object
+      - "null"
+    description: Optional criterion linked to this feedback item.
+    allOf:
+      - $ref: "./Criterion.yml"
+  target:
+    type:
+      - object
+      - "null"
+    description: Optional target reference inside the submission.
+    allOf:
+      - $ref: "./FeedbackTarget.yml"
