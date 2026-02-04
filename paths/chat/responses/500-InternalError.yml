@@ -9,15 +9,6 @@ content:
     schema:
       $ref: "../../shared/schemas/ErrorResponse.yml"
     examples:
-      internalError:
-        summary: Example internal error
-        value:
-          title: "Internal server error"
-          message: "Unexpected failure while generating response."
-          code: "INTERNAL_ERROR"
-          trace: "java.lang.RuntimeException: ... (stack trace omitted)"
-          details:
-            subsystem: "llm-provider"
       modelProviderError:
         summary: Example model provider error
         value:
