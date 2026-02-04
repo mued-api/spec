@@ -1702,6 +1702,7 @@ paths:
                       supportsChat: true
                       supportsUserPreferences: true
                       supportsStreaming: true
+                      supportsDataPolicy: NOT_SUPPORTED
                       supportedLanguages:
                         - en
                         - de
