@@ -1,0 +1,79 @@
+name: Bundle OpenAPI Specification (Swagger CLI)
+
+on:
+  push:
+    branches:
+      - main
+      - refactoring
+    paths:
+      - "openapi.yml"
+      - "paths/**"
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  bundle-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for all branches
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Swagger CLI
+        run: npm install -g @apidevtools/swagger-cli
+
+      - name: Bundle OpenAPI specification
+        run: |
+          mkdir -p dist
+          swagger-cli bundle openapi.yml -o dist/openapi-bundled.yml -t yaml
+
+      - name: Validate bundled specification
+        run: |
+          swagger-cli validate dist/openapi-bundled.yml
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Checkout or create prod branch
+        run: |
+          git fetch origin prod || true
+          git checkout prod || git checkout -b prod
+
+      - name: Copy bundled files to prod branch
+        run: |
+          # Remove old bundled files if they exist
+          rm -f openapi-bundled.yml
+
+          # Copy new bundled files from dist
+          cp dist/openapi-bundled.yml openapi-bundled.yml
+
+          # Add files
+          git add openapi-bundled.yml
+
+      - name: Commit and push to prod branch
+        run: |
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto-bundle OpenAPI spec from main@${GITHUB_SHA::7} (Swagger CLI)"
+            git push origin prod
+          fi
+
+      - name: Create summary
+        run: |
+          echo "## ✅ OpenAPI Bundle Complete (Swagger CLI)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📦 Bundled files have been deployed to the \`prod\` branch:" >> $GITHUB_STEP_SUMMARY
+          echo "- \`openapi-bundled.yml\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 View the prod branch: [prod branch](https://github.com/${{ github.repository }}/tree/prod)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⚙️ Bundled using: Swagger CLI (@apidevtools/swagger-cli)" >> $GITHUB_STEP_SUMMARY
