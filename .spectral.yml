@@ -1,4 +1,0 @@
-# Spectral ruleset for this repository.
-# We keep this small on purpose and rely on the built-in OpenAPI rules.
-extends:
-  - spectral:oas
