@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "bundle": "redocly bundle openapi.yml -o dist/openapi.yml",
+    "lint": "redocly lint openapi.yml"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^2.15.1"
+  }
+}

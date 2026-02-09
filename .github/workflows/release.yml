@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  lint:
+    name: Lint
+    uses: ./.github/workflows/lint.yml
+
+  bundle:
+    name: Bundle
+    needs: lint
+    uses: ./.github/workflows/bundle.yml
+
+  release:
+    name: Create Release
+    needs: bundle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download bundled spec
+        uses: actions/download-artifact@v4
+        with:
+          name: openapi-bundled
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: openapi.yml
+          generate_release_notes: true
+          body: |
+            ## 📦 OpenAPI Specification
+
+            Download the bundled OpenAPI spec: `openapi.yml`

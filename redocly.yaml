@@ -1,0 +1,12 @@
+# Redocly CLI configuration
+# https://redocly.com/docs/cli/configuration/
+
+extends:
+  - recommended
+
+rules:
+  # TODO: Add servers array with environment-specific URLs
+  no-empty-servers: off
+
+  # TODO: Define security schemes (e.g., OAuth2, API key)
+  security-defined: off

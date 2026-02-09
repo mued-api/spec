@@ -1,0 +1,369 @@
+post:
+  summary: Evaluate a submission and generate feedback
+  operationId: evaluateSubmission
+  description: >
+    Generates a list of feedback items for a given student submission.
+    The request can optionally include the task context, user information,
+    criteria to evaluate on, pre-submission feedback options, and configuration.
+  tags:
+    - evaluate
+  parameters:
+    - $ref: "../shared/parameters/Authorization.yml"
+    - $ref: "../shared/parameters/X-Request-Id.yml"
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "./schemas/EvaluateRequest.yml"
+        examples:
+          simpleTextSubmission:
+            summary: Simple text submission without user or criteria
+            value:
+              submission:
+                submissionId: "sub-123"
+                taskId: "task-42"
+                type: "TEXT"
+                format: "plain"
+                content:
+                  text: "Explain what polymorphism is in object-oriented programming."
+                submittedAt: "2025-12-16T09:30:00Z"
+                version: 1
+              configuration: null
+
+          preSubmissionFeedbackExample:
+            summary: Pre-submission feedback (non-final)
+            value:
+              submission:
+                submissionId: "sub-777"
+                taskId: "task-42"
+                type: "TEXT"
+                format: "plain"
+                content:
+                  text: "My short answer..."
+              preSubmissionFeedback:
+                enabled: true
+              configuration:
+                llm:
+                  model: "gpt-5.2"
+                  temperature: 0.4
+
+          withTaskAndExtras:
+            summary: With task context, user, criteria and configuration
+            value:
+              task:
+                taskId: "task-12"
+                title: "Explain polymorphism"
+                content:
+                  text: "Define polymorphism and give at least one example in Java."
+                learningObjectives:
+                  - "Explain the concept of polymorphism."
+                  - "Provide an example of subtype polymorphism in Java."
+                referenceSolution:
+                  text: >
+                    Polymorphism allows the same method call to result in different behavior
+                    depending on the object's runtime type. For example, a variable of type
+                    Shape can reference a Circle or Rectangle, and calling draw() will invoke
+                    the appropriate implementation.
+                context:
+                  constraints: "Answer in 3-6 sentences."
+                  language: "en"
+              submission:
+                submissionId: "sub-456"
+                taskId: "task-12"
+                type: "TEXT"
+                format: "plain"
+                content:
+                  text: >
+                    Polymorphism means that an object can take many forms, for example
+                    subclasses implementing methods differently.
+                submittedAt: "2025-12-16T10:00:00Z"
+                version: 2
+              user:
+                userId: "user-789"
+                type: LEARNER
+                detailPreference: DETAILED
+                tonePreference: FRIENDLY
+                languagePreference: "en"
+              criteria:
+                - criterionId: "crit-1"
+                  name: "Correctness"
+                  context: "The explanation of polymorphism is conceptually correct."
+                  maxPoints: 10
+                - criterionId: "crit-2"
+                  name: "Clarity"
+                  context: "The explanation is clear, well-structured, and easy to understand."
+                  maxPoints: 5
+              preSubmissionFeedback:
+                enabled: false
+              configuration:
+                llm:
+                  model: "gpt-5.2"
+                  temperature: 0.2
+                  maxTokens: 800
+                  credentials:
+                    type: "JWT"
+                    key: "Some-Key"
+                enforceRubricStrictness: true
+
+          # --- Canonical examples for each artefact type ---
+          codeSubmissionExample:
+            summary: Code submission (Python)
+            value:
+              submission:
+                submissionId: "sub-code-001"
+                taskId: "task-python-101"
+                type: "CODE"
+                format: "python"
+                content:
+                  code: |
+                    def fibonacci(n):
+                        if n <= 1:
+                            return n
+                        return fibonacci(n-1) + fibonacci(n-2)
+
+                    # Test the function
+                    for i in range(10):
+                        print(fibonacci(i))
+                submittedAt: "2025-12-16T11:00:00Z"
+                version: 1
+
+          codeMultiFileExample:
+            summary: Code submission with multiple files
+            value:
+              submission:
+                submissionId: "sub-code-002"
+                taskId: "task-java-201"
+                type: "CODE"
+                format: "java"
+                content:
+                  files:
+                    - path: "src/Main.java"
+                      content: |
+                        public class Main {
+                            public static void main(String[] args) {
+                                Calculator calc = new Calculator();
+                                System.out.println(calc.add(2, 3));
+                            }
+                        }
+                    - path: "src/Calculator.java"
+                      content: |
+                        public class Calculator {
+                            public int add(int a, int b) {
+                                return a + b;
+                            }
+                        }
+                  entryPoint: "src/Main.java"
+                submittedAt: "2025-12-16T11:30:00Z"
+                version: 1
+
+          codeSympyExample:
+            summary: Math submission (SymPy/Python)
+            value:
+              submission:
+                submissionId: "sub-math-002"
+                taskId: "task-algebra-101"
+                type: "CODE"
+                format: "sympy"
+                content:
+                  expression: "solve(x**2 - 4, x)"
+                  imports:
+                    ["from sympy import symbols, solve", "x = symbols('x')"]
+                submittedAt: "2025-12-16T12:30:00Z"
+                version: 1
+
+          mathInlineLatexExample:
+            summary: Inline math submission (Inline LaTeX)
+            value:
+              submission:
+                submissionId: "sub-math-001"
+                taskId: "task-calculus-101"
+                type: "MATH"
+                format: "latex"
+                content:
+                  expression: "\\int_{0}^{\\infty} e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}"
+                submittedAt: "2025-12-16T12:00:00Z"
+                version: 1
+
+          mathMathMLExample:
+            summary: Math submission (MathML)
+            value:
+              submission:
+                submissionId: "sub-math-003"
+                taskId: "task-geometry-101"
+                type: "MATH"
+                format: "mathml"
+                content:
+                  expression: |
+                    <math xmlns="http://www.w3.org/1998/Math/MathML">
+                      <mrow>
+                        <mi>a</mi>
+                        <mo>=</mo>
+                        <msqrt>
+                          <mrow>
+                            <msup><mi>b</mi><mn>2</mn></msup>
+                            <mo>+</mo>
+                            <msup><mi>c</mi><mn>2</mn></msup>
+                          </mrow>
+                        </msqrt>
+                      </mrow>
+                    </math>
+                submittedAt: "2025-12-16T13:00:00Z"
+                version: 1
+
+          modelUmlExample:
+            summary: Model submission (UML class diagram - PlantUML)
+            value:
+              submission:
+                submissionId: "sub-model-001"
+                taskId: "task-oop-design-101"
+                type: "MODEL"
+                format: "uml"
+                content:
+                  model: |
+                    @startuml
+                    abstract class Animal {
+                      +name: String
+                      +speak(): String
+                    }
+
+                    class Dog extends Animal {
+                      +speak(): String
+                    }
+
+                    class Cat extends Animal {
+                      +speak(): String
+                    }
+                    @enduml
+                  notation: "plantuml"
+                  diagramType: "class"
+                submittedAt: "2025-12-16T14:00:00Z"
+                version: 1
+
+          modelErExample:
+            summary: Model submission (ER diagram - JSON structure)
+            value:
+              submission:
+                submissionId: "sub-model-002"
+                taskId: "task-database-101"
+                type: "MODEL"
+                format: "er"
+                content:
+                  model:
+                    entities:
+                      - name: "Student"
+                        attributes:
+                          - {
+                              name: "student_id",
+                              type: "INTEGER",
+                              primaryKey: true,
+                            }
+                          - { name: "name", type: "VARCHAR(100)" }
+                          - { name: "email", type: "VARCHAR(255)" }
+                      - name: "Course"
+                        attributes:
+                          - {
+                              name: "course_id",
+                              type: "INTEGER",
+                              primaryKey: true,
+                            }
+                          - { name: "title", type: "VARCHAR(200)" }
+                    relationships:
+                      - name: "enrolls_in"
+                        from: "Student"
+                        to: "Course"
+                        cardinality: "many-to-many"
+                  notation: "json"
+                submittedAt: "2025-12-16T14:30:00Z"
+                version: 1
+
+          modelBpmnExample:
+            summary: Model submission (BPMN process)
+            value:
+              submission:
+                submissionId: "sub-model-003"
+                taskId: "task-process-101"
+                type: "MODEL"
+                format: "bpmn"
+                content:
+                  model: |
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL">
+                      <bpmn:process id="OrderProcess">
+                        <bpmn:startEvent id="Start"/>
+                        <bpmn:task id="ReceiveOrder" name="Receive Order"/>
+                        <bpmn:task id="ProcessPayment" name="Process Payment"/>
+                        <bpmn:task id="ShipOrder" name="Ship Order"/>
+                        <bpmn:endEvent id="End"/>
+                      </bpmn:process>
+                    </bpmn:definitions>
+                  notation: "bpmn-xml"
+                submittedAt: "2025-12-16T15:00:00Z"
+                version: 1
+
+          textMarkdownExample:
+            summary: Text submission (Markdown with formatting)
+            value:
+              submission:
+                submissionId: "sub-text-002"
+                taskId: "task-essay-101"
+                type: "TEXT"
+                format: "markdown"
+                content:
+                  markdown: |
+                    # Introduction to Polymorphism
+
+                    Polymorphism is a fundamental concept in **object-oriented programming** that allows objects to be treated as instances of their parent class.
+
+                    ## Key Points
+
+                    1. **Subtype polymorphism**: Different classes can be used interchangeably
+                    2. **Method overriding**: Subclasses provide specific implementations
+                submittedAt: "2025-12-16T15:30:00Z"
+                version: 1
+  responses:
+    "200":
+      description: Successfully generated feedback.
+      headers:
+        X-Request-Id:
+          description: Request id for tracing this request across services.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "./schemas/Feedback.yml"
+          examples:
+            exampleResponse:
+              summary: Example feedback response
+              value:
+                - feedbackId: "fb-1"
+                  title: "Clarify your definition"
+                  message: "Your explanation of polymorphism is generally correct, but it would help to distinguish between subtype polymorphism and parametric polymorphism."
+                  suggestedAction: "Add one or two concrete examples of polymorphism in Java, e.g., method overriding."
+                  awardedPoints: 2.5
+                  criterion:
+                    criterionId: "crit-1"
+                    name: "Correctness"
+                    context: "The solution produces correct results for the specified problem."
+                    maxPoints: 10
+                  target:
+                    artefactType: "TEXT"
+                    format: "plain"
+                    locator:
+                      type: "span"
+                      startIndex: 0
+                      endIndex: 120
+                - feedbackId: "fb-2"
+                  title: "Overall structure"
+                  message: "The overall structure of your answer is clear and easy to follow."
+    "400":
+      $ref: "./responses/400-BadRequest.yml"
+    "403":
+      $ref: "./responses/403-Forbidden.yml"
+    "500":
+      $ref: "./responses/500-InternalError.yml"
+    "501":
+      $ref: "./responses/501-NotImplemented.yml"

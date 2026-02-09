@@ -1,0 +1,5 @@
+in: header
+name: X-Request-Id
+description: Request id for tracing this request across services.
+schema:
+  type: string

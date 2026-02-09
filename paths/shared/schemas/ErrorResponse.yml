@@ -1,0 +1,29 @@
+type: object
+description: Standard error response returned by µEd API services.
+required:
+  - title
+properties:
+  title:
+    type: string
+    description: Short, human-readable error title.
+  message:
+    type:
+      - string
+      - "null"
+    description: Optional human-readable error message.
+  code:
+    type:
+      - string
+      - "null"
+    description: Optional application-specific error code.
+  trace:
+    type:
+      - string
+      - "null"
+    description: Optional debug trace or stack trace (should be omitted in production by default).
+  details:
+    type:
+      - object
+      - "null"
+    description: Optional provider-specific details for debugging or programmatic handling.
+    additionalProperties: true

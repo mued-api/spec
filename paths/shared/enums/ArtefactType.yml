@@ -1,0 +1,5 @@
+type: string
+description: >
+  High-level type of artefact. Use the 'format' field to specify the exact
+  format (e.g., programming language for CODE, notation for MATH).
+enum: [TEXT, CODE, MODEL, MATH, OTHER]

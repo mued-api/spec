@@ -1,0 +1,20 @@
+type: object
+description: Health status and capabilities of the chat service.
+required:
+  - status
+  - capabilities
+properties:
+  status:
+    $ref: "../../shared/enums/HealthStatus.yml"
+  statusMessage:
+    type:
+      - string
+      - "null"
+    description: Optional human-readable status message.
+  version:
+    type:
+      - string
+      - "null"
+    description: Optional version of the chat service implementation.
+  capabilities:
+    $ref: "./ChatCapabilities.yml"

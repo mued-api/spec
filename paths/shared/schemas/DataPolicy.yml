@@ -1,0 +1,195 @@
+type: object
+description: >
+  Declares what downstream services are allowed to do with data associated with this request:
+  which legal regimes apply, what uses are permitted, how long data may be retained,
+  where it may be processed, and what constraints apply (especially for children / sensitive data).
+additionalProperties: true
+properties:
+  legal:
+    type:
+      - object
+      - "null"
+    description: Legal framework and authority governing this data.
+    properties:
+      applicableLaws:
+        type: array
+        description: One or more applicable legal regimes.
+        items:
+          type: string
+          enum:
+            [
+              GDPR,
+              UK_GDPR,
+              EPRIVACY,
+              CCPA_CPRA,
+              COPPA,
+              FERPA,
+              PPRA,
+              PIPEDA,
+              LGPD,
+              POPIA,
+              APPI,
+              PIPL,
+              OTHER,
+            ]
+      legalBasis:
+        type:
+          - array
+          - "null"
+        description: Optional but recommended legal basis for processing.
+        items:
+          type: string
+          enum:
+            [
+              CONSENT,
+              CONTRACT,
+              LEGAL_OBLIGATION,
+              PUBLIC_TASK,
+              LEGITIMATE_INTERESTS,
+              VITAL_INTERESTS,
+              OTHER,
+            ]
+  jurisdiction:
+    type:
+      - object
+      - "null"
+    description: Geographic constraints for data subjects and processing.
+    properties:
+      dataSubjectRegions:
+        type:
+          - array
+          - "null"
+        description: Where the data subjects are located.
+        items:
+          $ref: "./Region.yml"
+      allowedProcessingRegions:
+        type:
+          - array
+          - "null"
+        description: Where processing/storage is allowed.
+        items:
+          $ref: "./Region.yml"
+      disallowedProcessingRegions:
+        type:
+          - array
+          - "null"
+        description: Explicit exclusions for processing regions.
+        items:
+          $ref: "./Region.yml"
+  dataSubject:
+    type:
+      - object
+      - "null"
+    description: Information about who this data is about.
+    properties:
+      population:
+        type:
+          - string
+          - "null"
+        description: Type of population this data concerns.
+        enum: [STUDENT, STAFF, GUARDIAN, MIXED, OTHER]
+      isChildData:
+        type:
+          - boolean
+          - "null"
+        description: Indicates whether this data concerns children. If true, then minAge required.
+      minAge:
+        type:
+          - integer
+          - "null"
+        description: Minimum age of data subjects, if relevant/known.
+  dataCategory:
+    type:
+      - object
+      - "null"
+    description: Classification of the type of data.
+    properties:
+      classification:
+        type:
+          - string
+          - "null"
+        description: Primary classification of the data.
+        enum:
+          [
+            ANONYMOUS,
+            PSEUDONYMOUS,
+            PERSONAL,
+            EDUCATION_RECORD,
+            SENSITIVE,
+            OTHER,
+          ]
+        additionalProperties: true
+  retentionPermission:
+    type:
+      - array
+      - "null"
+    description: What retention and secondary uses are permitted.
+    items:
+      type: string
+      enum:
+        [
+          NEVER,
+          SECURITY,
+          LOGGING,
+          PRODUCT-IMPROVEMENT-NO-SHARE,
+          PRODUCT-IMPROVEMENT-SHARE-LIMITED,
+          RESEARCH-CONFIDENTIAL,
+          PUBLIC,
+          OTHER,
+        ]
+  retention:
+    type:
+      - object
+      - "null"
+    description: How long data may be retained.
+    properties:
+      retentionPeriod:
+        type:
+          - string
+          - "null"
+        description: Concrete retention period, following ISO 8601 standard.
+      deleteOnRequest:
+        type:
+          - boolean
+          - "null"
+        description: Whether data must be deleted on user request.
+      legalHoldAllowed:
+        type:
+          - boolean
+          - "null"
+        description: Whether legal holds are permitted on this data.
+  sharing:
+    type:
+      - object
+      - "null"
+    description: Constraints on who can receive this data.
+    properties:
+      thirdPartySharing:
+        type:
+          - string
+          - "null"
+        description: Third-party sharing policy.
+        enum: [PROHIBITED, ALLOWED, ALLOWED-LIMITED]
+      subprocessorsAllowed:
+        type:
+          - boolean
+          - "null"
+        description: Whether subprocessors are allowed.
+      allowedRecipients:
+        type:
+          - array
+          - "null"
+        description: Categories of allowed recipients.
+        items:
+          type: string
+          enum: [CONTROLLER-ONLY, INTERNAL-SERVICES, NAMED-PARTNERS, PUBLIC]
+  deidentification:
+    type:
+      - object
+      - "null"
+    description: Required deidentification for specific uses.
+    properties:
+      requiredForServiceImprovement:
+        $ref: "../enums/AnonymizationLevel.yml"
+      requiredForResearch:
+        $ref: "../enums/AnonymizationLevel.yml"

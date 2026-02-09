@@ -1,0 +1,16 @@
+title: Numeric Grade
+type: object
+required:
+  - min
+  - max
+  - value
+properties:
+  min:
+    type: number
+    description: Minimum value for the numeric range
+  max:
+    type: number
+    description: Maximum value for the numeric range
+  value:
+    type: number
+    description: The actual rating value within the min-max range

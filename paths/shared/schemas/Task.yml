@@ -1,0 +1,44 @@
+type: object
+description: >
+  Task context including the content, learning objectives,
+  optional reference solution, optional context information, and optional metadata.
+required:
+  - title
+properties:
+  taskId:
+    type: string
+    description: Optional unique identifier for the task.
+  title:
+    type: string
+    description: Short title or label for the task.
+  content:
+    type:
+      - object
+      - "null"
+    description: Optional content shown to the learner (structure is task-specific).
+    additionalProperties: true
+  context:
+    type:
+      - object
+      - "null"
+    description: Optional educational context (e.g., course material).
+    additionalProperties: true
+  learningObjectives:
+    type:
+      - array
+      - "null"
+    description: Optional list of learning objectives addressed by this task.
+    items:
+      type: string
+  referenceSolution:
+    type:
+      - object
+      - "null"
+    description: Optional reference or example solution (structure is task-specific).
+    additionalProperties: true
+  metadata:
+    type:
+      - object
+      - "null"
+    description: Optional metadata such as difficulty, topic, tags, etc.
+    additionalProperties: true

@@ -1,0 +1,21 @@
+description: Forbidden (e.g. insufficient permissions or access denied).
+headers:
+  X-Request-Id:
+    description: Request id for tracing this request across services.
+    schema:
+      type: string
+content:
+  application/json:
+    schema:
+      $ref: "../../shared/schemas/ErrorResponse.yml"
+    examples:
+      permissionError:
+        summary: Example permission error
+        value:
+          title: "Forbidden"
+          message: "You do not have permission to access this resource."
+          code: "PERMISSION_DENIED"
+          trace: null
+          details:
+            resource: "submission"
+            required_permission: "write"

@@ -1,0 +1,38 @@
+type: object
+description: >
+  Describes support for a specific artefact type and its formats.
+  Used in health/capabilities responses to advertise what a service can handle.
+required:
+  - type
+properties:
+  type:
+    $ref: "../enums/ArtefactType.yml"
+  supportedFormats:
+    type:
+      - array
+      - "null"
+    description: >
+      List of supported formats for this artefact type. Use lowercase values.
+      If null or empty, the service accepts any format for this type.
+    items:
+      type: string
+    examples:
+      - ["plain", "markdown"]
+      - ["python", "java", "javascript", "wolfram", "matlab"]
+      - ["latex", "mathml"]
+  contentSchema:
+    type:
+      - object
+      - "null"
+    description: >
+      Optional JSON Schema describing the expected content structure for this
+      artefact type. Allows services to advertise their exact requirements.
+    additionalProperties: true
+  locatorSchema:
+    type:
+      - object
+      - "null"
+    description: >
+      Optional JSON Schema describing the locator structure used for feedback
+      targeting within this artefact type.
+    additionalProperties: true

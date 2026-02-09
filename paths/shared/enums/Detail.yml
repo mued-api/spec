@@ -1,0 +1,3 @@
+type: string
+description: Level of detail preferred in responses or feedback.
+enum: [BRIEF, MEDIUM, DETAILED]

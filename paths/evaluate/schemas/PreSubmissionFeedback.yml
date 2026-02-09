@@ -1,0 +1,9 @@
+type: object
+description: Optional configuration for pre-submission feedback runs.
+required:
+  - enabled
+properties:
+  enabled:
+    type: boolean
+    description: Indicates whether pre-submission feedback is requested.
+additionalProperties: true

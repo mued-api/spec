@@ -1,0 +1,25 @@
+type: object
+description: A criterion used to assess one dimension of a submission.
+required:
+  - name
+properties:
+  criterionId:
+    type: string
+    description: Optional unique identifier of the criterion.
+  name:
+    type: string
+    description: Human-readable name of the criterion.
+  context:
+    type:
+      - string
+      - object
+      - "null"
+    description: Optional additional context about how to apply this criterion.
+    additionalProperties: true
+  gradeConfig:
+    oneOf:
+      - $ref: "./NumericGrade.yml"
+      - $ref: "./LetterOnlyGrade.yml"
+      - $ref: "./LetterPlusMinusGrade.yml"
+      - $ref: "./OtherGrade.yml"
+    description: Optional configuration for grades for this criterion.

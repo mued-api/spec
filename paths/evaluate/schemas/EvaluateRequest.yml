@@ -1,0 +1,65 @@
+type: object
+description: >
+  Input for task evaluate service. The submission is mandatory; task,
+  user, criteria, pre-submission feedback options, and
+  configuration are optional.
+required:
+  - submission
+properties:
+  task:
+    description: >
+      Optional task context that can include prompt content, learning objectives,
+      a reference solution, and additional context metadata.
+    type:
+      - object
+      - "null"
+    allOf:
+      - $ref: "../../shared/schemas/Task.yml"
+  submission:
+    $ref: "../../shared/schemas/Submission.yml"
+  user:
+    description: Optional user information including type and preferences that can influence response tone, detail, and language.
+    type:
+      - object
+      - "null"
+    allOf:
+      - $ref: "../../shared/schemas/User.yml"
+  criteria:
+    type:
+      - array
+      - "null"
+    description: Optional criteria used for evaluate.
+    items:
+      $ref: "./Criterion.yml"
+  preSubmissionFeedback:
+    description: >
+      Optional settings for pre-submission feedback (non-final). When enabled,
+      the service should avoid committing or finalizing grades.
+    type:
+      - object
+      - "null"
+    allOf:
+      - $ref: "./PreSubmissionFeedback.yml"
+  configuration:
+    description: >
+      Optional key-value configuration dictionary for provider-specific or
+      experimental parameters. Not standardized.
+    type:
+      - object
+      - "null"
+    additionalProperties: true
+    properties:
+      llm:
+        description: Optional LLM configuration used for this request.
+        type:
+          - object
+          - "null"
+        allOf:
+          - $ref: "../../shared/schemas/LLMConfiguration.yml"
+      dataPolicy:
+        description: Optional data policy governing how this request's data may be processed and retained.
+        type:
+          - object
+          - "null"
+        allOf:
+          - $ref: "../../shared/schemas/DataPolicy.yml"

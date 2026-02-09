@@ -1,0 +1,3 @@
+type: string
+description: Type of user interacting with the API.
+enum: [LEARNER, TEACHER, EDU_ADMIN, SYS_ADMIN, OTHER]

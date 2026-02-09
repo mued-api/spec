@@ -1,0 +1,41 @@
+get:
+  summary: Health and capabilities of the chat service
+  operationId: getChatHealth
+  description: >
+    Returns health information and capabilities of the chat service.
+    Clients can use this endpoint to discover whether the service supports
+    optional features such as user preferences or streaming responses.
+  tags:
+    - chat
+  parameters:
+    - $ref: "../shared/parameters/X-Request-Id.yml"
+  responses:
+    "200":
+      description: Chat service is reachable and reporting capabilities.
+      content:
+        application/json:
+          schema:
+            $ref: "./schemas/ChatHealthResponse.yml"
+          examples:
+            exampleHealth:
+              summary: Example healthy service with capabilities
+              value:
+                status: "OK"
+                statusMessage: "Service healthy"
+                version: "1.0.0"
+                capabilities:
+                  supportsChat: true
+                  supportsUserPreferences: true
+                  supportsStreaming: true
+                  "supportsDataPolicy": "NOT_SUPPORTED"
+                  supportedLanguages:
+                    - "en"
+                    - "de"
+                  supportedModels:
+                    - "gpt-4o"
+                    - "llama-3"
+    "501":
+      description: The server does not implement the health endpoint for chat.
+      $ref: "./responses/501-NotImplemented.yml"
+    "503":
+      $ref: "./responses/503-ServiceUnavailable.yml"

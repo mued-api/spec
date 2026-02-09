@@ -1,0 +1,40 @@
+type: object
+description: Capabilities of the evaluate service.
+required:
+  - supportsEvaluate
+  - supportsPreSubmissionFeedback
+  - supportsFormativeFeedback
+  - supportsSummativeFeedback
+  - supportsDataPolicy
+properties:
+  supportsEvaluate:
+    type: boolean
+    description: Indicates whether the /evaluate endpoint is implemented and usable.
+  supportsPreSubmissionFeedback:
+    type: boolean
+    description: Indicates whether the service supports pre-submission feedback runs.
+  supportsFormativeFeedback:
+    type: boolean
+    description: Indicates whether the service supports qualitative feedback without points.
+  supportsSummativeFeedback:
+    type: boolean
+    description: Indicates whether the service supports feedback with points / grading signals.
+  supportsDataPolicy:
+    $ref: "../../shared/enums/DataPolicySupport.yml"
+  supportedArtefactProfiles:
+    type:
+      - array
+      - "null"
+    description: >
+      Optional list of supported artefact profiles. Each profile specifies
+      an artefact type and the formats supported for that type.
+    items:
+      $ref: "../../shared/schemas/ArtefactProfile.yml"
+  supportedLanguages:
+    type:
+      - array
+      - "null"
+    description: Optional list of supported language codes (e.g., 'en', 'de').
+    items:
+      type: string
+  additionalProperties: true

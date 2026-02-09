@@ -1,0 +1,32 @@
+type: object
+description: >
+  Optional configuration for an LLM provider. All fields are optional and
+  provider-specific values may be included via additional properties.
+additionalProperties: true
+properties:
+  model:
+    type:
+      - string
+      - "null"
+    description: Optional model identifier (e.g., 'gpt-4o', 'llama-3').
+  temperature:
+    type:
+      - number
+      - "null"
+    description: Optional sampling temperature.
+  maxTokens:
+    type:
+      - integer
+      - "null"
+    description: Optional maximum number of tokens to generate.
+  stream:
+    type:
+      - boolean
+      - "null"
+    description: Optional flag indicating whether streaming responses are requested.
+  credentials:
+    type:
+      - object
+      - "null"
+    description: Optional credentials object to be supplied with time-based key via a proxy.
+    additionalProperties: true

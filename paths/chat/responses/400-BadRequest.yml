@@ -1,0 +1,20 @@
+description: Invalid request (e.g. missing content or invalid schema).
+headers:
+  X-Request-Id:
+    description: Request id for tracing this request across services.
+    schema:
+      type: string
+content:
+  application/json:
+    schema:
+      $ref: "../../shared/schemas/ErrorResponse.yml"
+    examples:
+      invalidChatRequest:
+        summary: Example invalid chat request
+        value:
+          title: "Invalid request"
+          message: "messages must contain at least one item."
+          code: "VALIDATION_ERROR"
+          trace: null
+          details:
+            field: "messages"
