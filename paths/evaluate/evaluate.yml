@@ -4,7 +4,8 @@ post:
   description: >
     Generates a list of feedback items for a given student submission.
     The request can optionally include the task context, user information,
-    criteria to evaluate on, pre-submission feedback options, and configuration.
+    criteria to evaluate on, pre-submission feedback options, configuration,
+    and a callback URL for asynchronous result delivery.
   tags:
     - evaluate
   parameters:
@@ -47,6 +48,20 @@ post:
                 llm:
                   model: "gpt-5.2"
                   temperature: 0.4
+
+          asyncCallbackExample:
+            summary: Asynchronous processing via callback URL
+            value:
+              submission:
+                submissionId: "sub-async-001"
+                taskId: "task-42"
+                type: "TEXT"
+                format: "plain"
+                content:
+                  text: "Detailed essay answer that may require longer processing."
+                submittedAt: "2025-12-16T09:45:00Z"
+                version: 1
+              callbackUrl: "https://learning-platform.example.com/hooks/evaluate-result"
 
           withTaskAndExtras:
             summary: With task context, user, criteria and configuration
@@ -359,6 +374,8 @@ post:
                 - feedbackId: "fb-2"
                   title: "Overall structure"
                   message: "The overall structure of your answer is clear and easy to follow."
+    "202":
+      $ref: "./responses/202-Accepted.yml"
     "400":
       $ref: "./responses/400-BadRequest.yml"
     "403":

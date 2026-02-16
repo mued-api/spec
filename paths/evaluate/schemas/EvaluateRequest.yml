@@ -2,7 +2,7 @@ type: object
 description: >
   Input for task evaluate service. The submission is mandatory; task,
   user, criteria, pre-submission feedback options, and
-  configuration are optional.
+  configuration, and callback URL are optional.
 required:
   - submission
 properties:
@@ -40,6 +40,15 @@ properties:
       - "null"
     allOf:
       - $ref: "./PreSubmissionFeedback.yml"
+  callbackUrl:
+    type:
+      - string
+      - "null"
+    format: uri
+    description: >
+      Optional HTTPS callback URL for asynchronous processing. If provided,
+      the service may return 202 Accepted immediately and deliver feedback
+      results to this URL once processing is complete.
   configuration:
     description: >
       Optional key-value configuration dictionary for provider-specific or
