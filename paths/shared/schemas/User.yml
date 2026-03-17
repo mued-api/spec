@@ -24,6 +24,7 @@ properties:
           - string
           - "null"
         description: Optional preferred language code following ISO 639 language codes (e.g., 'en', 'de').
+    additionalProperties: true
   taskProgress:
     type:
       - object
