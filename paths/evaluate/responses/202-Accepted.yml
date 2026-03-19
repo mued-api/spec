@@ -1,0 +1,21 @@
+description: Request accepted for asynchronous evaluation processing.
+headers:
+  X-Request-Id:
+    description: Request id for tracing this request across services.
+    schema:
+      type: string
+  X-Api-Version:
+    description: The API version that was used to serve this response.
+    schema:
+      type: string
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/EvaluateAcceptedResponse.yml"
+    examples:
+      asyncAccepted:
+        summary: Example accepted async request
+        value:
+          status: "ACCEPTED"
+          requestId: "req-7c193f38"
+          message: "Evaluation queued. Results will be sent to callbackUrl."
