@@ -38,3 +38,12 @@ properties:
     description: Optional list of supported language codes (e.g., 'en', 'de').
     items:
       type: string
+  supportedAPIVersions:
+    type:
+      - array
+      - "null"
+    description: >
+      Optional list of µEd API versions supported by this service implementation
+      (e.g., ["0.1.0"]). Clients can use this to select a compatible X-Api-Version.
+    items:
+      type: string
