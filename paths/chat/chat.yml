@@ -157,7 +157,7 @@ post:
             minimalChatResponse:
               summary: Minimal chat response
               value:
-                response:
+                output:
                   role: ASSISTANT
                   content: >
                     Polymorphism is a core concept in object-oriented programming that allows
@@ -171,7 +171,7 @@ post:
             chatWithLlmConfigResponse:
               summary: Chat response with LLM configuration
               value:
-                response:
+                output:
                   role: ASSISTANT
                   content: >
                     Here's a hint for your answer about polymorphism: Focus on how polymorphism
@@ -189,7 +189,7 @@ post:
             chatWithContextResponse:
               summary: Chat response with context
               value:
-                response:
+                output:
                   role: ASSISTANT
                   content: >
                     In the provided code example, the `speak()` method is being overridden
