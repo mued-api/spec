@@ -63,3 +63,10 @@ properties:
           - "null"
         allOf:
           - $ref: "../../shared/schemas/DataPolicy.yml"
+      executionPolicy:
+        description: Optional execution constraints for this request.
+        type:
+          - object
+          - "null"
+        allOf:
+          - $ref: "../../shared/schemas/ExecutionPolicy.yml"
