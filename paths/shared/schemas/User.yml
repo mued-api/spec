@@ -2,6 +2,7 @@ type: object
 description: User information including type and optional preferences influencing response tone, detail, and language.
 required:
   - type
+additionalProperties: true
 properties:
   userId:
     type:
@@ -24,10 +25,10 @@ properties:
           - string
           - "null"
         description: Optional preferred language code following ISO 639 language codes (e.g., 'en', 'de').
+    additionalProperties: true
   taskProgress:
     type:
       - object
       - "null"
     description: Optional information about the user's progress on this task/topic.
     additionalProperties: true
-additionalProperties: true

@@ -3,6 +3,7 @@ description: Capabilities of the chat service.
 required:
   - supportsChat
   - supportsDataPolicy
+additionalProperties: true
 properties:
   supportsChat:
     type: boolean
@@ -29,4 +30,3 @@ properties:
     description: Optional list of supported models.
     items:
       type: string
-  additionalProperties: true
