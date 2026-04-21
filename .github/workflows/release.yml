@@ -37,3 +37,16 @@ jobs:
             ## 📦 OpenAPI Specification
 
             Download the bundled OpenAPI spec: `openapi.yml`
+
+  deploy-pages:
+    name: Dispatch Docs Deploy
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger docs repo build
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.DOCS_DEPLOY_TOKEN }}
+          repository: ${{ github.repository_owner }}/mEd-api-docs
+          event-type: trigger-build
+          client-payload: '{"tag": "${{ github.ref_name }}", "repo": "${{ github.repository }}"}'
