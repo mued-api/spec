@@ -1,6 +1,6 @@
 # µEd API (µEd-api)
 
-Educational Microservices API **specification**.
+Education Microservices API **specification**.
 
 This repository is intentionally **spec-only**. It defines an **OpenAPI 3.1** contract that educational services can implement to conform to the µEd API.
 
