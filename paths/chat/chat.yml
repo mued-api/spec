@@ -11,6 +11,7 @@ post:
   parameters:
     - $ref: "../shared/parameters/Authorization.yml"
     - $ref: "../shared/parameters/X-Request-Id.yml"
+    - $ref: "../shared/parameters/X-Api-Version.yml"
   requestBody:
     required: true
     content:
@@ -144,6 +145,10 @@ post:
           description: Request id for tracing this request across services.
           schema:
             type: string
+        X-Api-Version:
+          description: The API version that was used to serve this response.
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -152,7 +157,7 @@ post:
             minimalChatResponse:
               summary: Minimal chat response
               value:
-                response:
+                output:
                   role: ASSISTANT
                   content: >
                     Polymorphism is a core concept in object-oriented programming that allows
@@ -166,7 +171,7 @@ post:
             chatWithLlmConfigResponse:
               summary: Chat response with LLM configuration
               value:
-                response:
+                output:
                   role: ASSISTANT
                   content: >
                     Here's a hint for your answer about polymorphism: Focus on how polymorphism
@@ -184,7 +189,7 @@ post:
             chatWithContextResponse:
               summary: Chat response with context
               value:
-                response:
+                output:
                   role: ASSISTANT
                   content: >
                     In the provided code example, the `speak()` method is being overridden
@@ -214,5 +219,7 @@ post:
       $ref: "./responses/403-Forbidden.yml"
     "500":
       $ref: "./responses/500-InternalError.yml"
+    "406":
+      $ref: "./responses/406-VersionNotSupported.yml"
     "501":
       $ref: "./responses/501-NotImplemented.yml"

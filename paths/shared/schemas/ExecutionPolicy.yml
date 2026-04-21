@@ -1,0 +1,23 @@
+type: object
+description: >
+  Declares execution constraints that the server or client consuming this API
+  should apply when triggering calls to external providers (such as LLMs).
+  Covers queue management and response timeouts.
+additionalProperties: true
+properties:
+  priority:
+    type:
+      - string
+      - "null"
+    description: Request priority for queue management when capacity is constrained.
+    enum:
+      - low
+      - normal
+      - high
+      - null
+  timeout:
+    type:
+      - integer
+      - "null"
+    description: Maximum time in milliseconds to wait for a complete response before failing.
+    minimum: 1

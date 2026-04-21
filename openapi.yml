@@ -11,12 +11,7 @@ info:
     Currently defined endpoints:<br>
     - **Evaluate Task**: automatic feedback and grading for student submissions. <br>
     - **Chat**: conversational interactions around tasks, submissions, or general
-      learning questions. <br>
-    <br><br>
-    Future endpoints (TBD): <br>
-    - **Task/content generation** <br>
-    - **Task/content recommendation** <br>
-    - **Learning analytics**
+      learning questions.
 
 tags:
   - name: evaluate

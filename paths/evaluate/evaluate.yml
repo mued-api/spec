@@ -11,6 +11,7 @@ post:
   parameters:
     - $ref: "../shared/parameters/Authorization.yml"
     - $ref: "../shared/parameters/X-Request-Id.yml"
+    - $ref: "../shared/parameters/X-Api-Version.yml"
   requestBody:
     required: true
     content:
@@ -344,6 +345,10 @@ post:
           description: Request id for tracing this request across services.
           schema:
             type: string
+        X-Api-Version:
+          description: The API version that was used to serve this response.
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -382,5 +387,7 @@ post:
       $ref: "./responses/403-Forbidden.yml"
     "500":
       $ref: "./responses/500-InternalError.yml"
+    "406":
+      $ref: "./responses/406-VersionNotSupported.yml"
     "501":
       $ref: "./responses/501-NotImplemented.yml"
