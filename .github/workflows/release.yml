@@ -57,6 +57,6 @@ jobs:
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.DOCS_DEPLOY_TOKEN }}
-          repository: ${{ github.repository_owner }}/mEd-api-docs
+          repository: ${{ github.repository_owner }}/muEd-api-docs
           event-type: trigger-build
           client-payload: '{"tag": "${{ inputs.tag || github.ref_name }}", "repo": "${{ github.repository }}"}'
