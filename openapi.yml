@@ -22,6 +22,8 @@ tags:
 paths:
   /evaluate:
     $ref: "./paths/evaluate/evaluate.yml"
+  /evaluate/info:
+    $ref: "./paths/evaluate/evaluate-info.yml"
   /evaluate/health:
     $ref: "./paths/evaluate/evaluate-health.yml"
   /chat:
