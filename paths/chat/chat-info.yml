@@ -48,5 +48,5 @@ get:
     "406":
       $ref: "./responses/406-VersionNotSupported.yml"
     "501":
-      description: The server does not implement the health endpoint for chat.
+      description: The server does not implement the info endpoint for chat.
       $ref: "./responses/501-NotImplemented.yml"
