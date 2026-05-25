@@ -30,7 +30,6 @@ get:
             exampleInfo:
               summary: Example service with capabilities
               value:
-                status: "OK"
                 version: "1.0.0"
                 capabilities:
                   supportsChat: true
