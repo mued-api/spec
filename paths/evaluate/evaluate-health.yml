@@ -41,12 +41,10 @@ get:
                   supportsSummativeFeedback: true
                   supportsDataPolicy: "PARTIAL"
                   supportedArtefactProfiles:
-                    - type: "TEXT"
-                      supportedFormats: ["plain", "markdown"]
-                    - type: "CODE"
-                      supportedFormats: ["python", "java", "javascript"]
-                    - type: "MATH"
-                      supportedFormats: ["latex", "mathml"]
+                    - supportedFormats: ["text:plain", "text:markdown"]
+                    - supportedFormats:
+                        ["code:python", "code:java", "code:javascript"]
+                    - supportedFormats: ["math:latex", "math:mathml"]
                   supportedLanguages:
                     - "en"
                     - "de"
