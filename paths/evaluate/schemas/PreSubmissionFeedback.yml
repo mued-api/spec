@@ -1,5 +1,9 @@
 type: object
-description: Optional configuration for pre-submission feedback runs.
+description: >
+  Optional configuration for pre-submission feedback runs. This only toggles
+  the mode; the actual preview content (e.g., normalized representations of
+  the submission) is returned in the /evaluate response, via each feedback
+  item's `response` field (see Feedback.yml) — not on this schema.
 required:
   - enabled
 additionalProperties: true

@@ -379,6 +379,28 @@ post:
                 - feedbackId: "fb-2"
                   title: "Overall structure"
                   message: "The overall structure of your answer is clear and easy to follow."
+            mathExampleResponse:
+              summary: Example feedback response for a MATH submission with case matching
+              value:
+                - feedbackId: "fb-math-1"
+                  title: "Correct, matched expected case"
+                  message: "Your answer matches the expected simplified form."
+                  awardedPoints: 3
+                  response:
+                    latex: "x+y"
+                    sympy: "x + y"
+                  matchedCase: 0
+                  target:
+                    artefactType: "MATH"
+                    format: "latex"
+                - feedbackId: "fb-math-2"
+                  title: "No matching case"
+                  message: "We parsed your answer but it didn't match any of the known cases."
+                  awardedPoints: 0
+                  response:
+                    latex: "x-y"
+                    sympy: "x - y"
+                  matchedCase: null
     "202":
       $ref: "./responses/202-Accepted.yml"
     "400":

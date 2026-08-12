@@ -1,0 +1,9 @@
+type:
+  - object
+  - "null"
+description: >
+  A set of representations of the same underlying content, keyed by an
+  arbitrary format id (e.g. "latex", "sympy", "formatted", "ast"). The
+  set of keys is service-defined and not enumerated by this spec.
+additionalProperties:
+  type: string

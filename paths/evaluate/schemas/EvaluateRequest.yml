@@ -34,7 +34,9 @@ properties:
   preSubmissionFeedback:
     description: >
       Optional settings for pre-submission feedback (non-final). When enabled,
-      the service should avoid committing or finalizing grades.
+      the service should avoid committing or finalizing grades. The resulting
+      preview content is returned via the response Feedback items' `response`
+      field.
     type:
       - object
       - "null"
