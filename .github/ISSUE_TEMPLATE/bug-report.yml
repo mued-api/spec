@@ -1,0 +1,59 @@
+name: Spec bug report
+description: Report a problem in the OpenAPI specification, generated output, or repository docs.
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before opening an issue, check for existing issues or pull requests covering the same problem.
+
+        Use this template for incorrect behavior, invalid schema definitions, broken examples, or documentation problems.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Describe the problem clearly and concisely.
+      placeholder: The schema for ... does not match the documented example.
+    validations:
+      required: true
+  - type: input
+    id: affected-area
+    attributes:
+      label: Affected area
+      description: Reference the relevant path, schema, component, or documentation section if known.
+      placeholder: paths/chat.yml or components/schemas/FeedbackResponse
+    validations:
+      required: true
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: Current behavior
+      description: Explain what is wrong in the current spec or docs.
+      placeholder: The request body marks field `x` as required, but the example omits it.
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: Explain what the correct behavior or definition should be.
+      placeholder: Field `x` should be optional, or the example should include it.
+    validations:
+      required: true
+  - type: textarea
+    id: supporting-context
+    attributes:
+      label: Supporting context
+      description: Add example payloads, validation output, screenshots, or links that help reproduce or understand the issue.
+      render: markdown
+    validations:
+      required: false
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional notes
+      description: Include constraints, related discussions, or follow-up considerations.
+    validations:
+      required: false
