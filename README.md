@@ -8,7 +8,6 @@ This repository is intentionally **spec-only**. It defines an **OpenAPI 3.1** co
 
 - `openapi.yml` — the main entry point (OpenAPI 3.1)
 - `paths/` — endpoint definitions (multi-file structure)
-- `dist/openapi.yml` — bundled single-file spec (generated)
 
 ## What the spec covers
 
@@ -45,4 +44,10 @@ npm run bundle
 
 ## Viewing the spec
 
-Open `openapi.yml` (or `dist/openapi.yml` for the bundled version) in any OpenAPI-capable tool (e.g., Swagger Editor, Swagger UI, Stoplight, Redocly) to render and explore the docs.
+The published spec is also available in an online viewer at [mued.org/spec](https://mued.org/spec/).
+
+For local viewing, open `openapi.yml` in any OpenAPI-capable tool (e.g., Swagger Editor, Swagger UI, Stoplight, Redocly). If you want a single-file version, run `npm run bundle` first and then open `dist/openapi.yml`.
+
+## Contributing
+
+Contributor workflow guidance for issues, branching, reviews, and merging lives in [CONTRIBUTING.md](CONTRIBUTING.md).
