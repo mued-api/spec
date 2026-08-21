@@ -34,9 +34,10 @@ post:
               user:
                 userId: "user-456"
                 type: LEARNER
-                detailPreference: MEDIUM
-                tonePreference: FRIENDLY
-                languagePreference: "en"
+                preference:
+                  detail: MEDIUM
+                  tone: FRIENDLY
+                  language: "en"
               messages:
                 - role: USER
                   content: "Give me a hint for my answer about polymorphism."
@@ -64,9 +65,10 @@ post:
               user:
                 userId: "user-321"
                 type: LEARNER
-                detailPreference: DETAILED
-                tonePreference: NEUTRAL
-                languagePreference: "en"
+                preference:
+                  detail: DETAILED
+                  tone: NEUTRAL
+                  language: "en"
                 taskProgress:
                   currentQuestionId: "question-321"
                   timeSpentOnQuestion: "30 minutes"
@@ -154,7 +156,7 @@ post:
           schema:
             $ref: "./schemas/ChatResponse.yml"
           examples:
-            minimalChatResponse:
+            minimalChat:
               summary: Minimal chat response
               value:
                 output:
@@ -168,7 +170,7 @@ post:
                     When you call `speak()` on an `Animal` reference, the appropriate subclass method is invoked
                     based on the actual object type at runtime.
                 metadata: null
-            chatWithLlmConfigResponse:
+            chatWithLlmConfig:
               summary: Chat response with LLM configuration
               value:
                 output:
@@ -186,7 +188,7 @@ post:
                     model: "gpt-5.2"
                     temperature: 0.7
                     outputTokens: 78
-            chatWithContextResponse:
+            chatWithContext:
               summary: Chat response with context
               value:
                 output:

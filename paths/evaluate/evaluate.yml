@@ -98,9 +98,10 @@ post:
               user:
                 userId: "user-789"
                 type: LEARNER
-                detailPreference: DETAILED
-                tonePreference: FRIENDLY
-                languagePreference: "en"
+                preference:
+                  detail: DETAILED
+                  tone: FRIENDLY
+                  language: "en"
               criteria:
                 - criterionId: "crit-1"
                   name: "Correctness"
