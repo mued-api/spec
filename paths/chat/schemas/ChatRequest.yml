@@ -26,6 +26,12 @@ properties:
       - "null"
     description: Optional educational context (e.g., course material, task context).
     additionalProperties: true
+    properties:
+      vendorExtensions:
+        description: >
+          Optional vendor/platform-specific data namespaced under
+          x-<platform-slug> keys. See VendorExtensions.yml for details.
+        $ref: "../../shared/schemas/VendorExtensions.yml"
   configuration:
     type:
       - object
@@ -59,3 +65,8 @@ properties:
           - "null"
         allOf:
           - $ref: "../../shared/schemas/ExecutionPolicy.yml"
+      vendorExtensions:
+        description: >
+          Optional vendor/platform-specific configuration namespaced under
+          x-<platform-slug> keys. See VendorExtensions.yml for details.
+        $ref: "../../shared/schemas/VendorExtensions.yml"

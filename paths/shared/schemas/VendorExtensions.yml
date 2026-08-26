@@ -1,0 +1,15 @@
+type: [object, "null"]
+description: >
+  Optional vendor/platform-specific data that does not (yet) have a place
+  in the core µEd schemas. Vendors namespace their fields under a single
+  top-level key of the form `x-<platform-slug>` (following the OpenAPI
+  Specification Extensions convention), e.g. `vendorExtensions.x-lf`.
+  <br><br>
+  µEd-api does not define, host, or validate the contents of any vendor's
+  namespace — each vendor owns and documents its own fields in its own
+  repository. µEd-api only maintains a namespace registry to prevent
+  collisions between vendors. See the registry, usage guidance, and the
+  rule for when a concept graduates from a vendor extension into a core
+  schema at:
+  https://github.com/mued-api/spec/blob/main/VENDOR_EXTENSIONS.md
+additionalProperties: true
