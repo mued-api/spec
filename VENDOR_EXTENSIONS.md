@@ -27,7 +27,7 @@ fields are actually documented (your own repo, docs site, or spec).
 
 | Namespace (`x-<slug>`) | Owner | Docs / Repo |
 |---|---|---|
-| _(none registered yet)_ | | |
+| `x-lf` | Lambda Feedback | https://github.com/lambda-feedback/mued-vendor-spec |
 
 ## When does a vendor extension become a core schema?
 
