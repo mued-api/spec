@@ -12,6 +12,16 @@ info:
     - **Evaluate Task**: automatic feedback and grading for student submissions. <br>
     - **Chat**: conversational interactions around tasks, submissions, or general
       learning questions.
+    <br><br>
+    **Progress streaming.** Any operation MAY support an opt-in Server-Sent
+    Events progress stream, selected per request with the
+    `Accept: text/event-stream` header. The stream is a sequence of
+    `SseProgressStep` frames, optional keep-alive comments, and exactly one
+    terminal frame carrying the operation's normal `200` body (on success) or an
+    `ErrorResponse` (on failure); the HTTP status stays `200` throughout.
+    Services advertise support via `supportsStreaming` in their `/health`
+    capabilities. This is distinct from `configuration.llm.stream`, which
+    governs token-level streaming from the LLM provider.
 
 tags:
   - name: evaluate

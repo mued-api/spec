@@ -139,7 +139,35 @@ post:
                   temperature: 0.5
   responses:
     "200":
-      description: Successful chat response.
+      description: >
+        Successful chat response.
+
+
+        ### Streaming variant (opt-in)
+
+
+        If the request sends `Accept: text/event-stream`, the response is a
+        Server-Sent Events progress stream instead of a single JSON body. The
+        HTTP status stays `200` for the entire stream, including failures. It
+        consists of:
+
+
+        - zero or more progress frames — the SSE `event:` field is the stage
+          name and `data:` is an `SseProgressStep` JSON object;
+
+        - optional keep-alive comment lines (each starting with `:`);
+
+        - exactly one terminal frame — `event: completed` with `data:` an
+          `SseChatTerminalFrame` (the `200` body as `output` / `metadata`, plus
+          a `steps` replay), or `event: failed` with `data:` an
+          `SseChatTerminalFrame` whose `error` is an `ErrorResponse`.
+
+
+        Failures are always delivered as a terminal `failed` frame, never as an
+        HTTP error status. `X-Request-Id` and `X-Api-Version` are sent once, as
+        response headers, when the stream opens. This is independent of
+        `configuration.llm.stream`, which governs token-level streaming from the
+        LLM provider.
       headers:
         X-Request-Id:
           description: Request id for tracing this request across services.
@@ -213,6 +241,40 @@ post:
                     model: "gpt-5.2"
                     temperature: 0.5
                     outputTokens: 143
+        text/event-stream:
+          schema:
+            $ref: "./schemas/SseChatTerminalFrame.yml"
+          examples:
+            completedFrame:
+              summary: >
+                Terminal `event: completed` frame `data` (preceded on the wire by
+                `event: preparing` / `event: thinking` progress frames whose
+                `data` is an SseProgressStep, and optional `:` keep-alive lines).
+              value:
+                output:
+                  role: ASSISTANT
+                  content: "Polymorphism lets one interface represent many underlying forms."
+                metadata:
+                  responseTimeMs: 1800
+                steps:
+                  - stage: "preparing"
+                    message: "Preparing worker"
+                    timestamp: "2025-12-10T11:15:00Z"
+                  - stage: "thinking"
+                    message: "Composing response"
+                    timestamp: "2025-12-10T11:15:02Z"
+            failedFrame:
+              summary: "Terminal `event: failed` frame `data` (HTTP status is still 200)."
+              value:
+                output: null
+                error:
+                  title: "Chat failed"
+                  message: "The LLM provider connection failed."
+                  code: "LLM_PROVIDER_ERROR"
+                steps:
+                  - stage: "preparing"
+                    message: "Preparing worker"
+                    timestamp: "2025-12-10T11:15:00Z"
     "400":
       $ref: "./responses/400-BadRequest.yml"
     "403":

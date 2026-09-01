@@ -1,0 +1,30 @@
+type: object
+description: >
+  A single progress step emitted while an operation runs. Carried as the SSE
+  `data:` payload of an intermediate progress frame (the SSE `event:` field
+  carries the stage name), and replayed in the terminal frame's `steps` array.
+additionalProperties: true
+required:
+  - stage
+  - timestamp
+properties:
+  stage:
+    type: string
+    description: >
+      Lifecycle stage this step reports. Informative, not a fixed enum:
+      implementations MAY introduce new stages without a spec change, and clients
+      MUST tolerate values they do not recognise. Each service advertises the
+      stage values it emits via `supportedProgressStages` in its `/health`
+      capabilities. Common values: "preparing", "starting", "evaluating"
+      (evaluate), "thinking" (chat), and the terminal "completed" / "failed".
+  message:
+    type:
+      - string
+      - "null"
+    description: >
+      Short, human-readable description of the step, suitable for display to a
+      learner or teacher.
+  timestamp:
+    type: string
+    format: date-time
+    description: Time this step was generated (RFC 3339 / ISO 8601).

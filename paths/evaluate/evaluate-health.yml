@@ -40,6 +40,13 @@ get:
                   supportsFormativeFeedback: true
                   supportsSummativeFeedback: true
                   supportsDataPolicy: "PARTIAL"
+                  supportsStreaming: true
+                  supportedProgressStages:
+                    - "preparing"
+                    - "starting"
+                    - "evaluating"
+                    - "completed"
+                    - "failed"
                   supportedArtefactProfiles:
                     - type: "TEXT"
                       supportedFormats: ["plain", "markdown"]

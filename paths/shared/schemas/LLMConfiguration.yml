@@ -23,7 +23,12 @@ properties:
     type:
       - boolean
       - "null"
-    description: Optional flag indicating whether streaming responses are requested.
+    description: >
+      Optional flag requesting token-level streaming from the underlying LLM
+      provider. This is distinct from API-layer progress streaming, which is
+      opt-in per request via the `Accept: text/event-stream` header and is
+      advertised by `supportsStreaming` in a service's `/health` capabilities.
+      A service MAY support either, both, or neither.
   credentials:
     type:
       - object
