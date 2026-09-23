@@ -74,9 +74,9 @@ post:
                     partId: "part-1"
                     timeSpentOnPart: "10 minutes"
                     submission:
-                      type: "TEXT"
+                      format: "text:plain"
                       content:
-                        text: 'outputs= ["Woof!", "Meow!"]'
+                        value: 'outputs= ["Woof!", "Meow!"]'
                       feedback:
                         - feedbackId: "fb-101"
                           message: "Incomplete answer, explain why these outputs occur."

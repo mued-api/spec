@@ -25,10 +25,9 @@ post:
               submission:
                 submissionId: "sub-123"
                 taskId: "task-42"
-                type: "TEXT"
-                format: "plain"
+                format: "text:plain"
                 content:
-                  text: "Explain what polymorphism is in object-oriented programming."
+                  value: "Explain what polymorphism is in object-oriented programming."
                 submittedAt: "2025-12-16T09:30:00Z"
                 version: 1
               configuration: null
@@ -39,10 +38,9 @@ post:
               submission:
                 submissionId: "sub-777"
                 taskId: "task-42"
-                type: "TEXT"
-                format: "plain"
+                format: "text:plain"
                 content:
-                  text: "My short answer..."
+                  value: "My short answer..."
               preSubmissionFeedback:
                 enabled: true
               configuration:
@@ -56,10 +54,9 @@ post:
               submission:
                 submissionId: "sub-async-001"
                 taskId: "task-42"
-                type: "TEXT"
-                format: "plain"
+                format: "text:plain"
                 content:
-                  text: "Detailed essay answer that may require longer processing."
+                  value: "Detailed essay answer that may require longer processing."
                 submittedAt: "2025-12-16T09:45:00Z"
                 version: 1
               callbackUrl: "https://learning-platform.example.com/hooks/evaluate-result"
@@ -76,7 +73,7 @@ post:
                   - "Explain the concept of polymorphism."
                   - "Provide an example of subtype polymorphism in Java."
                 referenceSolution:
-                  text: >
+                  value: >
                     Polymorphism allows the same method call to result in different behavior
                     depending on the object's runtime type. For example, a variable of type
                     Shape can reference a Circle or Rectangle, and calling draw() will invoke
@@ -87,10 +84,9 @@ post:
               submission:
                 submissionId: "sub-456"
                 taskId: "task-12"
-                type: "TEXT"
-                format: "plain"
+                format: "text:plain"
                 content:
-                  text: >
+                  value: >
                     Polymorphism means that an object can take many forms, for example
                     subclasses implementing methods differently.
                 submittedAt: "2025-12-16T10:00:00Z"
@@ -129,10 +125,9 @@ post:
               submission:
                 submissionId: "sub-code-001"
                 taskId: "task-python-101"
-                type: "CODE"
-                format: "python"
+                format: "code:python"
                 content:
-                  code: |
+                  value: |
                     def fibonacci(n):
                         if n <= 1:
                             return n
@@ -150,10 +145,9 @@ post:
               submission:
                 submissionId: "sub-code-002"
                 taskId: "task-java-201"
-                type: "CODE"
-                format: "java"
+                format: "code:java"
                 content:
-                  files:
+                  value:
                     - path: "src/Main.java"
                       content: |
                         public class Main {
@@ -179,10 +173,9 @@ post:
               submission:
                 submissionId: "sub-math-002"
                 taskId: "task-algebra-101"
-                type: "CODE"
-                format: "sympy"
+                format: "code:sympy"
                 content:
-                  expression: "solve(x**2 - 4, x)"
+                  value: "solve(x**2 - 4, x)"
                   imports:
                     ["from sympy import symbols, solve", "x = symbols('x')"]
                 submittedAt: "2025-12-16T12:30:00Z"
@@ -194,10 +187,9 @@ post:
               submission:
                 submissionId: "sub-math-001"
                 taskId: "task-calculus-101"
-                type: "MATH"
-                format: "latex"
+                format: "math:latex"
                 content:
-                  expression: "\\int_{0}^{\\infty} e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}"
+                  value: "\\int_{0}^{\\infty} e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}"
                 submittedAt: "2025-12-16T12:00:00Z"
                 version: 1
 
@@ -207,10 +199,9 @@ post:
               submission:
                 submissionId: "sub-math-003"
                 taskId: "task-geometry-101"
-                type: "MATH"
-                format: "mathml"
+                format: "math:mathml"
                 content:
-                  expression: |
+                  value: |
                     <math xmlns="http://www.w3.org/1998/Math/MathML">
                       <mrow>
                         <mi>a</mi>
@@ -233,10 +224,9 @@ post:
               submission:
                 submissionId: "sub-model-001"
                 taskId: "task-oop-design-101"
-                type: "MODEL"
-                format: "uml"
+                format: "model:uml"
                 content:
-                  model: |
+                  value: |
                     @startuml
                     abstract class Animal {
                       +name: String
@@ -262,10 +252,9 @@ post:
               submission:
                 submissionId: "sub-model-002"
                 taskId: "task-database-101"
-                type: "MODEL"
-                format: "er"
+                format: "model:er"
                 content:
-                  model:
+                  value:
                     entities:
                       - name: "Student"
                         attributes:
@@ -299,10 +288,9 @@ post:
               submission:
                 submissionId: "sub-model-003"
                 taskId: "task-process-101"
-                type: "MODEL"
-                format: "bpmn"
+                format: "model:bpmn"
                 content:
-                  model: |
+                  value: |
                     <?xml version="1.0" encoding="UTF-8"?>
                     <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL">
                       <bpmn:process id="OrderProcess">
@@ -323,10 +311,9 @@ post:
               submission:
                 submissionId: "sub-text-002"
                 taskId: "task-essay-101"
-                type: "TEXT"
-                format: "markdown"
+                format: "text:markdown"
                 content:
-                  markdown: |
+                  value: |
                     # Introduction to Polymorphism
 
                     Polymorphism is a fundamental concept in **object-oriented programming** that allows objects to be treated as instances of their parent class.
@@ -370,8 +357,7 @@ post:
                     context: "The solution produces correct results for the specified problem."
                     maxPoints: 10
                   target:
-                    artefactType: "TEXT"
-                    format: "plain"
+                    format: "text:plain"
                     locator:
                       type: "span"
                       startIndex: 0
