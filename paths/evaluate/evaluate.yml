@@ -327,7 +327,35 @@ post:
                 version: 1
   responses:
     "200":
-      description: Successfully generated feedback.
+      description: >
+        Successfully generated feedback.
+
+
+        ### Streaming variant (opt-in)
+
+
+        If the request sends `Accept: text/event-stream`, the response is a
+        Server-Sent Events progress stream instead of a single JSON body. The
+        HTTP status stays `200` for the entire stream, including failures. It
+        consists of:
+
+
+        - zero or more progress frames — the SSE `event:` field is the stage
+          name and `data:` is an `SseProgressStep` JSON object;
+
+        - optional keep-alive comment lines (each starting with `:`);
+
+        - exactly one terminal frame — `event: completed` with `data:` an
+          `SseEvaluateTerminalFrame` (the `200` body under `feedback`, plus a
+          `steps` replay), or `event: failed` with `data:` an
+          `SseEvaluateTerminalFrame` whose `error` is an `ErrorResponse`.
+
+
+        Failures are always delivered as a terminal `failed` frame, never as an
+        HTTP error status. `X-Request-Id` and `X-Api-Version` are sent once, as
+        response headers, when the stream opens. This is independent of
+        `configuration.llm.stream`, which governs token-level streaming from the
+        LLM provider.
       headers:
         X-Request-Id:
           description: Request id for tracing this request across services.
@@ -340,9 +368,7 @@ post:
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: "./schemas/Feedback.yml"
+            $ref: "./schemas/EvaluateResponse.yml"
           examples:
             exampleResponse:
               summary: Example feedback response
@@ -366,6 +392,40 @@ post:
                 - feedbackId: "fb-2"
                   title: "Overall structure"
                   message: "The overall structure of your answer is clear and easy to follow."
+        text/event-stream:
+          schema:
+            $ref: "./schemas/SseEvaluateTerminalFrame.yml"
+          examples:
+            completedFrame:
+              summary: >
+                Terminal `event: completed` frame `data` (preceded on the wire by
+                `event: preparing` / `event: evaluating` progress frames whose
+                `data` is an SseProgressStep, and optional `:` keep-alive lines).
+              value:
+                feedback:
+                  - feedbackId: "fb-1"
+                    title: "Clarify your definition"
+                    message: "Distinguish subtype from parametric polymorphism."
+                    awardedPoints: 2.5
+                steps:
+                  - stage: "preparing"
+                    message: "Preparing worker"
+                    timestamp: "2025-12-16T09:30:01Z"
+                  - stage: "evaluating"
+                    message: "Ran 3/10 checks"
+                    timestamp: "2025-12-16T09:30:04Z"
+            failedFrame:
+              summary: "Terminal `event: failed` frame `data` (HTTP status is still 200)."
+              value:
+                feedback: null
+                error:
+                  title: "Evaluation failed"
+                  message: "The worker exited before returning feedback."
+                  code: "LLM_PROVIDER_ERROR"
+                steps:
+                  - stage: "preparing"
+                    message: "Preparing worker"
+                    timestamp: "2025-12-16T09:30:01Z"
     "202":
       $ref: "./responses/202-Accepted.yml"
     "400":

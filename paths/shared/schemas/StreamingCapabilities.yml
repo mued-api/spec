@@ -1,0 +1,26 @@
+type: object
+description: >
+  Shared capability fragment describing an operation's support for opt-in
+  Server-Sent Events (SSE) progress streaming. Composed via `allOf` into each
+  service's capabilities schema so every streaming-capable endpoint advertises
+  streaming the same way.
+additionalProperties: true
+properties:
+  supportsStreaming:
+    type: boolean
+    description: >
+      Indicates whether this operation supports opt-in SSE progress streaming,
+      selected per request with the `Accept: text/event-stream` header. This is
+      distinct from `configuration.llm.stream`, which governs token-level
+      streaming from the underlying LLM provider. A service MAY support either,
+      both, or neither.
+  supportedProgressStages:
+    type:
+      - array
+      - "null"
+    description: >
+      Optional list of `SseProgressStep.stage` values this service may emit
+      (e.g. ["preparing", "starting", "evaluating", "completed", "failed"]).
+      Informative only; clients MUST tolerate stages that are not listed.
+    items:
+      type: string

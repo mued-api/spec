@@ -1,0 +1,36 @@
+type: object
+description: >
+  Data payload of the single terminal frame of a `POST /chat` SSE progress
+  stream.
+
+  On `event: completed`, `output` / `metadata` hold exactly the endpoint's
+  normal `200 application/json` body (`ChatResponse`) and `error` is absent.
+
+  On `event: failed`, `output` is null and `error` holds an `ErrorResponse` with
+  the same `title` / `code` / `details` shape clients already handle for `400` /
+  `500` responses. The HTTP status stays `200` regardless.
+
+  `steps` is always present: the ordered replay of every progress step emitted
+  during the stream.
+allOf:
+  - $ref: "../../shared/schemas/SseTerminalSteps.yml"
+  - type: object
+    properties:
+      output:
+        description: The generated assistant response; null on a `failed` frame.
+        anyOf:
+          - $ref: "./Message.yml"
+          - type: "null"
+      metadata:
+        type:
+          - object
+          - "null"
+        description: Optional metadata about response generation.
+        additionalProperties: true
+      error:
+        type:
+          - object
+          - "null"
+        description: Present only on a `failed` frame.
+        allOf:
+          - $ref: "../../shared/schemas/ErrorResponse.yml"

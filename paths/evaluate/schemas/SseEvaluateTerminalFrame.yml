@@ -1,0 +1,32 @@
+type: object
+description: >
+  Data payload of the single terminal frame of a `POST /evaluate` SSE progress
+  stream.
+
+  On `event: completed`, `feedback` holds exactly the endpoint's normal
+  `200 application/json` body and `error` is absent.
+
+  On `event: failed`, `feedback` is null and `error` holds an `ErrorResponse`
+  with the same `title` / `code` / `details` shape clients already handle for
+  `400` / `500` responses. The HTTP status stays `200` regardless.
+
+  `steps` is always present: the ordered replay of every progress step emitted
+  during the stream.
+allOf:
+  - $ref: "../../shared/schemas/SseTerminalSteps.yml"
+  - type: object
+    properties:
+      feedback:
+        type:
+          - array
+          - "null"
+        description: The generated feedback items; null on a `failed` frame.
+        items:
+          $ref: "./Feedback.yml"
+      error:
+        type:
+          - object
+          - "null"
+        description: Present only on a `failed` frame.
+        allOf:
+          - $ref: "../../shared/schemas/ErrorResponse.yml"

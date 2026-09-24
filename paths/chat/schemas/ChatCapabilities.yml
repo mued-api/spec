@@ -4,6 +4,8 @@ required:
   - supportsChat
   - supportsDataPolicy
 additionalProperties: true
+allOf:
+  - $ref: "../../shared/schemas/StreamingCapabilities.yml"
 properties:
   supportsChat:
     type: boolean
@@ -11,9 +13,6 @@ properties:
   supportsUserPreferences:
     type: boolean
     description: Indicates whether the service supports adapting to user preferences.
-  supportsStreaming:
-    type: boolean
-    description: Indicates whether the service supports streaming responses.
   supportsDataPolicy:
     $ref: "../../shared/enums/DataPolicySupport.yml"
   supportedLanguages:

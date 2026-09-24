@@ -1,0 +1,4 @@
+type: array
+description: Ordered list of feedback items generated for the submission.
+items:
+  $ref: "./Feedback.yml"
