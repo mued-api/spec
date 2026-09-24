@@ -27,6 +27,15 @@ post:
                   content: "Can you explain polymorphism?"
               configuration: null
 
+          minimalChatAsynchronous:
+            summary: Asynchronous minimal chat request
+            value:
+              messages:
+                - role: USER
+                  content: "Can you explain polymorphism?"
+              configuration: null
+              callbackUrl: "https://learning-platform.example.com/hooks/evaluate-result"
+
           chatWithLlmConfig:
             summary: Chat request with optional LLM configuration
             value:

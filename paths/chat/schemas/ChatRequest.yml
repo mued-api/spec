@@ -26,6 +26,15 @@ properties:
       - "null"
     description: Optional educational context (e.g., course material, task context).
     additionalProperties: true
+  callbackUrl:
+    type:
+      - string
+      - "null"
+    format: uri
+    description: >
+      Optional HTTPS callback URL for asynchronous processing. If provided,
+      the service may return 202 Accepted immediately and deliver feedback
+      results to this URL once processing is complete.
   configuration:
     type:
       - object
