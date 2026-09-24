@@ -1,25 +1,23 @@
 type: object
 description: >
-  Describes support for a specific artefact type and its formats.
-  Used in health/capabilities responses to advertise what a service can handle.
-required:
-  - type
+  Describes support for a set of submission formats. Used in health/capabilities
+  responses to advertise what a service can handle.
 properties:
-  type:
-    $ref: "../enums/ArtefactType.yml"
   supportedFormats:
     type:
       - array
       - "null"
     description: >
-      List of supported formats for this artefact type. Use lowercase values.
-      If null or empty, the service accepts any format for this type.
+      List of supported formats, using the same namespaced "<category>:<format>"
+      convention as Submission.format (see Submission.yml). A category-wildcard
+      entry (e.g. "code:*") means the service accepts any format in that
+      category. If null or empty, the service accepts any format.
     items:
       type: string
     examples:
-      - ["plain", "markdown"]
-      - ["python", "java", "javascript", "wolfram", "matlab"]
-      - ["latex", "mathml"]
+      - ["text:plain", "text:markdown"]
+      - ["code:python", "code:java", "code:javascript", "code:sympy"]
+      - ["math:latex", "math:mathml"]
   contentSchema:
     type:
       - object

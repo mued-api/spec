@@ -28,7 +28,7 @@ properties:
       - "null"
     description: >
       Optional list of supported artefact profiles. Each profile specifies
-      an artefact type and the formats supported for that type.
+      a set of supported formats.
     items:
       $ref: "../../shared/schemas/ArtefactProfile.yml"
   supportedLanguages:
