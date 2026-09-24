@@ -1,0 +1,51 @@
+get:
+  summary: Information of the chat service
+  operationId: getChatInfo
+  description: >
+    Returns information and capabilities of the chat service.
+    Clients can use this endpoint to discover whether the service supports
+    optional features such as user preferences or streaming responses.
+  tags:
+    - chat
+  parameters:
+    - $ref: "../shared/parameters/X-Request-Id.yml"
+    - $ref: "../shared/parameters/X-Api-Version.yml"
+  responses:
+    "200":
+      description: Chat service is reachable and reporting capabilities.
+      headers:
+        X-Request-Id:
+          description: Request id for tracing this request across services.
+          schema:
+            type: string
+        X-Api-Version:
+          description: The API version that was used to serve this response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: "./schemas/ChatInfoResponse.yml"
+          examples:
+            exampleInfo:
+              summary: Example service with capabilities
+              value:
+                version: "1.0.0"
+                capabilities:
+                  supportsChat: true
+                  supportsUserPreferences: true
+                  supportsStreaming: true
+                  "supportsDataPolicy": "NOT_SUPPORTED"
+                  supportedLanguages:
+                    - "en"
+                    - "de"
+                  supportedModels:
+                    - "gpt-4o"
+                    - "llama-3"
+                  supportedVersions:
+                    - "0.1.0"
+    "406":
+      $ref: "./responses/406-VersionNotSupported.yml"
+    "501":
+      description: The server does not implement the info endpoint for chat.
+      $ref: "./responses/501-NotImplemented.yml"
