@@ -33,7 +33,7 @@ properties:
     format: uri
     description: >
       Optional HTTPS callback URL for asynchronous processing. If provided,
-      the service may return 202 Accepted immediately and deliver feedback
+      the service may return 202 Accepted immediately and deliver chat/reasoning
       results to this URL once processing is complete.
   configuration:
     type:
