@@ -35,6 +35,14 @@ properties:
       Optional HTTPS callback URL for asynchronous processing. If provided,
       the service may return 202 Accepted immediately and deliver chat/reasoning
       results to this URL once processing is complete.
+    properties:
+      task:
+        description: Optional task grounding this conversation.
+        type:
+          - object
+          - "null"
+        allOf:
+          - $ref: "../../shared/schemas/Task.yml"
   configuration:
     type:
       - object

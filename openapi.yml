@@ -22,9 +22,13 @@ tags:
 paths:
   /evaluate:
     $ref: "./paths/evaluate/evaluate.yml"
+  /evaluate/info:
+    $ref: "./paths/evaluate/evaluate-info.yml"
   /evaluate/health:
     $ref: "./paths/evaluate/evaluate-health.yml"
   /chat:
     $ref: "./paths/chat/chat.yml"
+  /chat/info:
+    $ref: "./paths/chat/chat-info.yml"
   /chat/health:
     $ref: "./paths/chat/chat-health.yml"
