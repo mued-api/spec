@@ -1,0 +1,57 @@
+get:
+  summary: Information and capabilities of the evaluate service
+  operationId: getEvaluateInfo
+  description: >
+    Returns information and capabilities of the evaluate service.
+    Clients can use this endpoint to discover whether the service supports
+    optional features such as pre-submission feedback, formative feedback,
+    and summative feedback.
+  tags:
+    - evaluate
+  parameters:
+    - $ref: "../shared/parameters/X-Request-Id.yml"
+    - $ref: "../shared/parameters/X-Api-Version.yml"
+  responses:
+    "200":
+      description: Evaluate service is reachable and reporting capabilities.
+      headers:
+        X-Request-Id:
+          description: Request id for tracing this request across services.
+          schema:
+            type: string
+        X-Api-Version:
+          description: The API version that was used to serve this response.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: "./schemas/EvaluateInfoResponse.yml"
+          examples:
+            exampleInfo:
+              summary: Example service with capabilities
+              value:
+                version: "1.0.0"
+                capabilities:
+                  supportsEvaluate: true
+                  supportsPreSubmissionFeedback: false
+                  supportsFormativeFeedback: true
+                  supportsSummativeFeedback: true
+                  supportsDataPolicy: "PARTIAL"
+                  supportedArtefactProfiles:
+                    - type: "TEXT"
+                      supportedFormats: ["plain", "markdown"]
+                    - type: "CODE"
+                      supportedFormats: ["python", "java", "javascript"]
+                    - type: "MATH"
+                      supportedFormats: ["latex", "mathml"]
+                  supportedLanguages:
+                    - "en"
+                    - "de"
+                  supportedVersions:
+                    - "0.1.0"
+    "406":
+      $ref: "./responses/406-VersionNotSupported.yml"
+    "501":
+      description: The server does not implement the info endpoint for evaluate.
+      $ref: "./responses/501-NotImplemented.yml"

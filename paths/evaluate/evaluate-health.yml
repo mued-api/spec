@@ -1,11 +1,8 @@
 get:
-  summary: Health and capabilities of the evaluate service
+  summary: Health of the evaluate service
   operationId: getEvaluateHealth
   description: >
-    Returns health information and capabilities of the evaluate service.
-    Clients can use this endpoint to discover whether the service supports
-    optional features such as pre-submission feedback, formative feedback,
-    and summative feedback.
+    Returns health information of the evaluate service.
   tags:
     - evaluate
   parameters:
@@ -34,22 +31,6 @@ get:
                 status: "OK"
                 message: "Service healthy"
                 version: "1.0.0"
-                capabilities:
-                  supportsEvaluate: true
-                  supportsPreSubmissionFeedback: false
-                  supportsFormativeFeedback: true
-                  supportsSummativeFeedback: true
-                  supportsDataPolicy: "PARTIAL"
-                  supportedArtefactProfiles:
-                    - supportedFormats: ["text:plain", "text:markdown"]
-                    - supportedFormats:
-                        ["code:python", "code:java", "code:javascript"]
-                    - supportedFormats: ["math:latex", "math:mathml"]
-                  supportedLanguages:
-                    - "en"
-                    - "de"
-                  supportedVersions:
-                    - "0.1.0"
     "406":
       $ref: "./responses/406-VersionNotSupported.yml"
     "501":
