@@ -1,10 +1,9 @@
 get:
-  summary: Health and capabilities of the chat service
+  summary: Health of the chat service
   operationId: getChatHealth
   description: >
-    Returns health information and capabilities of the chat service.
-    Clients can use this endpoint to discover whether the service supports
-    optional features such as user preferences or streaming responses.
+    Returns health of the chat service.
+    Clients can use this endpoint to discover whether the service is healthy
   tags:
     - chat
   parameters:
@@ -12,7 +11,7 @@ get:
     - $ref: "../shared/parameters/X-Api-Version.yml"
   responses:
     "200":
-      description: Chat service is reachable and reporting capabilities.
+      description: Chat service is reachable and reporting healthy.
       headers:
         X-Request-Id:
           description: Request id for tracing this request across services.
@@ -33,19 +32,6 @@ get:
                 status: "OK"
                 statusMessage: "Service healthy"
                 version: "1.0.0"
-                capabilities:
-                  supportsChat: true
-                  supportsUserPreferences: true
-                  supportsStreaming: true
-                  "supportsDataPolicy": "NOT_SUPPORTED"
-                  supportedLanguages:
-                    - "en"
-                    - "de"
-                  supportedModels:
-                    - "gpt-4o"
-                    - "llama-3"
-                  supportedVersions:
-                    - "0.1.0"
     "406":
       $ref: "./responses/406-VersionNotSupported.yml"
     "501":

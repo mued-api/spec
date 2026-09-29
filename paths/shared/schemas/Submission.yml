@@ -3,7 +3,7 @@ description: >
   A student's submission for a task. The structure of 'content' is intentionally
   generic and task-specific.
 required:
-  - type
+  - format
   - content
 properties:
   submissionId:
@@ -14,29 +14,40 @@ properties:
       - string
       - "null"
     description: Optional identifier of the task this submission belongs to.
-  type:
-    $ref: "../enums/ArtefactType.yml"
   format:
-    type:
-      - string
-      - "null"
+    type: string
+    pattern: "^(text|code|math|model|other):[a-z0-9_]+$"
     description: >
-      Optional format specifier providing additional detail about the artefact.
-      For TEXT: plain_text, markdown, html, rich_text, etc.
-      For CODE: programming language (e.g., python, java, javascript, wolfram, matlab).
-      For MATH: latex, mathml, sympy, wolfram, asciimath, etc.
-      For MODEL: uml, er, bpmn, petri_net, state_machine, etc.
-      Use lowercase values and snakecase. Services should document which formats they support.
+      Format of the submission content, as "<category>:<format>". The category
+      prefix determines how 'content' should be interpreted, and disambiguates
+      formats (e.g. "sympy" or "wolfram") that exist under more than one category.
+      Recommended values:
+      text:plain, text:markdown, text:html, text:rich_text;
+      code:python, code:java, code:javascript, code:matlab, code:sympy, code:wolfram;
+      math:latex, math:mathml, math:sympy, math:wolfram, math:asciimath;
+      model:uml, model:er, model:bpmn, model:petri_net, model:state_machine;
+      other:<custom> for anything not covered above.
+      Services should document which formats they support.
   content:
     type: object
+    required:
+      - value
     additionalProperties: true
     description: >
-      Logical representation of the submission content. The expected structure
-      depends on the artefact type:
-      - TEXT: { text: string } or { markdown: string }
-      - CODE: { code: string } or { files: [{ path: string, content: string }], entryPoint?: string }
-      - MATH: { expression: string }
-      - MODEL: { model: string | object, notation?: string }
+      Logical representation of the submission content. 'value' holds the
+      submitted content itself; its shape depends on 'format':
+      - text:*: value is a string
+      - code:* (single file): value is a string
+      - code:* (multiple files): value is [{ path: string, content: string }],
+        with an optional sibling 'entryPoint' naming the file to run
+      - math:*: value is a string (e.g. a LaTeX or MathML expression)
+      - model:*: value is a string or object, with optional sibling metadata
+        such as 'notation' or 'diagramType'
+      Format-specific auxiliary fields (e.g. 'entryPoint', 'imports', 'notation',
+      'diagramType') are additional sibling properties alongside 'value', not
+      nested inside it.
+    properties:
+      value: {}
   submittedAt:
     type:
       - string

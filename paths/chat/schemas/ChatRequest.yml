@@ -26,6 +26,14 @@ properties:
       - "null"
     description: Optional educational context (e.g., course material, task context).
     additionalProperties: true
+    properties:
+      task:
+        description: Optional task grounding this conversation.
+        type:
+          - object
+          - "null"
+        allOf:
+          - $ref: "../../shared/schemas/Task.yml"
   configuration:
     type:
       - object
