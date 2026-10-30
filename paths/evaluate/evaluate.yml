@@ -384,7 +384,7 @@ post:
               value:
                 - feedbackId: "fb-math-1"
                   title: "Check your signs"
-                  message: "Close, but the sign."
+                  message: "Close, but check the sign of y."
                   awardedPoints: 1
                   response:
                     latex: "x-y"
