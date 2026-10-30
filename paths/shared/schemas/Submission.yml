@@ -48,6 +48,10 @@ properties:
       nested inside it.
     properties:
       value: {}
+  supplementaryContent:
+    type: object
+    additionalProperties: true
+    description: Optional additional content for the learner's submission. This could include workings for math tasks, or raw source code for compiled binaries.
   submittedAt:
     type:
       - string

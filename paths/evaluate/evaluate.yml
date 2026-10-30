@@ -394,6 +394,8 @@ post:
       $ref: "./responses/400-BadRequest.yml"
     "403":
       $ref: "./responses/403-Forbidden.yml"
+    "422":
+      $ref: "./responses/422-UnprocessableSubmission.yml"
     "500":
       $ref: "./responses/500-InternalError.yml"
     "406":
