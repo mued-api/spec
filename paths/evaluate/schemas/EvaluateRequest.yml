@@ -79,3 +79,8 @@ properties:
           - "null"
         allOf:
           - $ref: "../../shared/schemas/ExecutionPolicy.yml"
+      vendorExtensions:
+        description: >
+          Optional vendor/platform-specific configuration namespaced under
+          x-<platform-slug> keys. See VendorExtensions.yml for details.
+        $ref: "../../shared/schemas/VendorExtensions.yml"

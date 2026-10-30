@@ -18,6 +18,16 @@ At a high level, the API specifies endpoints for:
 
 All request/response shapes, validation rules, and examples live in the spec files.
 
+## Extending the spec for your platform
+
+Platform-specific data that isn't common across implementers doesn't
+belong in core schemas. Use the `vendorExtensions` extension point
+(namespaced under `x-<platform-slug>` keys) instead of forking or
+proposing vendor-specific fields into the core spec. See
+[VENDOR_EXTENSIONS.md](VENDOR_EXTENSIONS.md) for the namespace registry,
+usage details, and the rule for when a concept graduates into a core
+schema.
+
 ## Development
 
 ### Prerequisites
