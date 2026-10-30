@@ -1,0 +1,28 @@
+description: >
+  The requested API version (supplied via X-Api-Version) is not supported
+  by this service.
+headers:
+  X-Request-Id:
+    description: Request id for tracing this request across services.
+    schema:
+      type: string
+  X-Api-Version:
+    description: The API version that was used to serve this response.
+    schema:
+      type: string
+content:
+  application/json:
+    schema:
+      $ref: "../../shared/schemas/ErrorResponse.yml"
+    examples:
+      versionNotSupported:
+        summary: Example version not supported error
+        value:
+          title: "API version not supported"
+          message: "The requested API version '0.0' is not supported. Supported versions are: ['0.1.0']."
+          code: "VERSION_NOT_SUPPORTED"
+          trace: null
+          details:
+            requestedVersion: "0.0"
+            supportedVersions:
+              - "0.1.0"

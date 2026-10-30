@@ -2,8 +2,6 @@ type: object
 description: >
   Task context including the content, learning objectives,
   optional reference solution, optional context information, and optional metadata.
-required:
-  - title
 properties:
   taskId:
     type: string
@@ -34,7 +32,9 @@ properties:
     type:
       - object
       - "null"
-    description: Optional reference or example solution (structure is task-specific).
+    description: >
+      Optional reference or example solution. By convention, follows the same
+      { value: ..., <format-specific fields> } shape as Submission.content.
     additionalProperties: true
   metadata:
     type:

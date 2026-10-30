@@ -1,0 +1,67 @@
+name: Spec change proposal
+description: Propose a new endpoint, schema change, clarification, or other API specification update.
+title: "[Proposal] "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for non-trivial API or documentation changes.
+
+        A focused proposal makes review faster and reduces ambiguity during implementation.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or goal
+      description: Describe the problem to solve or the improvement you want to make.
+      placeholder: Consumers need a way to ...
+    validations:
+      required: true
+  - type: input
+    id: affected-area
+    attributes:
+      label: Affected area
+      description: List the relevant endpoints, schemas, or documentation sections if known.
+      placeholder: /feedback, components/schemas/Submission, README
+    validations:
+      required: true
+  - type: textarea
+    id: proposed-change
+    attributes:
+      label: Proposed change
+      description: Describe the concrete change you want in the spec.
+      placeholder: Add a new optional field ... or clarify the response contract for ...
+      render: markdown
+    validations:
+      required: true
+  - type: textarea
+    id: examples
+    attributes:
+      label: Example payloads or schema snippets
+      description: Provide sample requests, responses, or schema fragments where useful.
+      render: yaml
+    validations:
+      required: false
+  - type: textarea
+    id: impact
+    attributes:
+      label: Compatibility and impact
+      description: Note whether this is breaking, additive, or documentation-only, and mention downstream impact if known.
+      placeholder: Additive change; existing consumers should continue to work unchanged.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Describe other options you evaluated or reasons for rejecting them.
+    validations:
+      required: false
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional notes
+      description: Include related issues, constraints, or open questions.
+    validations:
+      required: false

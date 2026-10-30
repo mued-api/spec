@@ -1,0 +1,19 @@
+type: object
+description: Acknowledgement that evaluation was accepted for asynchronous processing.
+required:
+  - status
+  - requestId
+properties:
+  status:
+    type: string
+    enum:
+      - ACCEPTED
+    description: Indicates that the request has been accepted for asynchronous processing.
+  requestId:
+    type: string
+    description: Identifier to correlate this accepted request with callback delivery.
+  message:
+    type:
+      - string
+      - "null"
+    description: Optional human-readable message about asynchronous processing.

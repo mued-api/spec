@@ -4,6 +4,10 @@ headers:
     description: Request id for tracing this request across services.
     schema:
       type: string
+  X-Api-Version:
+    description: The API version that was used to serve this response.
+    schema:
+      type: string
 content:
   application/json:
     schema:

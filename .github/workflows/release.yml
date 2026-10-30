@@ -4,6 +4,11 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to deploy docs for (e.g. v0.1.0)"
+        required: true
 
 permissions:
   contents: write
@@ -11,15 +16,18 @@ permissions:
 jobs:
   lint:
     name: Lint
+    if: github.event_name == 'push'
     uses: ./.github/workflows/lint.yml
 
   bundle:
     name: Bundle
+    if: github.event_name == 'push'
     needs: lint
     uses: ./.github/workflows/bundle.yml
 
   release:
     name: Create Release
+    if: github.event_name == 'push'
     needs: bundle
     runs-on: ubuntu-latest
     steps:
@@ -33,7 +41,17 @@ jobs:
         with:
           files: openapi.yml
           generate_release_notes: true
-          body: |
-            ## 📦 OpenAPI Specification
 
-            Download the bundled OpenAPI spec: `openapi.yml`
+  deploy-pages:
+    name: Dispatch Docs Deploy
+    needs: release
+    if: always() && (needs.release.result == 'success' || needs.release.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger docs repo build
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.DOCS_DEPLOY_TOKEN }}
+          repository: ${{ github.repository_owner }}/muEd-api-docs
+          event-type: trigger-build
+          client-payload: '{"tag": "${{ inputs.tag || github.ref_name }}", "repo": "${{ github.repository }}"}'

@@ -1,0 +1,12 @@
+type: object
+description: Information and capabilities of the chat service.
+required:
+  - capabilities
+properties:
+  version:
+    type:
+      - string
+      - "null"
+    description: Optional version of the chat service implementation.
+  capabilities:
+    $ref: "./ChatCapabilities.yml"
