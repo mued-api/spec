@@ -366,8 +366,8 @@ post:
                 - feedbackId: "fb-2"
                   title: "Overall structure"
                   message: "The overall structure of your answer is clear and easy to follow."
-            mathExampleResponse:
-              summary: Example feedback response for a MATH submission with case matching
+            mathMatchedCaseResponse:
+              summary: MATH submission that matched a service-defined case
               value:
                 - feedbackId: "fb-math-1"
                   title: "Correct, matched expected case"
@@ -378,16 +378,20 @@ post:
                     sympy: "x + y"
                   matchedCase: 0
                   target:
-                    artefactType: "MATH"
-                    format: "latex"
-                - feedbackId: "fb-math-2"
-                  title: "No matching case"
-                  message: "We parsed your answer but it didn't match any of the known cases."
-                  awardedPoints: 0
+                    format: "math:latex"
+            mathMisconceptionCaseResponse:
+              summary: MATH submission that matched a known-misconception case
+              value:
+                - feedbackId: "fb-math-1"
+                  title: "Check your signs"
+                  message: "Close, but the sign."
+                  awardedPoints: 1
                   response:
                     latex: "x-y"
                     sympy: "x - y"
-                  matchedCase: null
+                  matchedCase: 1
+                  target:
+                    format: "math:latex"
     "202":
       $ref: "./responses/202-Accepted.yml"
     "400":
