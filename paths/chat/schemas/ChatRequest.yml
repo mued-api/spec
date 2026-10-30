@@ -27,11 +27,27 @@ properties:
     description: Optional educational context (e.g., course material, task context).
     additionalProperties: true
     properties:
+      task:
+        description: Optional task grounding this conversation.
+        type:
+          - object
+          - "null"
+        allOf:
+          - $ref: "../../shared/schemas/Task.yml"
       vendorExtensions:
         description: >
           Optional vendor/platform-specific data namespaced under
           x-<platform-slug> keys. See VendorExtensions.yml for details.
         $ref: "../../shared/schemas/VendorExtensions.yml"
+  callbackUrl:
+    type:
+      - string
+      - "null"
+    format: uri
+    description: >
+      Optional HTTPS callback URL for asynchronous processing. If provided,
+      the service may return 202 Accepted immediately and deliver chat/reasoning
+      results to this URL once processing is complete.
   configuration:
     type:
       - object
