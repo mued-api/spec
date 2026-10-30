@@ -366,6 +366,32 @@ post:
                 - feedbackId: "fb-2"
                   title: "Overall structure"
                   message: "The overall structure of your answer is clear and easy to follow."
+            mathMatchedCaseResponse:
+              summary: MATH submission that matched a service-defined case
+              value:
+                - feedbackId: "fb-math-1"
+                  title: "Correct, matched expected case"
+                  message: "Your answer matches the expected simplified form."
+                  awardedPoints: 3
+                  response:
+                    latex: "x+y"
+                    sympy: "x + y"
+                  matchedCase: 0
+                  target:
+                    format: "math:latex"
+            mathMisconceptionCaseResponse:
+              summary: MATH submission that matched a known-misconception case
+              value:
+                - feedbackId: "fb-math-1"
+                  title: "Check your signs"
+                  message: "Close, but check the sign of y."
+                  awardedPoints: 1
+                  response:
+                    latex: "x-y"
+                    sympy: "x - y"
+                  matchedCase: 1
+                  target:
+                    format: "math:latex"
     "202":
       $ref: "./responses/202-Accepted.yml"
     "400":

@@ -1,8 +1,9 @@
 type: object
 description: >
   A single feedback item produced for the submission. It may include
-  suggested actions, optional points, optional criterion linkage, and
-  optional targeting into the submission.
+  suggested actions, optional points, optional criterion linkage, optional
+  targeting into the submission, optional normalized representation(s) of
+  the submission, and an optional matched-case index.
 properties:
   feedbackId:
     type: string
@@ -42,3 +43,26 @@ properties:
     description: Optional target reference inside the submission.
     allOf:
       - $ref: "./FeedbackTarget.yml"
+  response:
+    type:
+      - object
+      - "null"
+    description: >
+      Optional normalized representation(s) of the submission as interpreted
+      by the service (e.g., a parsed or simplified rendering), keyed by
+      format — for example { latex: "x+y", sympy: "x + y" }. Also used to
+      carry pre-submission preview content when the request's
+      preSubmissionFeedback.enabled was set to true.
+    allOf:
+      - $ref: "../../shared/schemas/FormattedContent.yml"
+  matchedCase:
+    type:
+      - integer
+      - "null"
+    format: int32
+    description: >
+      Optional index into a service-defined list of matching cases (e.g., a
+      Lambda Feedback-style "cases" list supplied under the request's
+      configuration object), when the service supports such a mechanism.
+      Null if no case matched. This is a provider-specific convention and is
+      not a formally defined construct in this spec.
