@@ -327,7 +327,62 @@ post:
                 version: 1
   responses:
     "200":
-      description: Successfully generated feedback.
+      description: >
+        Successfully generated feedback.
+
+
+        ### Response selection
+
+
+        The service picks the response mode in this order:
+
+
+        1. Errors detected before any response bytes are sent (validation,
+           authorization, unsupported version, unimplemented operation, etc.)
+           are returned with their normal HTTP status and an `ErrorResponse`
+           JSON body. No stream is opened.
+
+        2. A request that sets `callbackUrl` **and** sends
+           `Accept: text/event-stream` is rejected with `400`; asynchronous
+           callback delivery and SSE streaming are mutually exclusive.
+
+        3. A request that sets `callbackUrl` MAY be answered with `202` and
+           the result delivered to the callback.
+
+        4. A request that sends `Accept: text/event-stream` to a service that
+           advertises `supportsStreaming` receives a `200` Server-Sent Events
+           progress stream (`text/event-stream`, see below).
+
+        5. Otherwise, including when the service does not support streaming,
+           the response is `200 application/json`.
+
+
+        ### Streaming variant (opt-in)
+
+
+        Each item of the `text/event-stream` body is one SSE event, described
+        by `itemSchema`:
+
+
+        - zero or more progress events, where `event:` is the stage name (e.g.
+          `preparing`, `evaluating`) and `data:` is an `SseProgressStep` JSON object;
+
+        - optional keep-alive comment lines (each starting with `:`), which
+          are not events;
+
+        - exactly one terminal event: `event: completed` with `data:`
+          an `SseEvaluateCompletedFrame` (the `200` body under `feedback`, plus a
+          `steps` replay), or `event: failed` with `data:` an
+          `SseFailedFrame` (an `ErrorResponse` under `error`, plus `steps`).
+
+
+        `completed` and `failed` are reserved terminal event names and are
+        never used as progress stages. Once the stream has opened the `200`
+        status is committed, so any failure after that point is delivered as
+        the terminal `failed` event. `X-Request-Id` and `X-Api-Version` are
+        sent once, as response headers, when the stream opens. This is
+        independent of `configuration.llm.stream`, which governs token-level
+        streaming from the LLM provider.
       headers:
         X-Request-Id:
           description: Request id for tracing this request across services.
@@ -340,9 +395,7 @@ post:
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: "./schemas/Feedback.yml"
+            $ref: "./schemas/EvaluateResponse.yml"
           examples:
             exampleResponse:
               summary: Example feedback response
@@ -396,6 +449,33 @@ post:
                       matchedCase: 1
                   target:
                     format: "math:latex"
+        text/event-stream:
+          itemSchema:
+            $ref: "./schemas/SseEvaluateEvent.yml"
+          examples:
+            completedStream:
+              summary: Progress events, a keep-alive comment, then the terminal `completed` event
+              serializedValue: |
+                event: preparing
+                data: {"stage":"preparing","message":"Preparing worker","timestamp":"2025-12-16T09:30:01Z"}
+
+                : keep-alive
+
+                event: evaluating
+                data: {"stage":"evaluating","message":"Ran 3/10 checks","timestamp":"2025-12-16T09:30:04Z"}
+
+                event: completed
+                data: {"feedback":[{"feedbackId":"fb-1","title":"Clarify your definition","message":"Distinguish subtype from parametric polymorphism.","awardedPoints":2.5}],"steps":[{"stage":"preparing","message":"Preparing worker","timestamp":"2025-12-16T09:30:01Z"},{"stage":"evaluating","message":"Ran 3/10 checks","timestamp":"2025-12-16T09:30:04Z"}]}
+
+            failedStream:
+              summary: A progress event, then the terminal `failed` event (HTTP status is still 200)
+              serializedValue: |
+                event: preparing
+                data: {"stage":"preparing","message":"Preparing worker","timestamp":"2025-12-16T09:30:01Z"}
+
+                event: failed
+                data: {"error":{"title":"Evaluation failed","message":"The worker exited before returning feedback.","code":"LLM_PROVIDER_ERROR"},"steps":[{"stage":"preparing","message":"Preparing worker","timestamp":"2025-12-16T09:30:01Z"}]}
+
     "202":
       $ref: "./responses/202-Accepted.yml"
     "400":

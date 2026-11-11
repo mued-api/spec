@@ -1,0 +1,14 @@
+type: object
+description: >
+  JSON payload of the terminal `event: failed` frame of an SSE progress
+  stream. `error` uses the same `ErrorResponse` shape clients already handle
+  for `400` / `500` responses; the operation's success result is absent.
+  `steps` replays every progress step emitted before the failure.
+allOf:
+  - $ref: "./SseTerminalSteps.yml"
+  - type: object
+    required:
+      - error
+    properties:
+      error:
+        $ref: "./ErrorResponse.yml"

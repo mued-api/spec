@@ -1,0 +1,13 @@
+type: object
+description: >
+  Shared fragment for the terminal SSE frame: the ordered replay of every
+  progress step emitted during the stream, so a client that connected late or
+  dropped intermediate frames still receives the full trace.
+required:
+  - steps
+properties:
+  steps:
+    type: array
+    description: Ordered list of every SseProgressStep emitted during the stream.
+    items:
+      $ref: "./SseProgressStep.yml"

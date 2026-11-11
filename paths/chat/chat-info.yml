@@ -35,6 +35,10 @@ get:
                   supportsChat: true
                   supportsUserPreferences: true
                   supportsStreaming: true
+                  supportedProgressStages:
+                    - "preparing"
+                    - "starting"
+                    - "thinking"
                   "supportsDataPolicy": "NOT_SUPPORTED"
                   supportedLanguages:
                     - "en"
@@ -42,7 +46,7 @@ get:
                   supportedModels:
                     - "gpt-4o"
                     - "llama-3"
-                  supportedVersions:
+                  supportedAPIVersions:
                     - "0.1.0"
     "406":
       $ref: "./responses/406-VersionNotSupported.yml"

@@ -38,6 +38,11 @@ get:
                   supportsFormativeFeedback: true
                   supportsSummativeFeedback: true
                   supportsDataPolicy: "PARTIAL"
+                  supportsStreaming: true
+                  supportedProgressStages:
+                    - "preparing"
+                    - "starting"
+                    - "evaluating"
                   supportedArtefactProfiles:
                     - type: "TEXT"
                       supportedFormats: ["plain", "markdown"]
@@ -48,7 +53,7 @@ get:
                   supportedLanguages:
                     - "en"
                     - "de"
-                  supportedVersions:
+                  supportedAPIVersions:
                     - "0.1.0"
     "406":
       $ref: "./responses/406-VersionNotSupported.yml"
