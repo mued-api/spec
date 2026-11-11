@@ -16,7 +16,10 @@ properties:
       MUST tolerate values they do not recognise. Each service advertises the
       stage values it emits via `supportedProgressStages` in its `/info`
       capabilities. Common values: "preparing", "starting", "evaluating"
-      (evaluate), "thinking" (chat), and the terminal "completed" / "failed".
+      (evaluate), "thinking" (chat). The names "completed" and "failed" are
+      reserved for the terminal SSE events: they MUST NOT be used as progress
+      stages, never appear in a `steps` replay, and are not advertised in
+      `supportedProgressStages`.
   message:
     type:
       - string

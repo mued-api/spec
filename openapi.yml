@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
   title: µEd API - Educational Microservices
   version: 0.1.0
@@ -15,10 +15,13 @@ info:
     <br><br>
     **Progress streaming.** Any operation MAY support an opt-in Server-Sent
     Events progress stream, selected per request with the
-    `Accept: text/event-stream` header. The stream is a sequence of
-    `SseProgressStep` frames, optional keep-alive comments, and exactly one
-    terminal frame carrying the operation's normal `200` body (on success) or an
-    `ErrorResponse` (on failure); the HTTP status stays `200` throughout.
+    `Accept: text/event-stream` header and modeled with the OpenAPI 3.2
+    `itemSchema` event form. The stream is a sequence of progress events
+    (`SseProgressStep` data), optional keep-alive comments, and exactly one
+    terminal event: `completed` carrying the operation's normal `200` body, or
+    `failed` carrying an `ErrorResponse`. Errors detected before the stream
+    opens use normal HTTP status codes; once it opens, the status stays `200`.
+    Streaming cannot be combined with `callbackUrl` (such requests get `400`).
     Services advertise support via `supportsStreaming` in their `/info`
     capabilities. This is distinct from `configuration.llm.stream`, which
     governs token-level streaming from the LLM provider.

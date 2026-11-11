@@ -1,0 +1,29 @@
+type: object
+description: >
+  An intermediate progress event in an SSE progress stream (OpenAPI 3.2
+  `itemSchema` event form). The SSE `event:` field carries the stage name and
+  `data:` carries an `SseProgressStep` JSON object. The terminal event names
+  `completed` and `failed` are reserved and MUST NOT be used for progress
+  events.
+required:
+  - event
+  - data
+properties:
+  event:
+    type: string
+    description: Progress stage name; equal to `data.stage`.
+    not:
+      enum:
+        - completed
+        - failed
+  data:
+    type: string
+    contentMediaType: application/json
+    contentSchema:
+      $ref: "./SseProgressStep.yml"
+  id:
+    type: string
+    description: Optional SSE event id.
+  retry:
+    type: integer
+    description: Optional SSE reconnection time in milliseconds.

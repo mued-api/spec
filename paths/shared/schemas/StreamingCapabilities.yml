@@ -19,8 +19,9 @@ properties:
       - array
       - "null"
     description: >
-      Optional list of `SseProgressStep.stage` values this service may emit
-      (e.g. ["preparing", "starting", "evaluating", "completed", "failed"]).
-      Informative only; clients MUST tolerate stages that are not listed.
+      Optional list of progress `SseProgressStep.stage` values this service
+      may emit (e.g. ["preparing", "starting", "evaluating"]). The reserved
+      terminal event names `completed` and `failed` are not stages and are not
+      listed. Informative only; clients MUST tolerate stages that are not listed.
     items:
       type: string

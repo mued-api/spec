@@ -1,0 +1,24 @@
+description: >
+  A single event of a `POST /evaluate` SSE progress stream (OpenAPI 3.2 `itemSchema`
+  event form). A stream is zero or more progress events followed by exactly
+  one terminal event, either `completed` or `failed`. Lines starting with
+  `:` are keep-alive comments, not events, and clients MUST ignore them.
+oneOf:
+  - $ref: "../../shared/schemas/SseProgressEvent.yml"
+  - type: object
+    description: Terminal `completed` event carrying the operation's result.
+    required:
+      - event
+      - data
+    properties:
+      event:
+        const: completed
+      data:
+        type: string
+        contentMediaType: application/json
+        contentSchema:
+          $ref: "./SseEvaluateCompletedFrame.yml"
+      id:
+        type: string
+        description: Optional SSE event id.
+  - $ref: "../../shared/schemas/SseFailedEvent.yml"

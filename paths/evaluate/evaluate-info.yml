@@ -43,8 +43,6 @@ get:
                     - "preparing"
                     - "starting"
                     - "evaluating"
-                    - "completed"
-                    - "failed"
                   supportedArtefactProfiles:
                     - type: "TEXT"
                       supportedFormats: ["plain", "markdown"]

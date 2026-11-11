@@ -1,0 +1,19 @@
+type: object
+description: >
+  The terminal `failed` event of an SSE progress stream (OpenAPI 3.2
+  `itemSchema` event form). Sent when the operation fails after the stream
+  has opened; the HTTP status remains `200`.
+required:
+  - event
+  - data
+properties:
+  event:
+    const: failed
+  data:
+    type: string
+    contentMediaType: application/json
+    contentSchema:
+      $ref: "./SseFailedFrame.yml"
+  id:
+    type: string
+    description: Optional SSE event id.

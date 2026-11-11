@@ -1,0 +1,11 @@
+type: object
+description: >
+  JSON payload of the terminal `event: completed` frame of a `POST /chat` SSE
+  progress stream: the endpoint's normal `200 application/json` body
+  (`ChatResponse`) plus `steps`, the replay of every progress step emitted
+  during the stream. `error` MUST NOT be present.
+allOf:
+  - $ref: "./ChatResponse.yml"
+  - $ref: "../../shared/schemas/SseTerminalSteps.yml"
+properties:
+  error: false

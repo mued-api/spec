@@ -39,8 +39,6 @@ get:
                     - "preparing"
                     - "starting"
                     - "thinking"
-                    - "completed"
-                    - "failed"
                   "supportsDataPolicy": "NOT_SUPPORTED"
                   supportedLanguages:
                     - "en"

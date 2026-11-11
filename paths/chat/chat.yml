@@ -154,31 +154,58 @@ post:
         Successful chat response.
 
 
+        ### Response selection
+
+
+        The service picks the response mode in this order:
+
+
+        1. Errors detected before any response bytes are sent (validation,
+           authorization, unsupported version, unimplemented operation, etc.)
+           are returned with their normal HTTP status and an `ErrorResponse`
+           JSON body. No stream is opened.
+
+        2. A request that sets `callbackUrl` **and** sends
+           `Accept: text/event-stream` is rejected with `400`; asynchronous
+           callback delivery and SSE streaming are mutually exclusive.
+
+        3. A request that sets `callbackUrl` MAY be answered with `202` and
+           the result delivered to the callback.
+
+        4. A request that sends `Accept: text/event-stream` to a service that
+           advertises `supportsStreaming` receives a `200` Server-Sent Events
+           progress stream (`text/event-stream`, see below).
+
+        5. Otherwise, including when the service does not support streaming,
+           the response is `200 application/json`.
+
+
         ### Streaming variant (opt-in)
 
 
-        If the request sends `Accept: text/event-stream`, the response is a
-        Server-Sent Events progress stream instead of a single JSON body. The
-        HTTP status stays `200` for the entire stream, including failures. It
-        consists of:
+        Each item of the `text/event-stream` body is one SSE event, described
+        by `itemSchema`:
 
 
-        - zero or more progress frames — the SSE `event:` field is the stage
-          name and `data:` is an `SseProgressStep` JSON object;
+        - zero or more progress events, where `event:` is the stage name (e.g.
+          `preparing`, `thinking`) and `data:` is an `SseProgressStep` JSON object;
 
-        - optional keep-alive comment lines (each starting with `:`);
+        - optional keep-alive comment lines (each starting with `:`), which
+          are not events;
 
-        - exactly one terminal frame — `event: completed` with `data:` an
-          `SseChatTerminalFrame` (the `200` body as `output` / `metadata`, plus
-          a `steps` replay), or `event: failed` with `data:` an
-          `SseChatTerminalFrame` whose `error` is an `ErrorResponse`.
+        - exactly one terminal event: `event: completed` with `data:`
+          an `SseChatCompletedFrame` (the `200` `ChatResponse` body, plus a
+          `steps` replay), or `event: failed` with `data:` an
+          `SseFailedFrame` (an `ErrorResponse` under `error`, plus `steps`).
 
 
-        Failures are always delivered as a terminal `failed` frame, never as an
-        HTTP error status. `X-Request-Id` and `X-Api-Version` are sent once, as
-        response headers, when the stream opens. This is independent of
-        `configuration.llm.stream`, which governs token-level streaming from the
-        LLM provider.
+        `completed` and `failed` are reserved terminal event names and are
+        never used as progress stages. Once the stream has opened the `200`
+        status is committed, so any failure after that point is delivered as
+        the terminal `failed` event. `X-Request-Id` and `X-Api-Version` are
+        sent once, as response headers, when the stream opens. This is
+        independent of `configuration.llm.stream`, which governs token-level
+        streaming from the LLM provider.
       headers:
         X-Request-Id:
           description: Request id for tracing this request across services.
@@ -253,39 +280,34 @@ post:
                     temperature: 0.5
                     outputTokens: 143
         text/event-stream:
-          schema:
-            $ref: "./schemas/SseChatTerminalFrame.yml"
+          itemSchema:
+            $ref: "./schemas/SseChatEvent.yml"
           examples:
-            completedFrame:
-              summary: >
-                Terminal `event: completed` frame `data` (preceded on the wire by
-                `event: preparing` / `event: thinking` progress frames whose
-                `data` is an SseProgressStep, and optional `:` keep-alive lines).
-              value:
-                output:
-                  role: ASSISTANT
-                  content: "Polymorphism lets one interface represent many underlying forms."
-                metadata:
-                  responseTimeMs: 1800
-                steps:
-                  - stage: "preparing"
-                    message: "Preparing worker"
-                    timestamp: "2025-12-10T11:15:00Z"
-                  - stage: "thinking"
-                    message: "Composing response"
-                    timestamp: "2025-12-10T11:15:02Z"
-            failedFrame:
-              summary: "Terminal `event: failed` frame `data` (HTTP status is still 200)."
-              value:
-                output: null
-                error:
-                  title: "Chat failed"
-                  message: "The LLM provider connection failed."
-                  code: "LLM_PROVIDER_ERROR"
-                steps:
-                  - stage: "preparing"
-                    message: "Preparing worker"
-                    timestamp: "2025-12-10T11:15:00Z"
+            completedStream:
+              summary: Progress events, a keep-alive comment, then the terminal `completed` event
+              serializedValue: |
+                event: preparing
+                data: {"stage":"preparing","message":"Preparing worker","timestamp":"2025-12-10T11:15:00Z"}
+
+                : keep-alive
+
+                event: thinking
+                data: {"stage":"thinking","message":"Composing response","timestamp":"2025-12-10T11:15:02Z"}
+
+                event: completed
+                data: {"output":{"role":"ASSISTANT","content":"Polymorphism lets one interface represent many underlying forms."},"metadata":{"responseTimeMs":1800},"steps":[{"stage":"preparing","message":"Preparing worker","timestamp":"2025-12-10T11:15:00Z"},{"stage":"thinking","message":"Composing response","timestamp":"2025-12-10T11:15:02Z"}]}
+
+            failedStream:
+              summary: A progress event, then the terminal `failed` event (HTTP status is still 200)
+              serializedValue: |
+                event: preparing
+                data: {"stage":"preparing","message":"Preparing worker","timestamp":"2025-12-10T11:15:00Z"}
+
+                event: failed
+                data: {"error":{"title":"Chat failed","message":"The LLM provider connection failed.","code":"LLM_PROVIDER_ERROR"},"steps":[{"stage":"preparing","message":"Preparing worker","timestamp":"2025-12-10T11:15:00Z"}]}
+
+    "202":
+      $ref: "./responses/202-Accepted.yml"
     "400":
       $ref: "./responses/400-BadRequest.yml"
     "403":

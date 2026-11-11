@@ -22,3 +22,12 @@ content:
           trace: null
           details:
             field: "submission.content"
+      asyncAndStreamConflict:
+        summary: callbackUrl combined with Accept text/event-stream
+        value:
+          title: "Invalid request"
+          message: "callbackUrl cannot be combined with Accept: text/event-stream."
+          code: "VALIDATION_ERROR"
+          trace: null
+          details:
+            field: "callbackUrl"

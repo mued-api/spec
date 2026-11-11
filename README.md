@@ -2,11 +2,11 @@
 
 Education Microservices API **specification**.
 
-This repository is intentionally **spec-only**. It defines an **OpenAPI 3.1** contract that educational services can implement to conform to the µEd API.
+This repository is intentionally **spec-only**. It defines an **OpenAPI 3.2** contract that educational services can implement to conform to the µEd API.
 
 ## Contents
 
-- `openapi.yml` — the main entry point (OpenAPI 3.1)
+- `openapi.yml` — the main entry point (OpenAPI 3.2)
 - `paths/` — endpoint definitions (multi-file structure)
 
 ## What the spec covers
