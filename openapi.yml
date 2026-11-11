@@ -19,7 +19,7 @@ info:
     `SseProgressStep` frames, optional keep-alive comments, and exactly one
     terminal frame carrying the operation's normal `200` body (on success) or an
     `ErrorResponse` (on failure); the HTTP status stays `200` throughout.
-    Services advertise support via `supportsStreaming` in their `/health`
+    Services advertise support via `supportsStreaming` in their `/info`
     capabilities. This is distinct from `configuration.llm.stream`, which
     governs token-level streaming from the LLM provider.
 
@@ -32,9 +32,13 @@ tags:
 paths:
   /evaluate:
     $ref: "./paths/evaluate/evaluate.yml"
+  /evaluate/info:
+    $ref: "./paths/evaluate/evaluate-info.yml"
   /evaluate/health:
     $ref: "./paths/evaluate/evaluate-health.yml"
   /chat:
     $ref: "./paths/chat/chat.yml"
+  /chat/info:
+    $ref: "./paths/chat/chat-info.yml"
   /chat/health:
     $ref: "./paths/chat/chat-health.yml"

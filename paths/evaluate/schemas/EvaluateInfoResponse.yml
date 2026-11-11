@@ -1,0 +1,19 @@
+type: object
+description: Information and capabilities of the evaluate service.
+required:
+  - capabilities
+properties:
+  version:
+    type:
+      - string
+      - "null"
+    description: Optional version of the evaluate service implementation.
+  requirements:
+    type:
+      - object
+      - "null"
+    description: Optional requirements clients must satisfy to use this service.
+    allOf:
+      - $ref: "./EvaluateRequirements.yml"
+  capabilities:
+    $ref: "./EvaluateCapabilities.yml"

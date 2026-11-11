@@ -14,7 +14,7 @@ properties:
       Lifecycle stage this step reports. Informative, not a fixed enum:
       implementations MAY introduce new stages without a spec change, and clients
       MUST tolerate values they do not recognise. Each service advertises the
-      stage values it emits via `supportedProgressStages` in its `/health`
+      stage values it emits via `supportedProgressStages` in its `/info`
       capabilities. Common values: "preparing", "starting", "evaluating"
       (evaluate), "thinking" (chat), and the terminal "completed" / "failed".
   message:

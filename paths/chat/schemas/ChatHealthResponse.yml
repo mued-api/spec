@@ -1,8 +1,7 @@
 type: object
-description: Health status and capabilities of the chat service.
+description: Health status of the chat service.
 required:
   - status
-  - capabilities
 properties:
   status:
     $ref: "../../shared/enums/HealthStatus.yml"
@@ -16,5 +15,3 @@ properties:
       - string
       - "null"
     description: Optional version of the chat service implementation.
-  capabilities:
-    $ref: "./ChatCapabilities.yml"

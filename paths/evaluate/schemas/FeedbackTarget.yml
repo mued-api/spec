@@ -1,24 +1,22 @@
 type: object
 description: Optional reference to a specific part of the submission.
 required:
-  - artefactType
+  - format
 properties:
-  artefactType:
-    $ref: "../../shared/enums/ArtefactType.yml"
   format:
-    type:
-      - string
-      - "null"
+    type: string
+    pattern: "^(text|code|math|model|other):[a-z0-9_]+$"
     description: >
-      Optional format specifier matching the submission format (e.g., python, latex).
+      Format of the targeted artefact, matching the submission's format
+      (see Submission.format).
   locator:
     type:
       - object
       - "null"
     description: >
       Optional locator into the submission content. Standard locator types:
-      - TEXT: { type: "span", startIndex: number, endIndex: number }
-      - CODE: { type: "range", file?: string, startLine: number, endLine: number, startColumn?: number, endColumn?: number }
-      - MATH: { type: "subexpression", path: string } (e.g., path to subexpression)
-      - MODEL: { type: "element", elementId: string, elementType?: string }
+      - text:*: { type: "span", startIndex: number, endIndex: number }
+      - code:*: { type: "range", file?: string, startLine: number, endLine: number, startColumn?: number, endColumn?: number }
+      - math:*: { type: "subexpression", path: string } (e.g., path to subexpression)
+      - model:*: { type: "element", elementId: string, elementType?: string }
     additionalProperties: true
