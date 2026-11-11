@@ -103,6 +103,7 @@ properties:
       - object
       - "null"
     description: Classification of the type of data.
+    additionalProperties: true
     properties:
       classification:
         type:
@@ -118,7 +119,6 @@ properties:
             SENSITIVE,
             OTHER,
           ]
-        additionalProperties: true
   retentionPermission:
     type:
       - array
