@@ -16,6 +16,13 @@ When creating an issue, include:
 
 Use issues to capture bugs, unclear parts of the specification, and proposed API changes before implementation when the scope is non-trivial.
 
+## Vendor-specific fields
+
+If you need a field that's specific to your platform and not something
+every implementer needs, it likely belongs under `vendorExtensions`
+rather than as a new core schema field. See
+[VENDOR_EXTENSIONS.md](VENDOR_EXTENSIONS.md) for how to namespace your data and when a concept can become part of a core schema: at least two independent platforms must need the same underlying concept and agree on a common core representation.
+
 ## Contributing
 
 1. Start from the latest `main` branch.

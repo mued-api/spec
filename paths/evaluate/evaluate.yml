@@ -367,7 +367,7 @@ post:
                   title: "Overall structure"
                   message: "The overall structure of your answer is clear and easy to follow."
             mathMatchedCaseResponse:
-              summary: MATH submission that matched a service-defined case
+              summary: MATH submission that matched a Lambda Feedback case (vendor extension)
               value:
                 - feedbackId: "fb-math-1"
                   title: "Correct, matched expected case"
@@ -376,11 +376,13 @@ post:
                   response:
                     latex: "x+y"
                     sympy: "x + y"
-                  matchedCase: 0
+                  vendorExtensions:
+                    x-lf:
+                      matchedCase: 0
                   target:
                     format: "math:latex"
             mathMisconceptionCaseResponse:
-              summary: MATH submission that matched a known-misconception case
+              summary: MATH submission that matched a Lambda Feedback known-misconception case (vendor extension)
               value:
                 - feedbackId: "fb-math-1"
                   title: "Check your signs"
@@ -389,7 +391,9 @@ post:
                   response:
                     latex: "x-y"
                     sympy: "x - y"
-                  matchedCase: 1
+                  vendorExtensions:
+                    x-lf:
+                      matchedCase: 1
                   target:
                     format: "math:latex"
     "202":

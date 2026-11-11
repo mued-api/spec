@@ -3,7 +3,7 @@ description: >
   A single feedback item produced for the submission. It may include
   suggested actions, optional points, optional criterion linkage, optional
   targeting into the submission, optional normalized representation(s) of
-  the submission, and an optional matched-case index.
+  the submission, and optional vendor-specific extensions.
 properties:
   feedbackId:
     type: string
@@ -55,14 +55,11 @@ properties:
       preSubmissionFeedback.enabled was set to true.
     allOf:
       - $ref: "../../shared/schemas/FormattedContent.yml"
-  matchedCase:
-    type:
-      - integer
-      - "null"
-    format: int32
+  vendorExtensions:
     description: >
-      Optional index into a service-defined list of matching cases (e.g., a
-      Lambda Feedback-style "cases" list supplied under the request's
-      configuration object), when the service supports such a mechanism.
-      Null if no case matched. This is a provider-specific convention and is
-      not a formally defined construct in this spec.
+      Optional vendor/platform-specific data for this feedback item,
+      namespaced under x-<platform-slug> keys. See VendorExtensions.yml
+      for details. For example, Lambda Feedback reports the index of the
+      matched case from its "cases" configuration as
+      vendorExtensions.x-lf.matchedCase.
+    $ref: "../../shared/schemas/VendorExtensions.yml"
